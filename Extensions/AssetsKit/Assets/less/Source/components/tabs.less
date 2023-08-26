@@ -1,0 +1,44 @@
+/*
+<section class="flex-row gap-0">
+
+    <input type="radio" class="tab" name="myRadio" id="r1">
+    <label for="r1">My First Radio</label>
+
+    <input type="radio" class="tab" name="myRadio" id="r2">
+    <label for="r2">My Second Radio</label>
+
+    <input type="radio" class="tab" name="myRadio" id="r3">
+    <label for="r3">My Third Radio</label>
+
+</section>
+*/
+
+@tab-focus-color: rgb(0, 153, 255);
+
+
+
+.tab + label
+{
+    font-size: .9em;
+    font-weight: 700;
+    padding: .66em;
+    margin-bottom: .33em;
+    color: inherit;
+    border-bottom: #DDD solid 1px;
+    cursor: pointer;
+    transition: all 250ms ease;
+    user-select: none;
+}
+
+
+.tab
+{
+    display: none;
+}
+
+
+.tab:checked + label
+{
+    border-color: @tab-focus-color;
+    color: @tab-focus-color;
+}

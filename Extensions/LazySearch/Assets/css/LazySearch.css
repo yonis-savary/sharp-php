@@ -1,0 +1,98 @@
+.lazySearch
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+    gap: 1em;
+}
+
+.lazySearch > *
+{
+    width: 100%;
+}
+
+.lazySearch
+{
+    flex: 1;
+}
+
+@keyframes lazySearchSpin {
+    from { rotate: 0deg; }
+    to { rotate: 360deg; }
+}
+
+.lazySearch .loadSpinner
+{
+    margin: auto;
+    transition: all 1s ease;
+    animation: lazySearchSpin .5s infinite linear;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.lazySearch .pagination button
+{
+    width: 2em;
+    height: 2em;
+    aspect-ratio: 1/1;
+}
+
+.lazySearch .pagination button
+{
+    background: var(--highlight);
+    font-weight: 500;
+    font-size: 1em;
+    border: solid 1px var(--discreet) !important;
+    color: var(--fg);
+}
+
+.lazySearch .pagination button.active
+{
+    border-width: 3px !important;
+    border-color: var(--fg) !important;
+    color: var(--bg);
+    background: var(--fg);
+}
+
+.lazySearch thead
+{
+    position: sticky;
+    top: 0;
+    background-color: var(--bg);
+    box-shadow: var(--light-shadow);
+}
+
+.lazySearch .content-wrapper
+{
+    overflow-y: auto;
+    max-height: 80vh;
+    padding: 0 .5em .5em .5em;
+}
+
+.lazySearch td ,
+.lazySearch th
+{
+    white-space: nowrap;
+    max-width: 25ch;
+    text-overflow: ellipsis;
+}
+
+.lazySearchGrid > *
+{
+    width: fit-content;
+}
+
+.lazySearch .sort-button
+{
+    cursor: pointer;
+}
+
+.lazySearch .filter-label
+{
+    white-space: nowrap;
+}

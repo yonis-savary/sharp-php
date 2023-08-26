@@ -1,0 +1,21 @@
+// A chip is a round element that can contain anything
+// usually an svg (ex: a "check" (A.K.A "OK") symbol in a green circle)
+
+.chip
+{
+    border-radius: 100%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: fit-content;
+    padding: .3em;
+}
+
+each(@colors, .(@color, @name){
+    .chip.@{name} {
+        background-color: rgba(@color, .4);
+        color: lighten(@color, 0);
+    }
+})

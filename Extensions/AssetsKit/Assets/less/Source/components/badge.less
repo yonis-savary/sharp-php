@@ -1,0 +1,36 @@
+
+each(@colors, .(@color, @name){
+
+    .badge.@{name}
+    {
+        color: contrast(@color, black, white);
+        background-color: @color;
+        border: none;
+        filter: brightness(100%);
+    }
+
+    .badge.@{name}.clickable:hover
+    {
+        filter: brightness(130%);
+    }
+})
+
+.badge
+{
+    border-radius: .75em;
+    padding: .25em .75em;
+    font-size: .8em;
+    font-weight: 700;
+
+    transition: all 200ms ease;
+    display: flex;
+    align-items: center;
+    width: max-content;
+    gap: 1em;
+    text-decoration: none;
+}
+
+.badge.clickable
+{
+    cursor: pointer;
+}

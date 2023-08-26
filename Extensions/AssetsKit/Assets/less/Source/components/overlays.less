@@ -1,0 +1,49 @@
+
+.overlay
+{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    background: @overlay-background;
+    backdrop-filter: @overlay-background-filter;
+    animation: fade-in 100ms ease;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.overlay[locked]
+{
+    cursor: not-allowed
+}
+
+.overlay > .content
+{
+    .container();
+    box-shadow: 0px 10px 20px rgba(black, 12%);
+    cursor: default;
+    max-width: 75%;
+    padding: 2.5rem;
+    overflow: auto;
+}
+
+
+@media only screen and (max-width: 1000px)
+{
+    .overlay > .content
+    {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        border-radius: 1em 1em 0 0;
+        width: 100vw;
+        max-width: 100vw;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+}

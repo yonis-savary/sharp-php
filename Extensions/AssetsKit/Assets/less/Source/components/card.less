@@ -1,0 +1,37 @@
+@keyframes card-fade {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY( 0px); opacity: 1; }
+}
+
+.card
+{
+    .flex-column();
+    animation: card-fade 100ms ease;
+    background: var(--bg);
+    box-shadow: var(--medium-shadow);
+    border-radius: @default-container-border-radius;
+    overflow: hidden;
+    gap: 0;
+    //border: 1px solid var(--stealth);
+}
+
+.card > *
+{
+    padding: @standart-spacing;
+    border-top: 1px solid var(--stealth);
+    border-radius: 0;
+}
+
+.card > img
+{
+    padding: 0;
+    max-width: 15em;
+    object-fit: cover;
+}
+
+
+.card > *:first-of-type
+{
+    border-top-width: 0px;
+}
+

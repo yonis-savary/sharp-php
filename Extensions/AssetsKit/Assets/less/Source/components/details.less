@@ -1,0 +1,67 @@
+details
+{
+    position: relative;
+    padding: .5em 1em;
+    width: 100%;
+    background: var(--bg);
+    box-shadow: @light-shadow;
+    border-radius: 0;
+    border-radius: .5em;
+}
+
+details summary
+{
+    list-style: none;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: .9em;
+
+    display: flex;
+    align-items: center;
+    gap: @default-container-padding;
+    padding-right: 2em;
+}
+
+details summary img
+{
+    width: 1.5em;
+}
+
+
+// Still needed for some browser
+details > summary::-webkit-details-marker {display: none;}
+
+details > summary::after
+{
+    content: '+';
+    font-weight: 600;
+    position: absolute;
+    right: 1em;
+    font-size: 1.5em;
+    transition: all 200ms ease;
+    transform-origin: 50% 50%;
+    cursor: pointer;
+}
+
+details[open] > summary::after
+{
+    transform: rotate(45deg);
+}
+
+
+each(@colors, .(@color, @name){
+    details.@{name} {
+        background-color: rgba(@color, .3);
+        border-left: .33em @color solid;
+    }
+    details.@{name} > summary::after
+    {
+        color: darken(@color, 10);
+    }
+})
+
+
+summary + *
+{
+    margin-top: 1em;
+}

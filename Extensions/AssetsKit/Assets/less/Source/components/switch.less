@@ -1,0 +1,80 @@
+/*
+
+<label class="switch">
+    <input type="checkbox">
+    <span class="slider"></span>
+</label>
+
+*/
+
+.switch
+{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: .5em;
+    font-size: .8em;
+}
+
+.switch input
+{
+    display: none;
+}
+
+.switch input ~ .slider
+{
+    position: relative;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+
+    background-color: rgb(106, 106, 106);
+    top: 0;
+    left: 0;
+    padding: .2em;
+    border-radius: 3em;
+    transition: all 200ms ease;
+}
+
+.switch input:checked ~ .slider
+{
+    background-color: @colors[primary];
+}
+
+
+.switch input ~ .slider::after
+{
+    content: '';
+    background-color: @bg;
+    display: block;
+    width: 1em;
+    height: 1em;
+    border-radius: 3em;
+    transition: all 200ms ease;
+
+
+    margin-left: 0em;
+    margin-right: 1.5em;
+}
+
+@keyframes slider-scale-in {
+    0% { transform: scale(1) }
+    50% { transform: scale(1.5, .75) }
+    100% { transform: scale(1) }
+}
+@keyframes slider-scale-out {
+    0% { transform: scale(1) }
+    50% { transform: scale(1.5, .75) }
+    100% { transform: scale(1) }
+}
+
+.switch input:checked ~ .slider::after
+{
+    margin-left: 1.5em;
+    margin-right: 0em;
+}
+
+.switch input:checked ~ .slider::after { animation: slider-scale-in 200ms ease-in-out; }
+.switch input:active ~ .slider::after  { animation: slider-scale-out 200ms ease-in-out; }

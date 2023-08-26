@@ -1,0 +1,35 @@
+.table
+{
+    .container();
+    padding: 0;
+    border-radius: @default-container-border-radius;
+    overflow: hidden;
+    font-size: .75em;
+    border-collapse: collapse;
+}
+
+.table td,
+.table th
+{
+    padding: 1em;
+    border: none;
+}
+
+.table tr
+{
+    font-weight: normal;
+    transition: all 100ms ease-in-out;
+    background: var(--bg);
+}
+
+.table tbody tr:hover
+{
+    filter: sepia(100%);
+}
+
+
+.table.stripped tbody tr:nth-child(even),
+.table.striped tbody tr:nth-child(even)
+{
+    background-color: var(--highlight) !important;
+}

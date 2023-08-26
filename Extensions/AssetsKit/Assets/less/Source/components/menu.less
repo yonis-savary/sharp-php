@@ -1,0 +1,162 @@
+
+
+.menu
+{
+    .container();
+
+    position: fixed;
+    display: none;
+
+    padding: (@default-container-padding / 1.5);
+
+    box-shadow: var(--medium-shadow);
+    color: var(--fg);
+    background-color: var(--menu-background);
+
+    flex-direction: column;
+    gap: @default-flex-gap;
+
+    min-width: min-content !important;
+    max-width: 80vw;
+    max-height: 80vh;
+}
+
+
+.menu-mobile-background
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: @overlay-background-filter;
+    background: @overlay-background;
+    animation: fade-in 200ms ease;
+}
+
+.menu.mobile {
+
+    box-shadow: 0px -6px 12px rgba(black, 25%);
+
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0px !important;
+    min-height: 30vh;
+    max-height: 60vh;
+
+    overflow-y: auto;
+
+    position: fixed;
+    padding: 1.5em;
+    bottom: 0;
+    left: 0;
+
+    border-radius: 1em;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+
+.menu::after
+{
+    content : '';
+    position: absolute;
+    background-color: var(--menu-background);
+    width: 1em;
+    height: 1em;
+}
+
+.menu-top::after,
+.menu-bottom::after
+{
+    height: 1em;
+    width: 2em;
+}
+
+.menu-left::after,
+.menu-right::after
+{
+    height: 2em;
+    width: 1em;
+}
+
+
+.menu-top::after
+{
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, -50%);
+    clip-path: polygon(100% 0, 0 0, 50% 100%);
+}
+
+.menu-left::after
+{
+    left: 100%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    clip-path: polygon(100% 50%, 0 0, 0 100%);
+}
+
+.menu-bottom::after
+{
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -50%);
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.menu-right::after
+{
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+
+@media screen and (max-width: @mobile-screen-width)
+{
+    .menu::after
+    {
+        display: none;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.menu-option
+{
+    display: flex;
+    flex-direction: column;
+
+    font-size: .9em;
+    padding: 0 !important;
+    gap: 0;
+}
+
+.menu-option > *
+{
+    cursor: pointer;
+    padding: .5em 1em;
+    border-radius: .5em;
+    transition: all 200ms ease;
+}
+
+.menu-option > *:hover, .menu-option > *.active
+{
+    background-color: var(--highlight);
+}

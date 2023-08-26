@@ -1,0 +1,195 @@
+
+.flex-row       { display: flex; flex-direction: row; gap: @default-flex-gap; }
+.flex-column    { display: flex; flex-direction: column; gap: @default-flex-gap; }
+.flex-wrap      { flex-wrap: wrap; }
+.flex-no-wrap   { flex-wrap: nowrap !important;}
+
+@alignments : {
+    justify: justify-content;
+    align: align-items;
+};
+
+@modes : {
+    start: flex-start;
+    end: flex-end;
+    center: center;
+    between: space-between;
+    evenly: space-evenly;
+    around: space-around;
+};
+
+
+each(@alignments, .(@alignProps, @alignName){
+
+    each(@modes, .(@modeValue, @modeName){
+
+        .@{alignName}-@{modeName} {
+            @{alignProps} : @modeValue
+        }
+    })
+})
+
+
+@spacing :  @standart-spacing * .33;
+
+each(range(0,10), .(@size){
+
+    .flex-@{size} { flex: @size @size 0px !important; }
+    .flex-grow-@{size} { flex-grow: @size !important; }
+    .flex-shrink-@{size} { flex-shrink: @size !important; }
+
+    .gap-@{size} { gap: @spacing * @size !important; }
+
+    .padding-@{size} {
+        padding: @size * @spacing !important;
+    }
+
+    .padding-v-@{size} {
+        padding-top: @size * @spacing !important;
+        padding-bottom: @size * @spacing !important;
+    }
+
+    .padding-h-@{size} {
+        padding-left: @size * @spacing !important;
+        padding-right: @size * @spacing !important;
+    }
+
+    .margin-v-@{size} {
+        margin-top: @size * @spacing !important;
+        margin-bottom: @size * @spacing !important;
+    }
+
+    .margin-h-@{size} {
+        margin-left: @size * @spacing !important;
+        margin-right: @size * @spacing !important;
+    }
+})
+each(range(0,100, 10), .(@size){
+
+    .max-vh-@{size} { max-height: (@size*1vh) !important ;}
+    .max-vw-@{size} { max-height: (@size*1vh) !important ;}
+})
+
+.centered
+{
+    min-width: 800px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
+
+
+@directions : {
+    top : top;
+    right : right;
+    bottom : bottom;
+    left : left;
+};
+
+@spacings : {
+    margin: margin;
+    padding: padding;
+};
+
+// .#{$ls}-#{$ld}-#{$size} => generate "padding-top-3" for example
+// .#{$ls}-#{$size} => generate "margin-5" for example
+
+each(@spacings, .(@ls, @s){
+    each(@directions, .(@ld, @d){
+        each(range(0,11), .(@size){
+            .@{ls}-@{ld}-@{size} {
+                @{s}-@{d} : @size * @spacing !important;
+            }
+        })
+    })
+
+
+});
+
+each(@directions, .(@ld, @d){
+    .fill-@{ld} { margin-@{d} : auto; }
+})
+
+
+hr
+{
+    margin: 0;
+    border: none;
+    border-bottom: 1px solid var(--stealth);
+}
+
+
+.scrollable:not(.horizontal)
+{
+    overflow-y: auto;
+    padding: .25em;
+}
+
+
+.scrollable.horizontal
+{
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+.hide-empty:empty
+{
+    display: none;
+}
+
+.container
+{
+    padding: 1em;
+    border-radius: @default-container-border-radius;
+}
+
+
+each(range(0,10), {
+    .opacity-@{value} {
+        opacity: (@value/10);
+    }
+})
+
+.clickable
+{
+    cursor: pointer;
+}
+
+.container {
+    background-color: var(--bg);
+    box-shadow: var(--light-shadow);
+    padding: @default-container-padding;
+    border-radius: @default-container-border-radius;
+}
+
+
+
+
+.light-shadow { box-shadow: var(--light-shadow) !important };
+.medium-shadow { box-shadow: var(--medium-shadow) !important };
+.heavy-shadow { box-shadow: var(--heavy-shadow) !important };
+
+
+
+
+@media screen and (max-width: @mobile-screen-width)
+{
+    // .flex-row { flex-wrap: wrap; }
+
+    .centered
+    {
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        margin: 0;
+    }
+}
+
+
+.custom-bg
+{
+    background-color: attr(bg);
+}

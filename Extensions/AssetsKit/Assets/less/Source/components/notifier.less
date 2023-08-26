@@ -1,0 +1,47 @@
+.notifier-log
+{
+    position: fixed;
+    top: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    .container();
+
+    min-width: 25vw;
+
+    background-color: var(--menu-background);
+    display: flex;
+    flex-direction: row;
+    gap: 1em
+}
+
+
+
+@media screen and (max-width: @mobile-screen-width)
+{
+    .notifier-log
+    {
+        font-size: 1.2em;
+        width: 80%;
+        max-width: 100%;
+    }
+}
+
+
+.notify-close-button
+{
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    border-radius: 100%;
+    background-color: var(--menu-background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 200ms ease;
+}
+
+.notify-close-button:hover
+{
+    background-color: var(--highlight);
+}

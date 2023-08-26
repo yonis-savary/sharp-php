@@ -1,0 +1,36 @@
+
+each(@colors, .(@color, @name){
+
+    .tag.@{name}
+    {
+        color: @color;
+        background-color: fade(@color, 15);
+        border: solid .1em @color;
+        filter: brightness(100%);
+    }
+
+    .tag.@{name}.clickable:hover
+    {
+        filter: brightness(130%);
+    }
+})
+
+.tag
+{
+    border-radius: .25em;
+    padding: .25em .5em;
+    font-size: .8em;
+    font-weight: 500;
+
+    transition: all 200ms ease;
+    display: flex;
+    align-items: center;
+    width: max-content;
+    gap: 1em;
+    text-decoration: none;
+}
+
+.tag.clickable
+{
+    cursor: pointer;
+}

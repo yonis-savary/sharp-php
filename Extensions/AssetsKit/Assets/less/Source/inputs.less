@@ -1,0 +1,84 @@
+.short
+{
+    max-width: 5em;
+}
+
+
+input, textarea, select, option
+{
+    font-family: @font-family;
+    font-size: 0.9em;
+}
+
+input, textarea, select
+{
+    padding: .4em .5em;
+    background-color: var(--input-background);
+    color: var(--fg);
+    border: solid var(--stealth) 1px;
+    transition: all 50ms ease;
+    border-radius: .4em;
+}
+
+input:disabled, textarea:disabled, select:disabled
+{
+    filter: grayscale(100%) brightness(90%) !important;
+}
+
+input:focus, textarea:focus, select:focus
+{
+    outline: 3px solid lighten(@focus-outline-color, 5)
+}
+
+
+
+textarea
+{
+    font-family: @font-family;
+}
+
+
+label[for]
+{
+    cursor: pointer;
+}
+
+
+
+.subtle
+{
+    border-color: transparent;
+    background: transparent;
+    padding: .5em .6em;
+    transition: all 100ms linear;
+    font-weight: bold;
+}
+
+.subtle:not(:hover)
+{
+    border-left: dotted 3px;
+    border-color: transparent transparent transparent var(--stealth) ;
+    border-radius: 0em;
+
+    padding: 0;
+    padding-left: .5em;
+}
+
+.subtle:not(:hover)::placeholder
+{
+    opacity: 1;
+}
+
+
+.subtle:hover::placeholder
+{
+    opacity: auto;
+}
+
+.subtle:hover,
+.subtle:focus
+{
+    background-color: var(--input-background);
+    border: solid var(--stealth) 1px;
+    font-weight: normal;
+}
