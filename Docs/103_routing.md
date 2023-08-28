@@ -1,10 +1,10 @@
-[< Back to summary](./101_sharp.md)
+[< Back to summary](./000_sharp.md)
 
 # Sharp-PHP - Routing
 
 Routing in Sharp is made through two classes :
 - [`Route`](../Classes/Web/Route.php): hold informations about ONE specific route
-- [`Router`](../Classes/Web/Router.php): hold a set of routes and is able to route a [`Request`](../Classes/Http/Request.php) object
+- [`Router`](../Classes/Web/Router.php): hold a set of `Route` objects and is able to route a [`Request`](../Classes/Http/Request.php) object
 
 
 ## Routes creation
@@ -59,8 +59,53 @@ $router->group(["path" => "api"], function($router){
 });
 ```
 
+## Slugs
+
+The `Route` class has a support for path slugs (generic routes)
+
+Here is a basic usage of it :
+```php
+Route::get("/contact/{id}", function(Request $req, int $id){
+    echo "ContactId: $id";
+    echo "ContactId: " . $req->getSlug("id");
+});
+```
+
+The inconvenient of this method is that anything can replace `id`, there is no
+format to respect.
+
+To address this, `Route` also support predefined format and custom regexes
+```php
+# Using predefined format
+Route::get("/contact/{int:id}", fn($req, $id)=> "id: $id");
+# Using custom regex
+Route::get("/binary/{[01]+:number}", fn($req, $number) => "number : $number);
+```
+
+Here are the format that are currently supported
+| Slug Keyword | Regex                                     |
+|--------------|-------------------------------------------|
+| `int`        | `\d+`                                     |
+| `float`      | `\d+(?:\.\d+)?`                           |
+| `date`       | `\d{4}\-\d{2}\-\d{2}`                     |
+| `time`       | `\d{2}\:\d{2}\:\d{2}`                     |
+| `datetime`   | `\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}` |
+| `any`        | `.+`                                      |
+
+Note: the `any` keyword means that **ANY** part of the url is taken (which includes slashes !)
+
 ## Additionnal features
 
 - Any router got the `deleteRoutes()` method to clear its routes, and the `getRoutes()` method to retrieve them
 - The `Route::view()` method can be used to create a route that render a view when called
 - The `Route::redirect()` method can be used to create a redirection to another URL
+
+The [helper.php](../Helpers/helpers.php) file got two useful function to declare routes
+
+```php
+groupRoutes("api", TokenMiddleware::class, function(){
+    addRoutes(
+        Route::get("/", fn()=>"Hello")
+    );
+});
+```

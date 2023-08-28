@@ -13,10 +13,11 @@ mkdir MyProject
 cd MyProject
 
 git init
-git submodule add https://github.com/YonisSAVARY/Sharp-PHP
+# Clone this repository inside `Sharp` directory
+git submodule add https://github.com/YonisSavary/Sharp-PHP.git Sharp
 
 # Copy Public directory and "do" script
-cp -r Sharp/Core/Server .
+cp -r Sharp/Core/Server/* .
 ```
 
 ## Documentation and Tutorials

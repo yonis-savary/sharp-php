@@ -1,4 +1,4 @@
-[< Back to summary](./101_sharp.md)
+[< Back to summary](./000_sharp.md)
 
 # Sharp-PHP - Middlewares
 
@@ -12,9 +12,8 @@ which got this main method :
 public static function handle(Request $request) : Request|Response;
 ```
 
-Returning a [`Request`](../Classes/Http/Request.php) mean that your middleware
-assume the given request has access to the route. Returning a [`Response`](../Classes/Http/Response.php)
-mean that the access is forbidden and the response is displayed to the user
+- Returning a [`Request`](../Classes/Http/Request.php) mean that your middleware assume the given request has access to the route.
+- Returning a [`Response`](../Classes/Http/Response.php) mean that the access is forbidden and the response is displayed to the user
 
 ## Need of middleware ?
 

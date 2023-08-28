@@ -1,4 +1,4 @@
-[< Back to summary](./101_sharp.md)
+[< Back to summary](./000_sharp.md)
 
 # Sharp-PHP - Controllers
 
@@ -52,3 +52,5 @@ class MyController
     }
 }
 ```
+
+This structure allows you to organize your code by feature or domain

@@ -1,4 +1,4 @@
-[< Back to summary](./101_sharp.md)
+[< Back to summary](./000_sharp.md)
 
 # Sharp-PHP Commands
 
@@ -12,7 +12,6 @@ in your application (Preferably in a `Commands` directory), exemple:
 
 `SuperApp/Commands/ClearCaches.php`:
 ```php
-
 namespace SuperApp\Commands;
 
 use Sharp\Classes\CLI\Args;
@@ -27,7 +26,13 @@ class ClearCaches extends Commands
 }
 ```
 
-Then, to call it, execute `php do clear-caches` or `php do super-app@clear-caches` in your terminal, and voilà !
+Then, to execute it, type
+```
+php do clear-caches
+# or
+php do super-app@clear-caches
+```
+in your terminal, and voilà !
 
 Note: you can also implements the `getHelp()` method which should display a help menu/documentation
 
