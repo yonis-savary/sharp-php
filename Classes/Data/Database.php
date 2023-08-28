@@ -23,11 +23,11 @@ class Database
             throw new Exception("Cannot use database without a configuration !");
 
         return new self(
-            $configuration["driver"],
+            $configuration["driver"] ?? "mysql",
             $configuration["database"],
-            $configuration["host"] ?? null,
-            $configuration["port"] ?? null,
-            $configuration["user"] ?? null,
+            $configuration["host"] ?? "localhost",
+            $configuration["port"] ?? 3306,
+            $configuration["user"] ?? "root",
             $configuration["password"] ?? null,
         );
     }
