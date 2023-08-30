@@ -2,33 +2,40 @@
 
 namespace Sharp\Classes\Data;
 
-use Exception;
 use PDO;
 use PDOException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
-use Sharp\Classes\Core\Logger;
-use Sharp\Classes\Env\Config;
 use Sharp\Classes\Env\Storage;
 
 class Database
 {
-    use Component;
+    use Component, Configurable;
 
     protected ?PDO $connection = null;
 
+    public static function getDefaultConfiguration(): array
+    {
+        return [
+            "driver" => "mysql",
+            "database" => "database",
+            "host" => "localhost",
+            "port" => 3306,
+            "user" => "root",
+            "password" => null,
+        ];
+    }
+
     public static function getDefaultInstance()
     {
-        if (!($configuration = Config::getInstance()->try("database")))
-            throw new Exception("Cannot use database without a configuration !");
-
+        $configuration = self::readConfiguration();
         return new self(
-            $configuration["driver"] ?? "mysql",
+            $configuration["driver"],
             $configuration["database"],
-            $configuration["host"] ?? "localhost",
-            $configuration["port"] ?? 3306,
-            $configuration["user"] ?? "root",
-            $configuration["password"] ?? null,
+            $configuration["host"],
+            $configuration["port"],
+            $configuration["user"],
+            $configuration["password"]
         );
     }
 
@@ -45,12 +52,12 @@ class Database
         $this->connection = new PDO($dsn, $user, $password);
     }
 
-    public function getConnection() : PDO
+    public function getConnection(): PDO
     {
         return $this->connection;
     }
 
-    public function isConnected() : bool
+    public function isConnected(): bool
     {
         return $this->connection !== null;
     }
@@ -135,8 +142,12 @@ class Database
         return $queryClone;
     }
 
-    public function query(string $query, array $context=[], int $fetchMode=PDO::FETCH_ASSOC, bool $returnStr=false): array|string
-    {
+    public function query(
+        string $query,
+        array $context=[],
+        int $fetchMode=PDO::FETCH_ASSOC,
+        bool $returnStr=false
+    ): array|string {
         $queryWithContext = $this->build($query, $context);
 
         if ($returnStr)
@@ -168,7 +179,7 @@ class Database
             $this->query("SELECT `{}` FROM `{}` LIMIT 1", [$field, $table]);
             return true;
         }
-        catch (PDOException $_)
+        catch (PDOException)
         {
             return false;
         }

@@ -5,13 +5,12 @@ namespace Sharp\Classes\Data;
 use Exception;
 use InvalidArgumentException;
 use PDO;
-use PharIo\Manifest\InvalidUrlException;
 use Sharp\Classes\Data\Classes\QueryCondition;
 use Sharp\Classes\Data\Classes\QueryField;
 use Sharp\Classes\Data\Classes\QueryJoin;
 use Sharp\Classes\Data\Classes\QueryOrder;
 use Sharp\Classes\Data\Classes\QuerySet;
-use Sharp\Classes\Core\Logger;
+use Sharp\Classes\Data\Classes\QueryConditionRaw;
 use Sharp\Classes\Data\Database;
 use Sharp\Core\Utils;
 
@@ -67,17 +66,13 @@ class DatabaseQuery
         return $this;
     }
 
-    public function setInsertField(
-        string ...$fields
-    ): self
+    public function setInsertField(string ...$fields): self
     {
         $this->insertFields = $fields;
         return $this;
     }
 
-    public function insertValues(
-        mixed ...$values
-    ): self
+    public function insertValues(mixed ...$values): self
     {
         if (!count($this->insertFields))
             throw new Exception("Cannot insert values until insert fields are defined");
@@ -100,9 +95,8 @@ class DatabaseQuery
         return $this;
     }
 
-    public function exploreModel(
-        string $model
-    ): self {
+    public function exploreModel(string $model): self
+    {
         if (!Utils::uses($model, "Sharp\Classes\Data\Model"))
             throw new InvalidArgumentException("[$model] must use model trait");
 
@@ -144,7 +138,7 @@ class DatabaseQuery
         return $this;
     }
 
-    protected function exploreReferences($references)
+    protected function exploreReferences($references): void
     {
         $nextReferences = [];
 
@@ -160,7 +154,7 @@ class DatabaseQuery
             );
 
             if (count($this->joins) == self::JOIN_LIMIT)
-                return true;
+                return;
 
             /** @var DatabaseField $field */
             foreach ($model::getFields() as $_ => $field)
@@ -170,7 +164,7 @@ class DatabaseQuery
                 if (!($ref = $field->reference))
                     continue;
 
-                list($nextTarget, $_) = $ref;
+                $nextTarget = $ref[0];
 
                 if (in_array($nextTarget, $tableAcc))
                     continue;
@@ -191,12 +185,13 @@ class DatabaseQuery
     }
 
 
-    protected function setMode(int $mode)
+    protected function setMode(int $mode): self
     {
         if (!in_array($mode, [self::INSERT, self::SELECT, self::UPDATE, self::DELETE]))
             throw new InvalidArgumentException("Given mode must be a DatabaseQuery constant !");
 
         $this->mode = $mode;
+        return $this;
     }
 
     public function where(
@@ -217,6 +212,34 @@ class DatabaseQuery
             $value,
             $operator,
             $table
+        );
+        return $this;
+    }
+
+    public function whereSQL(string $condition): self
+    {
+        $this->conditions[] = new QueryConditionRaw($condition);
+        return $this;
+    }
+
+    public function join(
+        string $mode,
+        string $table,
+        string $alias,
+        QueryField $source,
+        string $targetField,
+        string $joinOperator="="
+    ): self {
+        if (count($this->joins)+1 >= self::JOIN_LIMIT)
+            throw new Exception("Cannot exceed ". self::JOIN_LIMIT . " join statement on a query");
+
+        $this->joins[] = new QueryJoin(
+            $mode,
+            $table,
+            $alias,
+            $source,
+            $targetField,
+            $joinOperator
         );
         return $this;
     }
@@ -267,8 +290,8 @@ class DatabaseQuery
 
             $this->buildEssentials()
         ]);
-        // TODO JOIN WHERE ORDER
     }
+
     protected function buildUpdate(): string
     {
         return join(" ", [
@@ -278,6 +301,7 @@ class DatabaseQuery
             $this->buildEssentials()
         ]);
     }
+
     protected function buildDelete(): string
     {
         return join(" ", [
@@ -294,16 +318,11 @@ class DatabaseQuery
 
         switch ($this->mode)
         {
-            case self::INSERT:
-                return $this->buildInsert();
-            case self::SELECT:
-                return $this->buildSelect();
-            case self::UPDATE:
-                return $this->buildUpdate();
-            case self::DELETE:
-                return $this->buildDelete();
-            default :
-                return "";
+            case self::INSERT: return $this->buildInsert();
+            case self::SELECT: return $this->buildSelect();
+            case self::UPDATE: return $this->buildUpdate();
+            case self::DELETE: return $this->buildDelete();
+            default : return "";
         }
     }
 
@@ -313,7 +332,7 @@ class DatabaseQuery
         return $res[0] ?? null;
     }
 
-    public function fetch(Database $database=null)
+    public function fetch(Database $database=null): array
     {
         $database ??= Database::getInstance();
         $res = $database->query($this->build(), [], PDO::FETCH_NUM);

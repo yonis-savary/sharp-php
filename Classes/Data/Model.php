@@ -10,7 +10,6 @@ use Sharp\Classes\Data\DatabaseField;
  */
 trait Model
 {
-
     protected $data = [];
 
     /**
@@ -46,7 +45,7 @@ trait Model
     {
         $fields = self::getFields();
         $insertables = [];
-        foreach ($fields as $name => $field)
+        foreach ($fields as $name => $_)
         {
             if ($name = self::getPrimaryKey())
                 continue;
@@ -72,27 +71,22 @@ trait Model
 
     public static function insert(): DatabaseQuery
     {
-        $query = new DatabaseQuery(self::getTable(), DatabaseQuery::INSERT);
-        $query->setInsertField(self::getTable(), ...self::getFieldNames());
-        return $query;
+        return (new DatabaseQuery(self::getTable(), DatabaseQuery::INSERT))->setInsertField(self::getTable(), ...self::getFieldNames());
     }
 
     public static function select(): DatabaseQuery
     {
-        $query = new DatabaseQuery(self::getTable(), DatabaseQuery::SELECT);
-        return $query;
+        return new DatabaseQuery(self::getTable(), DatabaseQuery::SELECT);
     }
 
     public static function update(): DatabaseQuery
     {
-        $query = new DatabaseQuery(self::getTable(), DatabaseQuery::UPDATE);
-        return $query;
+        return new DatabaseQuery(self::getTable(), DatabaseQuery::UPDATE);
     }
 
     public static function delete(): DatabaseQuery
     {
-        $query = new DatabaseQuery(self::getTable(), DatabaseQuery::DELETE);
-        return $query;
+        return new DatabaseQuery(self::getTable(), DatabaseQuery::DELETE);
     }
 
     public function toArray(): array
@@ -111,7 +105,7 @@ trait Model
         return true;
     }
 
-    public function __get(string $prop)
+    public function __get(string $prop): mixed
     {
         if (array_key_exists($prop, $this->data))
             return $this->data[$prop];
