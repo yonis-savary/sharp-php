@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# Sharp-PHP Commands
+# 💻 CLI Commands
 
 Sharp got the [`do`](../../../do) script, which can be used to execute
 commands from your Terminal

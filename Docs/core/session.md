@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# Sharp-PHP - Session Management
+# 🔏 Session Management
 
 With Sharp, the session management is really straightforward, it is made
 through [Session](../../Classes/Env/Session.php)

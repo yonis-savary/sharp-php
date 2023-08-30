@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# Sharp-PHP - Middlewares
+# 🚦 Middlewares
 
 Middlewares are class that are called just before your routes callback,
 they can tell if a [`Request`](../../Classes/Http/Request.php) can access your route

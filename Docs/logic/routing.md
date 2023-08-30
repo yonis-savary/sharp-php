@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# Sharp-PHP - Routing
+# 🛣️ Routing
 
 Routing in Sharp is made through two classes :
 - [`Route`](../../Classes/Web/Route.php): hold informations about ONE specific route

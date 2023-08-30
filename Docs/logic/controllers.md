@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# Sharp-PHP - Controllers
+# ⚙️ Controllers
 
 The main purpose of controllers is to hold your code logic (and therefore your routes callbacks)
 

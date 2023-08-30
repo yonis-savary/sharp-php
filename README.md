@@ -1,4 +1,4 @@
-# Sharp-PHP [WIP]
+# 📐 Sharp-PHP [WIP]
 
 (This project is still under development)
 
@@ -6,7 +6,7 @@ Sharp is a Framework for PHP 8.1 that focuses on code cleanliness and simplicity
 
 The goal is to have a set of tools to build web app without having too much abstraction
 
-## Install
+## 🪄 Create a project
 
 ```bash
 mkdir MyProject
@@ -20,6 +20,25 @@ git submodule add https://github.com/YonisSavary/Sharp-PHP.git Sharp
 cp -r Sharp/Core/Server/* .
 ```
 
-## Documentation and Tutorials
+## 📒 Documentation and Tutorials
 
 You can find resources to work with Sharp in [the Docs directory](./Docs/home.md)
+
+```php
+class MyController
+{
+    use Controller;
+
+    public function declareRoutes()
+    {
+        addRoutes(
+            Route::get("/", [$this, "greetWorld"])
+        );
+    }
+
+    public function greetWorld()
+    {
+        return Response::json("Hello world !");
+    }
+}
+```

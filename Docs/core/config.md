@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# Sharp-PHP - App Directory & Config
+# 📁 App Directory & Config
 
 Before explaining how the framework is made and how to use it,
 here is how to organize your application files
@@ -26,15 +26,6 @@ One application is made of these directories:
 - Views
 
 **Note: every one of those directories are optionnal**
-
-### Properties :
-
-- `Autoloader::getListFiles(AutoLoader::AUTOLOAD)` can retrieve files in `Commands`, `Controllers`, `Classes`, `Components`, `Models`
-- `Autoloader::getListFiles(AutoLoader::ASSETS)` can retrieve files in `Assets`
-- `Autoloader::getListFiles(AutoLoader::VIEWS)` can retrieve files in `Views`
-- `Autoloader::getListFiles(AutoLoader::ROUTES)` can retrieve files in `Routes`
-- `Autoloader::getListFiles(AutoLoader::REQUIRE)` can retrieve files in `Helpers` and `Others`
-
 **Files in `Helpers` and `Others` are required directly with `require_once`**
 
 ### Loading an application
@@ -59,3 +50,15 @@ located in `ShippingApp/Modules/ShippingCRM`, then, you have to edit your config
 ```
 
 This allow you to extends your application and disable any part/module of it just by editing your config
+
+## Namespaces
+
+Every namespace is set by its relative path, example: for `./App/Controllers/Provider/Order.php`, the classname shall be `App\Controllers\Provider` otherwise, the autoloader won't recognize it
+
+## Additionnal properties
+
+- `Autoloader::getListFiles(Autoloader::AUTOLOAD)` can retrieve files in `Commands`, `Controllers`, `Classes`, `Components`, `Models`
+- `Autoloader::getListFiles(Autoloader::ASSETS)` can retrieve files in `Assets`
+- `Autoloader::getListFiles(Autoloader::VIEWS)` can retrieve files in `Views`
+- `Autoloader::getListFiles(Autoloader::ROUTES)` can retrieve files in `Routes`
+- `Autoloader::getListFiles(Autoloader::REQUIRE)` can retrieve files in `Helpers` and `Others`

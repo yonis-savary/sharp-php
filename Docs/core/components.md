@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# Sharp components
+# 🧩 Sharp components
 
 Some classes/features need to be accessed globally from your application (like `Database`, `Logger`...etc)
 to resolve this, the [`Component`](../../Classes/Core/Component.php) trait was created.

@@ -8,10 +8,7 @@ The goals behind Sharp are :
 5. Have as few dependencies as possible (So far, `composer.json` only install [PHPUnit](https://phpunit.de/))
 6. Automate tedious task (like model creation)
 
-## Sharp base rules
-
-Base rules to know are :
-1. Every namespace is set by its relative path, example: for `./App/Controllers/Provider/Order.php`, the classname shall be `App\Controllers\Provider` otherwise, the autoloader won't recognize it
+(You can browse this documentation with an IDE like Visual Studio Code with the markdown preview)
 
 ## Documentation
 
@@ -33,14 +30,14 @@ Core (Advanced):
 -->
 
 Routing & Logic
-- 📍 [Routing](./logic/routing.md)
+- 🛣️ [Routing](./logic/routing.md)
 - ⚙️  [Controllers](./logic/controllers.md)
 - 🚦 [Middlewares](./logic/middlewares.md)
 <!-- [(Code) `Request`](../Classes/Http/Request.php) -->
 <!-- [(Code) `Response`](../Classes/Http/Response.php) -->
 
 Database
-- 📖 [Database and Models](./data/database.md)
+- 📚 [Database and Models](./data/database.md)
 
 Extras
 - ⭐️ [Serve assets with `AssetServer`](./extras/assets.md)

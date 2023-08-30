@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# Sharp-PHP - Logging & Shortcuts
+# 📃 Logging & Shortcuts
 
 Sharp got the [Logger](../../Classes/Core/Logger.php) class that can be used to log informations inside a log file
 

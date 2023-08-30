@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# Sharp-PHP - Working with database and models
+# 📚 Database and models
 
 
 ## Using the database
