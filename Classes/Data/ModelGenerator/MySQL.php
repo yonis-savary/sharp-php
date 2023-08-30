@@ -19,31 +19,28 @@ class MySQL extends GeneratorDriver
         return $res;
     }
 
-
-    protected function getFieldDescription(array $field, array $foreignKey=null, mixed &$primaryKey)
+    protected function getFieldDescription(array $fieldDescription, array $foreignKey=null, mixed &$primaryKey)
     {
-        list($Field, $Type, $Null, $Key, $Default, $Extras) = array_values($field);
-        $string = "(new DatabaseField('$Field'))";
+        list($field, $type, $null, $key, $default, $extras) = array_values($fieldDescription);
+        $string = "(new DatabaseField('$field'))";
 
         $classType = "STRING";
-        if (preg_match("/int\(/", $Type))           $classType = "INTEGER";
-        if (preg_match("/float\(/", $Type))         $classType = "FLOAT";
-        if (preg_match("/smallint\(1\)/", $Type))   $classType = "BOOLEAN";
-        if (preg_match("/decimal/", $Type))         $classType = "DECIMAL";
+        if (preg_match("/int\(/", $type))           $classType = "INTEGER";
+        if (preg_match("/float\(/", $type))         $classType = "FLOAT";
+        if (preg_match("/smallint\(1\)/", $type))   $classType = "BOOLEAN";
+        if (preg_match("/decimal/", $type))         $classType = "DECIMAL";
         $string .= "->setType(DatabaseField::$classType)";
 
-        $string .= "->setNullable(". ($Null=="YES" ? "true": "false") .")";
+        $string .= "->setNullable(". ($null=="YES" ? "true": "false") .")";
 
-        if ($ref = $foreignKey[$Field] ?? false)
+        if ($ref = $foreignKey[$field] ?? false)
             $string .= "->references(".$this->sqlNameToPHPName($ref[0])."::class, '$ref[1]')";
 
-        if ($Key === "PRI")
-            $primaryKey ??= $Field;
+        if ($key === "PRI")
+            $primaryKey ??= $field;
 
-        return "'$Field' => $string";
+        return "'$field' => $string";
     }
-
-
 
     public function generate(string $table, string $targetApplication)
     {

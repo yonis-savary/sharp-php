@@ -18,7 +18,7 @@ class Events
 
     public function dispatch(string $event, ...$args)
     {
-        foreach (($this->handlers[$event] ?? []) as $handler)
+        foreach ($this->handlers[$event] ?? [] as $handler)
             $handler(...$args);
     }
 }

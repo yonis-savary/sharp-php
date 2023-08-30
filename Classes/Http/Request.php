@@ -16,6 +16,14 @@ class Request
     protected array $slugs = [];
     protected ?Route $route = null;
 
+    /**
+     * @param string $method HTTP Method (GET, POST...)
+     * @param string $path Request URI
+     * @param array $get GET Params Data
+     * @param array $post POST Params Data
+     * @param array $uploads Raw PHP Uploads
+     * @param array<string,string> $headers Associative Headers (name=>value)
+     */
     public function __construct(
         protected string $method,
         protected string $path,
@@ -65,7 +73,7 @@ class Request
     {
         $cleanedUploads = [];
 
-        foreach($data as $inputname => $filedata)
+        foreach($data as $inputName => $filedata)
         {
             $toAdd = [];
             if (!is_array($filedata["name"]))
@@ -83,7 +91,7 @@ class Request
             }
 
             foreach ($toAdd as &$upload)
-                $upload = new UploadFile($upload, $inputname);
+                $upload = new UploadFile($upload, $inputName);
 
             array_push($cleanedUploads, ...$toAdd);
         }
@@ -124,7 +132,7 @@ class Request
      *
      * @return array Requested parameters in an array
      */
-    public function list(string ...$keys)
+    public function list(string ...$keys): array
     {
         return array_values($this->params($keys));
     }
@@ -135,7 +143,7 @@ class Request
      * - If more parameters are requested, the function return an associative array as `paramName` => value or null
      * @note This function retrieve parameters from both GET and POST data, to retrieve from one `paramsFromGet()` or `paramsFromPost()`
      */
-    public function params(string|array $keys)
+    public function params(string|array $keys): mixed
     {
         return $this->retrieveParams($keys, $this->all());
     }
@@ -143,7 +151,7 @@ class Request
     /**
      * Same as `params()`, but only retrieve from GET data
      */
-    public function paramsFromGet(string|array $keys)
+    public function paramsFromGet(string|array $keys): mixed
     {
         return $this->retrieveParams($keys, $this->get());
     }
@@ -151,12 +159,12 @@ class Request
     /**
      * Same as `params()`, but only retrieve from POST data
      */
-    public function paramsFromPost(string|array $keys)
+    public function paramsFromPost(string|array $keys): mixed
     {
         return $this->retrieveParams($keys, $this->post());
     }
 
-    protected function retrieveParams(string|array $keys, array $storage)
+    protected function retrieveParams(string|array $keys, array $storage): mixed
     {
         if (!is_array($keys))
             return $storage[$keys] ?? null;
@@ -203,12 +211,12 @@ class Request
     /**
      * @note !TEST-PURPOSE-METHOD!
      */
-    public function setUploads(UploadFile ...$uploads)
+    public function setUploads(UploadFile ...$uploads): void
     {
         $this->uploads = $uploads;
     }
 
-    public function setSlugs(array $slugs)
+    public function setSlugs(array $slugs): void
     {
         $this->slugs = $slugs;
     }
@@ -240,7 +248,7 @@ class Request
     /**
      * Unset parameters from both GET and POST data
      */
-    public function unset(array|string $keys)
+    public function unset(array|string $keys): void
     {
         foreach (Utils::toArray($keys) as $k)
         {

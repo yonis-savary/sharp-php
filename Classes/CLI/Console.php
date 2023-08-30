@@ -11,7 +11,7 @@ class Console
 {
     use Component;
 
-    public function listCommands()
+    public function listCommands(): array
     {
         $classes = Autoloader::classesThatExtends(Command::class);
         $commands = [];
@@ -20,23 +20,24 @@ class Console
         return $commands;
     }
 
-    public function findCommands(string $identifier)
+    public function findCommands(string $identifier): array
     {
         $classes = [];
+
+        /** @var Command $command */
         foreach ($this->listCommands() as $command)
         {
-            /** @var Command $command */
-
             if ( in_array($identifier, [
                 $command->getName(),
                 $command->getIdentifier()
             ]))
                 $classes[] = $command;
         }
+
         return $classes;
     }
 
-    public function printCommandList()
+    public function printCommandList(): void
     {
         $commands = $this->listCommands();
 
@@ -46,7 +47,7 @@ class Console
             printf(" - %s (%s)\n", $command->getName(), $command->getIdentifier());
     }
 
-    public function handleArgv(array $argv)
+    public function handleArgv(array $argv): mixed
     {
         array_shift($argv); // Ignore script name !
 
@@ -65,17 +66,17 @@ class Console
             return $this->printCommandList();
         }
 
-        if (count($commands) === 1)
+        if (count($commands) > 1)
         {
+            echo "Multiple commands for identifier [$commandName] found !\n";
             /** @var Command $command */
-            $command = $commands[0];
-            printf("%s[ %s ]%s\n", str_repeat("-", 5), $command->getIdentifier() , str_repeat("-", 25));
-            return $command(Args::fromArray($argv));
+            foreach ($commands as $command)
+            echo " - " . $command->getIdentifier() . "\n";
         }
 
-        echo "Multiple commands for identifier [$commandName] found !\n";
         /** @var Command $command */
-        foreach ($commands as $command)
-            echo " - " . $command->getIdentifier() . "\n";
+        $command = $commands[0];
+        printf("%s[ %s ]%s\n", str_repeat("-", 5), $command->getIdentifier() , str_repeat("-", 25));
+        return $command(Args::fromArray($argv));
     }
 }

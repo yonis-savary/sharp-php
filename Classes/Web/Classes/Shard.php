@@ -4,38 +4,39 @@ namespace Sharp\Classes\Web\Classes;
 
 class Shard
 {
-    protected $file;
-    protected $context;
-    protected $parentTemplate = null;
-    protected $parentContext = null;
+    protected string $file;
+    protected array $context;
 
-    protected $currentSection = null;
-    protected $sectionContent = [];
+    protected ?array $parentContext = [];
+    protected ?string $parentTemplate = null;
+
+    protected ?string $currentSection = null;
+    protected array $sectionContent = [];
 
     public function __construct(string $file, array $context=[], Shard $parent=null)
     {
-        $parentContext = $parent ? $parent->getContext() : [];
+        $this->parentContext = $parent ? $parent->getContext() : [];
         $this->file = $file;
-        $this->context = array_merge($parentContext, $context);
+        $this->context = array_merge($this->parentContext, $context);
     }
 
-    public function getContext()
+    public function getContext(): array
     {
         return $this->context;
     }
 
-    public function setParent(string $template, array $context=[])
+    public function setParent(string $template, array $context=[]): void
     {
         $this->parentTemplate = $template;
         $this->parentContext = $context;
     }
 
-    public function getParent()
+    public function getParentInfos()
     {
         return $this->parentTemplate ? [$this->parentTemplate, $this->parentContext]: null;
     }
 
-    public function startSection(string $section)
+    public function startSection(string $section): void
     {
         if ($this->currentSection)
             $this->endSection();
@@ -44,20 +45,20 @@ class Shard
         ob_start();
     }
 
-    public function endSection()
+    public function endSection(): void
     {
-        if (!$this->currentSection)
-            return;
+        if ($this->currentSection)
+            $this->sectionContent[$this->currentSection] = ob_get_clean();
 
-        $this->sectionContent[$this->currentSection] = ob_get_clean();
+        $this->currentSection = null;
     }
 
-    public function getSection(string $name)
+    public function getSection(string $name): string
     {
         return $this->sectionContent[$name] ?? '';
     }
 
-    public function getAllSections()
+    public function getAllSections(): array
     {
         return $this->sectionContent;
     }

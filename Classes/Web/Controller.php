@@ -4,6 +4,12 @@ namespace Sharp\Classes\Web;
 
 use Sharp\Core\Utils;
 
+/**
+ * Using this trait allows you to use those methods in your class
+ *  - self::asset() : Find an asset inside controller's app Asset directory
+ *  - self::view() : Find a view inside controller's app View directory
+ *  - self::declareRoutes() : Declare controller's routes (automatically called)
+ */
 trait Controller
 {
     public static function getAppPath(): string
@@ -18,7 +24,7 @@ trait Controller
         return Utils::joinPath(self::getAppPath(), $path);
     }
 
-    public static function findFile(string $directory, string $filename): string|false
+    protected static function findFile(string $directory, string $filename): string|false
     {
         $assetsDir = self::relativePath($directory);
 
@@ -43,6 +49,7 @@ trait Controller
     {
         if (!str_ends_with($viewName, ".php"))
             $viewName .= ".php";
+
         return self::findFile("Views", $viewName);
     }
 

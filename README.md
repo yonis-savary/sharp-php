@@ -2,7 +2,7 @@
 
 (This project is still under development)
 
-Sharp is a Framework for PHP8 that focuses on code cleanliness and simplicity
+Sharp is a Framework for PHP 8.1 that focuses on code cleanliness and simplicity
 
 The goal is to have a set of tools to build web app without having too much abstraction
 
@@ -22,4 +22,4 @@ cp -r Sharp/Core/Server/* .
 
 ## Documentation and Tutorials
 
-You can find resources to work with Sharp in [the Docs directory](./Docs/101_sharp.md)
+You can find resources to work with Sharp in [the Docs directory](./Docs/home.md)

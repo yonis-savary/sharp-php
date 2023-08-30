@@ -49,7 +49,7 @@ class Logger
         return $this->filename;
     }
 
-    protected function toString(mixed $content)
+    protected function toString(mixed $content): string
     {
         if (is_string($content) || is_numeric($content))
             return "$content";
@@ -58,7 +58,7 @@ class Logger
         {
             return json_encode($content, JSON_THROW_ON_ERROR);
         }
-        catch (JsonException $err)
+        catch (JsonException)
         {
             return print_r($content, true);
         }
@@ -73,21 +73,12 @@ class Logger
         foreach ($content as $line)
         {
             $line = $this->toString($line);
-            if (is_resource($this->stream))
-            {
-                fputcsv($this->stream, [
-                    $now,
-                    $ip,
-                    $method,
-                    $level,
-                    $line
-                ], "\t");
-            }
-            else
-            {
-                echo "Error while shutting down : $line \n";
-            }
+            $line = [$now, $ip, $method, $level, $line];
 
+            if (is_resource($this->stream))
+                fputcsv($this->stream, $line, "\t");
+            else
+                echo "Error while shutting down : $line \n";
         }
     }
 
@@ -100,7 +91,8 @@ class Logger
     public function alert       (mixed ...$messages) { $this->log("alert", ...$messages); }
     public function emergency   (mixed ...$messages) { $this->log("emergency", ...$messages); }
 
-    public function logThrowable(Throwable $throwable) {
+    public function logThrowable(Throwable $throwable)
+    {
         $this->error("Got an Exception/Error: ". $throwable->getMessage());
         $this->error(sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()));
         $this->error(...explode("\n", $throwable->getTraceAsString()));

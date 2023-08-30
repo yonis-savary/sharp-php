@@ -59,16 +59,16 @@ class AssetServer
         return "$routePath?file=$assetName";
     }
 
-    public function handleRequest(Request $req, bool $returnResponse=false)
+    public function handleRequest(Request $req, bool $returnResponse=false) : Response|false
     {
         $routePath = $this->configuration["path"];
         $middlewares = $this->configuration["middlewares"];
         $selfRoute = Route::get($routePath, fn($req) => $this->serve($req), $middlewares);
 
         if (!$selfRoute->match($req))
-            return;
+            return false;
 
-        $response = $selfRoute($req);
+        $response = Response::adapt($selfRoute($req));
 
         if ($returnResponse)
             return $response;
@@ -77,7 +77,7 @@ class AssetServer
         die;
     }
 
-    protected function serve(Request $req)
+    protected function serve(Request $req): Response
     {
         if (!($searchedFile = $req->params("file") ?? false))
             return Response::json("A 'file' parameter is needed", 401);

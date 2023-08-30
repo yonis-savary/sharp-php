@@ -9,7 +9,7 @@ class Terminal
     /**
      * Simply an alias to `readline()`
      */
-    public static function prompt(string $question)
+    public static function prompt(string $question): string
     {
         return readline($question);
     }
@@ -20,7 +20,7 @@ class Terminal
      * @param string $question Prompt for the user
      * @return mixed Selected option (the value, not index)
      */
-    public static function promptList(array $choices, string $question)
+    public static function promptList(array $choices, string $question): mixed
     {
         echo "$question\n";
         for ($i=0; $i<count($choices); $i++)
@@ -36,7 +36,7 @@ class Terminal
      * @note If only one application is enabled, it is choosed by default
      * @return string Choosen App relative path (as written in configuration)
      */
-    public static function chooseApplication()
+    public static function chooseApplication(): string
     {
         $applications = Config::getInstance()->get("applications");
 
@@ -55,7 +55,7 @@ class Terminal
     /**
      * Util function to write a string and remove excessives tabs before lines
      */
-    public static function stringToFile(string $content, int $d=3)
+    public static function stringToFile(string $content, int $d=3): string
     {
         return preg_replace('/^( {4}){'.$d."}|(^ +\n?$)/m", '', $content);
     }

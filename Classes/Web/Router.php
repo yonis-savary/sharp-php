@@ -181,21 +181,11 @@ class Router
 
         try
         {
-            $response = $route($request);
-
-            if (!($response instanceof Response))
-            {
-                if (!in_array(gettype($response), self::INTERPRETED_TYPES))
-                    return new Response(null, 204);
-
-                $response = Response::json($response);
-            }
-
-            return $response;
+            return Response::adapt($route($request));
         }
         catch (Throwable $err)
         {
-            Logger::getInstance()->error($err->getMessage());
+            Logger::getInstance()->logThrowable($err);
             return new Response("Internal server error", 500, ["Content-Type" => "text/plain"]);
         }
     }

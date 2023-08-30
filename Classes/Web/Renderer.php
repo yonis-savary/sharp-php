@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Web;
 
+use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Http\Response;
@@ -26,8 +27,6 @@ class Renderer
             'file_extension' => '.php'
         ];
     }
-
-
 
     public function __construct()
     {
@@ -72,50 +71,48 @@ class Renderer
 
         $newShard = new Shard($path, $context, $this->current);
         $currentIndex = array_push($this->shards, $newShard)-1;
-        $this->current = $this->shards[$currentIndex];
+        $current = $this->current = &$this->shards[$currentIndex];
 
-
-        foreach ($this->current->getContext() as $name => $value)
+        foreach ($current->getContext() as $name => $value)
         {
             if (isset($$name))
-            Logger::getInstance()->warning("Cannot redeclare [$name] while rendering");
+                Logger::getInstance()->logThrowable(new InvalidArgumentException("Cannot redeclare [$name] while rendering"));
             else
-            $$name = $value;
+                $$name = $value;
         }
-
 
         ob_start();
         require $path;
-        $this->current->endSection();
+        $current->endSection();
         $content = ob_get_clean();
 
-        $this->sections = array_merge($this->sections, $this->current->getAllSections());
+        $this->sections = array_merge($this->sections, $current->getAllSections());
 
-        if ($parent = $this->current->getParent())
+        if ($parent = $current->getParentInfos())
             $content = $this->render($parent[0], $parent[1])->getContent();
 
         array_pop($this->shards);
-        $this->current = $this->shards[count($this->shards)-1] ?? null;
+        $current = $this->shards[count($this->shards)-1] ?? null;
 
         return Response::html($content);
     }
 
-    public function useTemplate(string $template, array $context=[])
+    public function useTemplate(string $template, array $context=[]): void
     {
         $this->current->setParent($template, $context);
     }
 
-    public function startSection(string $sectionName)
+    public function startSection(string $sectionName): void
     {
         $this->current->startSection($sectionName);
     }
 
-    public function stopSection()
+    public function stopSection(): void
     {
         $this->current->endSection();
     }
 
-    public function section(string $sectionName): string|null
+    public function section(string $sectionName): ?string
     {
         return $this->sections[$sectionName] ?? null;
     }

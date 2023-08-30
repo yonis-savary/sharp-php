@@ -1,6 +1,5 @@
 <?php
 
-use Sharp\Classes\Env\Session;
 use Sharp\Classes\Extras\AssetServer;
 use Sharp\Classes\Web\Renderer;
 
@@ -16,14 +15,14 @@ function asset(string $target) : string
     return AssetServer::getInstance()->getURL($target);
 }
 
-function script(string $target, bool $inject=false)
+function script(string $target, bool $inject=false): string
 {
     return $inject ?
         "<script>".file_get_contents(AssetServer::getInstance()->findAsset($target))."</script>":
         "<script src='".asset($target)."'></script>";
 }
 
-function style(string $target, bool $inject=false)
+function style(string $target, bool $inject=false): string
 {
     return $inject ?
         "<style>".file_get_contents(AssetServer::getInstance()->findAsset($target))."</style>":
@@ -68,7 +67,7 @@ function template(string $templateName, array $context=[])
  *      My Title !
  * ```
  */
-function section(string $sectionName)
+function section(string $sectionName): ?string
 {
     return Renderer::getInstance()->section($sectionName);
 }
@@ -90,7 +89,7 @@ function section(string $sectionName)
  *      My Body !
  * ```
  */
-function start(string $sectionName)
+function start(string $sectionName): void
 {
     Renderer::getInstance()->startSection($sectionName);
 }
@@ -104,8 +103,8 @@ function start(string $sectionName)
  *      <?= section("body") ?>
  * ```
  * ```php
- *      <!-- another/template  -->
- *      <?= template("base") ?>
+ * <!-- another/template  -->
+ * <?= template("base") ?>
  *      <?= start("title") ?>
  *      My Title !
  *      <?= stop("title") ?>
@@ -113,7 +112,7 @@ function start(string $sectionName)
  *      My Body !
  * ```
  */
-function stop()
+function stop(): void
 {
     Renderer::getInstance()->stopSection();
 }

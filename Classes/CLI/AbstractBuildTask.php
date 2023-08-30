@@ -2,12 +2,8 @@
 
 namespace Sharp\Classes\CLI;
 
-use Sharp\Core\Utils;
-
 abstract class AbstractBuildTask
 {
-    protected bool $force = false;
-
     /**
      * Display messages in the console only if in command line context
      */
@@ -38,24 +34,6 @@ abstract class AbstractBuildTask
     }
 
     /**
-     * This function tries to install vendor files in given directory
-     */
-    public function installVendorIn(string $directory)
-    {
-        $composer = Utils::joinPath($directory, 'composer.json');
-        if (!is_file($composer))
-            return;
-
-        $vendorDir = Utils::joinPath($directory, 'vendor');
-
-        if ($this->if(!is_dir($vendorDir)))
-        {
-            $this->log("Installing dependencies inside [$directory]\n");
-            $this->shellInDirectory('composer install', $directory);
-        }
-    }
-
-    /**
      * Call your function while being in a directory
      * Then go back to the previous directory
      */
@@ -66,19 +44,6 @@ abstract class AbstractBuildTask
         chdir($directory);
         $function();
         chdir($originalDirectory);
-    }
-
-    public function setForce(bool $force=true)
-    {
-        $this->force = $force;
-    }
-
-    /**
-     * Can check any condition, will always be true if --force is present
-     */
-    public function if(bool $condition)
-    {
-        return $condition || $this->force;
     }
 
     /**

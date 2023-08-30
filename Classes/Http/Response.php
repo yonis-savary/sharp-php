@@ -3,6 +3,8 @@
 namespace Sharp\Classes\Http;
 
 use Exception;
+use InvalidArgumentException;
+use Sharp\Classes\Core\Logger;
 
 /**
  * Credit to `https://developer.mozilla.org/en-US/docs/Web/HTTP/Status` for the Status descriptions
@@ -182,9 +184,8 @@ class Response
     const NETWORK_AUTHENTICATION_REQUIRED = 511;
 
 
-
-
-
+    /** @var array (`NULL` is NOT supported as it can represent an absence of function response !) */
+    const INTERPRETED_TYPES = ['boolean', 'integer', 'double', 'string', 'array', 'object'];
 
 
 
@@ -192,7 +193,6 @@ class Response
     protected int $responseCode = self::OK;
     protected array $headers=[];
     protected $responseTransformer = null;
-
 
     /**
      * @note The content value should not be altered
@@ -233,7 +233,7 @@ class Response
      * Send headers and display the response content
      * @param bool $sendHeaders If `true`, send the headers, otherwise, only display the content
      */
-    public function display(bool $sendHeaders=true)
+    public function display(bool $sendHeaders=true): void
     {
         if ($sendHeaders)
         {
@@ -265,7 +265,7 @@ class Response
     public static function file(string $file): Response
     {
         if (!is_file($file))
-            throw new Exception("Inexistant file [$file] !");
+            throw new InvalidArgumentException("Inexistant file [$file] !");
 
         return new Response(
             fn() => readfile($file),
@@ -301,4 +301,25 @@ class Response
         return new Response(null, $responseCode, ["Location" => $location]);
     }
 
+    /**
+     * Give an object to this method to get a Response in any case
+     * - If `null` is given, a 204 Response is given and you are warned in the logs
+     * - If a response is given, nothing change and it is returned
+     * - Otherwise, a JSON response containing the object is returned
+     */
+    public static function adapt(mixed $content): Response
+    {
+        if ($content instanceof Response)
+            return $content;
+
+        if (!in_array(gettype($content), self::INTERPRETED_TYPES))
+        {
+            Logger::getInstance()->logThrowable(new InvalidArgumentException(
+                "Controller returned a response that is not supported, type of response [".gettype($content)."]"
+            ));
+            return new Response(null, 204);
+        }
+
+        return self::json($content);
+    }
 }

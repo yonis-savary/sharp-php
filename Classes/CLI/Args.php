@@ -45,7 +45,7 @@ class Args implements \Countable
         }
     }
 
-    public static function fromArray($argv)
+    public static function fromArray($argv): self
     {
         return new self(join(" ", $argv));
     }
@@ -55,12 +55,12 @@ class Args implements \Countable
         return $this->dump();
     }
 
-    public function dump()
+    public function dump(): array
     {
         return $this->arguments;
     }
 
-    public function toString()
+    public function toString(): string
     {
         $params = $this->arguments;
         foreach ($params as $key => &$value)
@@ -89,7 +89,7 @@ class Args implements \Countable
         return count(array_keys($this->arguments));
     }
 
-    public function list()
+    public function list(): array
     {
         return array_values($this->arguments);
     }
@@ -99,7 +99,7 @@ class Args implements \Countable
         return $this->arguments;
     }
 
-    public function setArgv(mixed $value)
+    public function setArgv(mixed $value): void
     {
         $this->arguments = $value;
     }
@@ -107,7 +107,7 @@ class Args implements \Countable
     /**
      * @return mixed The value of the parameter, `null` if the parameter is present but has no value, `false` is the parameter is not present
      */
-    public function getOption(string $short, string $long)
+    public function getOption(string $short, string $long): mixed
     {
         $arguments = &$this->arguments;
 
@@ -127,7 +127,7 @@ class Args implements \Countable
         return false;
     }
 
-    public function isPresent(string $short, string $long)
+    public function isPresent(string $short, string $long): bool
     {
         return $this->getOption($short, $long) !== false;
     }
@@ -135,7 +135,7 @@ class Args implements \Countable
     /**
      * Try to retrieve the parameter value, return the value or null otherwise
      */
-    public function get(string $short, string $long)
+    public function get(string $short, string $long): mixed
     {
         $value = $this->getOption($short, $long);
         return $value === false ? null: $value;

@@ -10,7 +10,7 @@ class Storage
 {
     use Component;
 
-    protected array $streamToClose = [];
+    protected array $openedStreams = [];
 
     protected string $root;
 
@@ -19,6 +19,9 @@ class Storage
         return new self(Utils::relativePath("Storage"));
     }
 
+    /**
+     * @param string $root Root directory of the new storage, every path will be relative to this one
+     */
     public function __construct(string $root)
     {
         $this->root = $root;
@@ -27,23 +30,33 @@ class Storage
 
     public function __destruct()
     {
-        foreach ($this->streamToClose as $stream)
+        foreach ($this->openedStreams as $stream)
         {
             if ($stream)
                 fclose($stream);
         }
     }
 
+    /**
+     * @return string Get the root directory of the Storage
+     */
     public function getRoot(): string
     {
         return $this->root;
     }
 
+    /**
+     * @return static Get a new Storage object from a subdirectory
+     */
     public function getNewStorage(string $path): self
     {
         return new self($this->path($path));
     }
 
+    /**
+     * @param string Absolute/Relative path to adapt
+     * @return string Adapted path relative to the Storage root directory
+     */
     public function path(string $path): string
     {
         if (str_contains($path, $this->root))
@@ -52,7 +65,7 @@ class Storage
         return Utils::joinPath($this->root, $path);
     }
 
-    public function makeDirectory(string $name)
+    public function makeDirectory(string $name): void
     {
         $name = $this->path($name);
         if (!is_dir($name))
@@ -60,6 +73,9 @@ class Storage
     }
 
     /**
+     * @param string $path Relative/Absolute path to open
+     * @param string $mode fopen() mode
+     * @param bool $autoclose If `true`, you don't need to close requested resource manually
      * @return resource
      */
     public function getStream(string $path, string $mode="r", bool $autoclose=true)
@@ -70,11 +86,16 @@ class Storage
             throw new RuntimeException("Could not open [$path]");
 
         if ($autoclose)
-            $this->streamToClose[] = &$stream;
+            $this->openedStreams[] = &$stream;
 
         return $stream;
     }
 
+    /**
+     * @param string $path Relative/Absolute path to write
+     * @param string $content Content to write
+     * @param int $flags file_put_contents() flags
+     */
     public function write(string $path, string $content, int $flags=0)
     {
         $path = $this->path($path);
@@ -83,23 +104,23 @@ class Storage
         file_put_contents($path, $content, $flags);
     }
 
-    public function read(string $path)
+    public function read(string $path): string
     {
         $path = $this->path($path);
         return file_get_contents($path);
     }
 
-    public function isFile(string $path)
+    public function isFile(string $path): bool
     {
         return is_file($this->path($path));
     }
 
-    public function isDirectory(string $path)
+    public function isDirectory(string $path): bool
     {
         return is_dir($this->path($path));
     }
 
-    public function unlink(string $path)
+    public function unlink(string $path): bool
     {
         $path = $this->path($path);
         if (is_file($path))
@@ -107,14 +128,13 @@ class Storage
         return true;
     }
 
-    public function removeDirectory(string $path)
+    public function removeDirectory(string $path): bool
     {
         $path = $this->path($path);
         if (is_dir($path))
             return rmdir($path);
         return true;
     }
-
 
 
 

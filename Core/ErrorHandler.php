@@ -14,9 +14,8 @@ set_exception_handler(function(Throwable $exception){
     if (php_sapi_name() === "cli")
         die(join("\n", [
             "\n",
-            "-----------------------------------------------",
-            " Got an exception/error, please read your logs ",
-            "-----------------------------------------------\n"
+            "_____________________________________________",
+            "Got an exception/error, please read your logs\n"
         ]));
 
     $res = new Response("Internal Server Error", 500, ["Content-Type" => "text/plain"]);

@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Sharp helpers functions
+ * --------------------------------------------------
+ * This file contains some global functions that were written to
+ * make developpement faster, as a lot of component need the call of `getInstance()`,
+ * it is easier to create an alias for common actions
+ */
+
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Env\Cache;
@@ -17,23 +25,23 @@ function session(string $key): mixed
     return Session::getInstance()->get($key, null);
 }
 
-function sessionSet(string $key, mixed $value)
+function sessionSet(string $key, mixed $value): void
 {
-    return Session::getInstance()->set($key, $value);
+    Session::getInstance()->set($key, $value);
 }
 
 
 
 
 
-function cache(string $key, mixed $default=false)
+function cache(string $key, mixed $default=false): mixed
 {
     return Cache::getInstance()->get($key, $default);
 }
 
-function cacheSet(string $key, mixed $value, int $timeToLive=3600*24)
+function cacheSet(string $key, mixed $value, int $timeToLive=3600*24): void
 {
-    return Cache::getInstance()->set($key, $value, $timeToLive);
+    Cache::getInstance()->set($key, $value, $timeToLive);
 }
 
 
@@ -74,12 +82,12 @@ function groupRoutes(
 
 
 
-function buildQuery(string $query, array $context=[])
+function buildQuery(string $query, array $context=[]): string
 {
     return Database::getInstance()->build($query, $context);
 }
 
-function query(string $query, array $context=[])
+function query(string $query, array $context=[]): array
 {
     return Database::getInstance()->query($query, $context);
 }

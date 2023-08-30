@@ -16,10 +16,11 @@ class Build extends Command
         {
             /** @var AbstractBuildTask $class */
             printf("Executing [%s]\n", $class);
+
             $task = new $class();
             $task->execute();
+
             echo "\n";
         }
-
     }
 }

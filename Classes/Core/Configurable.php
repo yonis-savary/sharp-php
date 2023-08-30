@@ -5,8 +5,10 @@ namespace Sharp\Classes\Core;
 use Sharp\Classes\Env\Config;
 
 /**
- * Configurable classes holds a variable named `$configuration`
- * The configuration is loaded from the config and `getConfigurationInstance()`
+ * Configurable classes can be configured through any Config object
+ * To implement a Configurable class:
+ * 1. implements `getDefaultConfiguration()` which return a complete default configuration
+ * 2. call `$this->loadConfiguration()` in your constructor/code
  */
 trait Configurable
 {
@@ -23,10 +25,11 @@ trait Configurable
 
     /**
      * This function describe which key must be loaded from the configuration
-     * The default implementation transform your classname into its snake_case equivalent
+     * The default implementation transform your classname into its kebab-case equivalent
      *
-     * @example name `MyComponentThatFetch` will give `my_component_that_fetch`
+     * @example name `MyComponentThatFetch` will give `my-component-that-fetch`
      * @return string Key to load in the configuration
+     * @note It is not advised to override this method but not forbidden
      */
     public static function getConfigurationKey(): string
     {
@@ -37,29 +40,29 @@ trait Configurable
         return $class;
     }
 
-    public static function getConfigurationInstance(): Config
+    final public static function readConfiguration(Config $config=null): array
     {
-        return Config::getInstance();
-    }
-
-    /**
-     * Load the configuration from the configuration instance given by `getConfigurationInstance()`
-     * and the key given by `getConfigurationKey()`
-     */
-    public function loadConfiguration()
-    {
-        $config = self::getConfigurationInstance();
-        $this->configuration = array_merge(
+        $config ??= Config::getInstance();
+        return array_merge(
             self::getDefaultConfiguration(),
             $config->get(self::getConfigurationKey(), [])
         );
+    }
+
+    /**
+     * Load the configuration from the given or global Config instance
+     * and the key given by `getConfigurationKey()`
+     */
+    final public function loadConfiguration(Config $config=null)
+    {
+        $this->configuration = self::readConfiguration($config);
         $this->configurationIsLoaded = true;
     }
 
     /**
      * @return bool `true` or `false` depending if the configuration is loaded
      */
-    public function configurationIsLoaded(): bool
+    final public function configurationIsLoaded(): bool
     {
         return $this->configurationIsLoaded;
     }
@@ -69,17 +72,17 @@ trait Configurable
      *
      * @return bool Is the class/component enabled ?
      */
-    public function isEnabled(): bool
+    final public function isEnabled(): bool
     {
         return boolval($this->configuration["enabled"] ?? false);
     }
 
-    public function getConfiguration()
+    final public function getConfiguration(): array
     {
         return $this->configuration;
     }
 
-    public function setConfiguration(array $config)
+    final public function setConfiguration(array $config)
     {
         $this->configuration = $config;
     }

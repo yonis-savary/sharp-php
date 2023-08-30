@@ -2,7 +2,6 @@
 
 namespace Sharp\Classes\Core;
 
-use Sharp\Classes\Web\Route;
 use Sharp\Core\Utils;
 
 /**

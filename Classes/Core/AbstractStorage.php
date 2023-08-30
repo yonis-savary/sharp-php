@@ -21,7 +21,7 @@ abstract class AbstractStorage
      * @param string $key Key to retrieve
      * @param mixed $default Value to use if the key does not exists
      */
-    public function get(string $key, mixed $default=null): mixed
+    final public function get(string $key, mixed $default=null): mixed
     {
         if (!array_key_exists($key, $this->storage))
             return $default;
@@ -34,7 +34,7 @@ abstract class AbstractStorage
      *
      * @param string $key Key to retrieve
      */
-    public function try(string $key)
+    final public function try(string $key): mixed
     {
         return $this->get($key, false);
     }
@@ -45,7 +45,7 @@ abstract class AbstractStorage
      * @param string $key Key to set/overwrite
      * @param mixed $value New value
      */
-    public function set(string $key, mixed $value)
+    final public function set(string $key, mixed $value): void
     {
         $this->storage[$key] = $value;
     }
@@ -55,7 +55,7 @@ abstract class AbstractStorage
      *
      * @param string ...$keys Keys to check the existance
      */
-    public function has(string ...$keys)
+    final public function has(string ...$keys): bool
     {
         foreach ($keys as $key)
         {
@@ -70,7 +70,7 @@ abstract class AbstractStorage
      *
      * @param string ...$keys Keys to unset
      */
-    public function unset(string ...$keys)
+    final public function unset(string ...$keys): void
     {
         foreach ($keys as $key)
         {

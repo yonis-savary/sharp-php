@@ -89,7 +89,7 @@ class Autoloader
 
             self::$projectRoot = Utils::normalizePath(getcwd());
         }
-        catch (Throwable $err)
+        catch (Throwable)
         {
             throw new RuntimeException("Cannot find Sharp project root directory !");
         }
@@ -117,6 +117,8 @@ class Autoloader
     {
         $config = Config::getInstance();
         $applications = $config->toArray("applications", []);
+
+        // The framework is loaded as an application
         array_unshift($applications, "Sharp");
 
         foreach ($applications as $application)
@@ -142,18 +144,18 @@ class Autoloader
             require_once $file;
     }
 
-    public static function getList(string $name)
+    public static function getList(string $name): array
     {
         return self::$lists[$name] ?? [];
     }
 
-    public static function addToList(string $list, ...$elements)
+    public static function addToList(string $list, ...$elements): void
     {
         self::$lists[$list] ??= [];
         array_push(self::$lists[$list], ...$elements);
     }
 
-    public static function getListFiles(string $name)
+    public static function getListFiles(string $name): array
     {
         if ($result = self::$listsCache[$name] ?? false)
             return $result;
@@ -230,9 +232,6 @@ class Autoloader
     public static function writeAutoloadCache()
     {
         $toString = function($var) {
-
-            Logger::getInstance()->debug($var);
-
             if (Utils::isAssoc($var))
             {
                 foreach ($var as $key => &$value)

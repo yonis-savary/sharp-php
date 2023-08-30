@@ -20,8 +20,9 @@ class Test extends Command
     public function __invoke(Args $args)
     {
         $toTest = Config::getInstance()->toArray("applications");
+
+        // The framework need to be tested too
         array_unshift($toTest, "Sharp");
-        $toTest = array_unique($toTest);
 
         foreach ($toTest as $application)
         {

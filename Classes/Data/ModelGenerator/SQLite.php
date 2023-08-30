@@ -62,8 +62,6 @@ class SQLite extends GeneratorDriver
         return $tables;
     }
 
-
-
     public function getTableFields(string $createTableScript): array
     {
         $sql = $createTableScript;
@@ -128,14 +126,8 @@ class SQLite extends GeneratorDriver
 
         $matches = [];
         if (preg_match('/^FOREIGN KEY \((.+?)\) REFERENCES (.+?)\((.+?)\)$/', $sqlLine, $matches))
-        {
-            $this->fieldExtras[$matches[1]] ="->references(".$this->sqlNameToPHPName($matches[2])."::class, '".$matches[3]."')";
-        }
-
+            $this->fieldExtras[$matches[1]] = "->references(".$this->sqlNameToPHPName($matches[2])."::class, '".$matches[3]."')";
     }
-
-
-
 
     public function generate(string $table, string $targetApplication)
     {

@@ -4,14 +4,12 @@ namespace Sharp\Classes\Extras;
 
 use Exception;
 use InvalidArgumentException;
-use PharIo\Manifest\InvalidUrlException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Data\DatabaseQuery;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
-use Sharp\Classes\Data\Database;
 use Sharp\Classes\Web\Router;
 use Sharp\Core\Utils;
 
@@ -21,27 +19,20 @@ class Autobahn
 
     public ?Router $router = null;
 
-    public function __construct()
-    {
-
-    }
-
     protected function getRouter(): Router
     {
         return $this->router ?? Router::getInstance();
     }
 
-    public function setRouter(Router $router)
+    public function setRouter(Router $router): void
     {
         $this->router = $router;
     }
 
-    protected function throwOnInvalidModel(string $model)
+    protected function throwOnInvalidModel(string $model): void
     {
         if (!Utils::uses($model, "Sharp\Classes\Data\Model"))
             throw new InvalidArgumentException("[$model] does not use the Model trait !");
-
-        return $model;
     }
 
     public function all(
@@ -58,9 +49,9 @@ class Autobahn
         $this->delete($model, ...$deleteMiddlewares);
     }
 
-    public function create(string $model, callable ...$middlewares)
+    public function create(string $model, callable ...$middlewares): void
     {
-        $model = $this->throwOnInvalidModel($model);
+        $this->throwOnInvalidModel($model);
         $table = $model::getTable();
         $this->getRouter()->addRoutes(
             Route::post("/$table", function(Request $req) use ($model, $middlewares)
@@ -78,14 +69,13 @@ class Autobahn
         ));
     }
 
-    public function read(string $model, callable ...$middlewares)
+    public function read(string $model, callable ...$middlewares): void
     {
-        $model = $this->throwOnInvalidModel($model);
+        $this->throwOnInvalidModel($model);
         $table = $model::getTable();
         $this->getRouter()->addRoutes(
             Route::get("/$table", function(Request $req) use ($model, $middlewares)
             {
-
                 $query = new DatabaseQuery($model::getTable(), DatabaseQuery::SELECT);
                 if ($req->params("_join") ?? true)
                     $query->exploreModel($model);
@@ -101,9 +91,9 @@ class Autobahn
         ));
     }
 
-    public function update(string $model, callable ...$middlewares)
+    public function update(string $model, callable ...$middlewares): void
     {
-        $model = $this->throwOnInvalidModel($model);
+        $this->throwOnInvalidModel($model);
         $table = $model::getTable();
         $this->getRouter()->addRoutes(
             new Route("/$table", function(Request $req) use ($model, $middlewares)
@@ -132,9 +122,9 @@ class Autobahn
         ));
     }
 
-    public function delete(string $model, callable ...$middlewares)
+    public function delete(string $model, callable ...$middlewares): void
     {
-        $model = $this->throwOnInvalidModel($model);
+        $this->throwOnInvalidModel($model);
         $table = $model::getTable();
         $this->getRouter()->addRoutes(
             Route::delete("/$table", function(Request $req) use ($model, $middlewares)
@@ -151,5 +141,4 @@ class Autobahn
             }
         ));
     }
-
 }
