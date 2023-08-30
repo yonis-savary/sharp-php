@@ -2,97 +2,101 @@
 
 namespace Sharp\Classes\Env;
 
-use Exception;
 use Sharp\Classes\Core\Component;
+use Sharp\Classes\Env\Classes\CacheElement;
 
+/**
+ * A cache is a directory that can make some object/data persistent
+ */
 class Cache
 {
+    const SECOND = 1;
+    const MINUTE = self::SECOND * 60;
+    const HOUR = self::MINUTE * 60;
+    const DAY = self::HOUR * 24;
+    const WEEK = self::DAY * 7;
+
     use Component;
 
     protected Storage $storage;
 
+    /** @var array<string,CacheElement> Associative array with key => CacheElement */
     protected array $index = [];
 
     public static function getDefaultInstance()
     {
-        return new self(Storage::getInstance(), "Cache");
+        return new self(Storage::getInstance()->getNewStorage("Cache"));
     }
 
-    public function __construct(Storage $storage, string $name)
+    public function __construct(Storage $storage)
     {
-        $this->storage = $storage->getNewStorage($name);
-        $this->analyseStorage();
+        $this->storage = $storage;
+
+        foreach ($this->storage->listFiles() as $file)
+        {
+            if ($element = CacheElement::fromFile($file))
+                $this->index[$element->key] = $element;
+        }
     }
 
     public function __destruct()
     {
         foreach (array_values($this->index) as $object)
-        {
-            if (!array_key_exists("content", $object))
-                continue;
-
-            $this->storage->write(
-                join("_", [$object["creationDate"], $object["timeToLive"], $object["key"]]),
-                serialize($object["content"])
-            );
-        }
+            $object->save($this->storage);
     }
 
-    public function analyseStorage()
+    /**
+     * @param string $key Key to check the existance of
+     * @return bool Is the key present in the cache
+     */
+    public function has(string $key): bool
     {
-        foreach ($this->storage->listFiles() as $file)
-        {
-            list($creationDate, $timeToLive, $key) = explode("_", basename($file), 3);
-
-            $creationDate = intval($creationDate);
-            $timeToLive = intval($timeToLive);
-
-            if ($creationDate + $timeToLive <= time())
-            {
-                $this->storage->unlink($file);
-                continue;
-            }
-
-            $this->index[$key] = [
-                "creationDate" => $creationDate,
-                "timeToLive" => $timeToLive,
-                "key" => $key,
-                "file" => $file
-            ];
-        }
+        return array_key_exists($key, $this->index);
     }
 
-    public function get(string $key, mixed $default=null)
+    /**
+     * @param string $key Key to retrieve
+     * @return mixed Object's content or `$default` is inexistant
+     */
+    public function get(string $key, mixed $default=null): mixed
     {
-        if (!array_key_exists($key, $this->index))
+        if (!$this->has($key))
             return $default;
 
-        $object = $this->index[$key];
-
-        if (array_key_exists("content", $object))
-            return $object["content"];
-
-        if (array_key_exists("file", $object))
-        {
-            $object["content"] = unserialize(file_get_contents($object["file"]));
-            $this->index[$key] = $object;
-
-            return $object["content"];
-        }
-
-        throw new Exception("Invalid cache object !");
+        return $this->index[$key]->getContent();
     }
 
-    public function try(string $key)
+    /**
+     * Alias to `get($key, false)`, can be used
+     * in assignement-conditions for better readability
+     */
+    public function try(string $key): mixed
     {
         return $this->get($key, false);
     }
 
+    /**
+     * Create/Overwrite an object to the cache
+     * @param string $key Object identifier (unique)
+     * @param mixed $content Object to store/serialize
+     * @param int $timeToLive Object life time in seconds (set 0 for permanent)
+     *
+     * @note You can use `Cache::SECOND|MINUTE|HOUR|DAY|WEEK` constants to help your write a clean duration
+     */
     public function set(string $key, mixed $content, int $timeToLive=3600*24)
     {
-        $this->index[$key] ??= ["key" => $key];
-        $this->index[$key]["timeToLive"] = $timeToLive;
-        $this->index[$key]["creationDate"] = time();
-        $this->index[$key]["content"] = $content;
+        if (!$this->has($key))
+            $this->index[$key] = new CacheElement($key);
+
+        $this->index[$key]->setContent($content, $timeToLive);
+    }
+
+    /**
+     * Delete the object from the cache (useful for persitent objects)
+     */
+    public function delete(string $key): void
+    {
+        if ($this->has($key))
+            $this->index[$key]->delete();
     }
 }
