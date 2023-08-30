@@ -1,8 +1,8 @@
-[< Back to summary](./000_sharp.md)
+[< Back to summary](../home.md)
 
 # Sharp-PHP Commands
 
-Sharp got the [`do`](../../do) script, which can be used to execute
+Sharp got the [`do`](../../../do) script, which can be used to execute
 commands from your Terminal
 
 ## Create a command
@@ -27,7 +27,7 @@ class ClearCaches extends Commands
 ```
 
 Then, to execute it, type
-```
+```bash
 php do clear-caches
 # or
 php do super-app@clear-caches
@@ -40,7 +40,7 @@ Note: you can also implements the `getHelp()` method which should display a help
 
 The args object represent the arguments given to your command through the cli (like `--verbose`, `--help`...etc)
 
-[`Args`](../Classes/CLI/Args.php) most useful methods are :
+[`Args`](../../Classes/CLI/Args.php) most useful methods are :
 
 ```php
 # Return the parameter value or null if absent

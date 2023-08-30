@@ -1,4 +1,4 @@
-[< Back to summary](./000_sharp.md)
+[< Back to summary](../home.md)
 
 # Sharp-PHP - Serving Assets with `AssetServer`
 
@@ -59,7 +59,7 @@ To get your assets, put this in your view
 ```
 But writting this is quite annoying and not very readable.
 
-To address this, the [`helper-web.php`](../Helpers/helpers-web.php) got three useful functions
+To address this, the [`helper-web.php`](../../Helpers/helpers-web.php) got three useful functions
 
 ```html
 <!-- Put the script and stylesheet with it URL -->

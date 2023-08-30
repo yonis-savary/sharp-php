@@ -1,9 +1,9 @@
-[< Back to summary](./000_sharp.md)
+[< Back to summary](../home.md)
 
 # Sharp components
 
-Some classes need to be accessed globally from your application (like `Database`, `Logger`...etc)
-to resolve this, the [`Component`](../Classes/Core/Component.php) trait was created.
+Some classes/features need to be accessed globally from your application (like `Database`, `Logger`...etc)
+to resolve this, the [`Component`](../../Classes/Core/Component.php) trait was created.
 
 This trait purpose is to be a [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that
 does not limit itself to one instance, one main instance exists, and can be retrieved with `getInstance()`,

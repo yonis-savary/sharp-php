@@ -1,10 +1,10 @@
-[< Back to summary](./000_sharp.md)
+[< Back to summary](../home.md)
 
 # Sharp-PHP - Routing
 
 Routing in Sharp is made through two classes :
-- [`Route`](../Classes/Web/Route.php): hold informations about ONE specific route
-- [`Router`](../Classes/Web/Router.php): hold a set of `Route` objects and is able to route a [`Request`](../Classes/Http/Request.php) object
+- [`Route`](../../Classes/Web/Route.php): hold informations about ONE specific route
+- [`Router`](../../Classes/Web/Router.php): hold a set of `Route` objects and is able to route a [`Request`](../../Classes/Http/Request.php) object
 
 
 ## Routes creation
@@ -100,7 +100,7 @@ Note: the `any` keyword means that **ANY** part of the url is taken (which inclu
 - The `Route::view()` method can be used to create a route that render a view when called
 - The `Route::redirect()` method can be used to create a redirection to another URL
 
-The [helper.php](../Helpers/helpers.php) file got two useful function to declare routes
+The [helper.php](../../Helpers/helpers.php) file got two useful function to declare routes
 
 ```php
 groupRoutes("api", TokenMiddleware::class, function(){
