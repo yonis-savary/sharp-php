@@ -312,6 +312,9 @@ class Response
         if ($content instanceof Response)
             return $content;
 
+        if ($content === null)
+            return new Response(null, 204);
+
         if (!in_array(gettype($content), self::INTERPRETED_TYPES))
         {
             Logger::getInstance()->logThrowable(new InvalidArgumentException(
