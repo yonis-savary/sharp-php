@@ -20,8 +20,11 @@ class Logger
         return new self("sharp.csv");
     }
 
-    public function __construct(string $filename, Storage $storage=null)
+    public function __construct(string $filename=null, Storage $storage=null)
     {
+        if (!$filename)
+            return;
+
         $storage ??= Storage::getInstance();
 
         $this->filename = $storage->path($filename);
@@ -66,6 +69,9 @@ class Logger
 
     public function log(string $level, mixed ...$content)
     {
+        if (!$this->stream)
+            return;
+
         $ip = $_SERVER['REMOTE_ADDR'] ?? 'null';
         $method = $_SERVER['REQUEST_METHOD'] ?? php_sapi_name();
         $now = date('Y-m-d H:i:s');
