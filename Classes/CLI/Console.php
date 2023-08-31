@@ -11,6 +11,9 @@ class Console
 {
     use Component;
 
+    /**
+     * @return array<Command>
+     */
     public function listCommands(): array
     {
         $classes = Autoloader::classesThatExtends(Command::class);
@@ -42,7 +45,6 @@ class Console
         $commands = $this->listCommands();
 
         printf("(%s) commands availables :\n", count($commands));
-        /** @var Command $command */
         foreach ($commands as $command)
             printf(" - %s (%s)\n", $command->getName(), $command->getIdentifier());
     }

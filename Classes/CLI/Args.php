@@ -82,7 +82,7 @@ class Args implements \Countable
     }
 
     /**
-     * @return int The number of parameters (with or without parameters)
+     * @return int The number of parameters (with or without value)
      */
     public function count(): int
     {

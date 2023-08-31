@@ -4,7 +4,7 @@ namespace Sharp\Classes\CLI;
 
 /**
  * Command classes can be executed through the CLI,
- * the only method you have to override by default is `__invoke()` and `getHelp()`
+ * the only method you have to override is `__invoke()` and `getHelp()`
  */
 abstract class Command
 {
@@ -34,7 +34,7 @@ abstract class Command
 
     public function getHelp(): string
     {
-        return "This command's help is yet to define";
+        return "This command's help is not defined yet";
     }
 
     /**

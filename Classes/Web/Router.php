@@ -78,7 +78,7 @@ class Router
         if ($request && $this->configuration["cached"])
         {
             if ($this->getRoutesFromCache($request))
-                return debug("USING CACHE !");
+                return;
         }
 
         $this->loadAutoloaderFiles();
