@@ -136,6 +136,42 @@ class Route
         array_push($this->middlewares, ...$middlewares);
     }
 
+    protected function matchPathRegexp(Request $request): string
+    {
+        $regexMap = [];
+        $parts = explode("/", $this->path);
+
+        foreach ($parts as &$part)
+        {
+            if (!preg_match("/\{(?:(.+?):)?(.+?)\}/",  $part, $match))
+            {
+                $part = preg_quote($part);
+                continue;
+            }
+
+            $expression = "[^\\\\]+";
+            if ($type = $match[1] ?? false)
+                $expression = self::SLUG_FORMATS[$type] ?? $expression;
+
+            $name = $match[2];
+            $regexMap[] = $name;
+            $part = "($expression)";
+        }
+
+        $regex = "/^". join("\\/", $parts) ."$/";
+
+        if (!preg_match($regex, $request->getPath(), $slugs))
+            return false;
+
+        $namedSlugs = [];
+        array_shift($slugs);
+        for ($i=0; $i<count($slugs); $i++)
+            $namedSlugs[$regexMap[$i]] = $slugs[$i];
+
+        $request->setSlugs($namedSlugs);
+        return true;
+    }
+
     public function match(Request $request): bool
     {
         if (count($this->methods))
@@ -144,39 +180,15 @@ class Route
                 return false;
         }
 
-        $path = $request->getPath();
+        $routePath = $this->path;
+        $requestPath = $request->getPath();
 
-        $regex = $this->path;
-        $regexMap = [];
+        // Little optimization: if the route has no slug
+        // we can just compare strings, no need to process anything
+        if (!str_contains($routePath, "{"))
+            return $routePath === $requestPath;
 
-        $parts = explode("/", $this->path);
-
-        foreach ($parts as &$part)
-        {
-            if (!preg_match("/\{((.+?):)?(.+?)\}/",  $part, $match))
-            {
-                $part = preg_quote($part);
-                continue;
-            }
-
-            $expression = "[^\\\\]+";
-            if ($match[2])
-                $expression = self::SLUG_FORMATS[$match[2]] ?? $expression;
-
-            $name = $match[3];
-            $regexMap[] = $name;
-            $part = "($expression)";
-        }
-
-        $regex = "/^". join("\\/", $parts) ."$/";
-
-        $slugs = [];
-
-        if (!preg_match($regex, $path, $slugs))
-            return false;
-
-        $request->setSlugs(array_slice($slugs, 1));
-        return true;
+        return $this->matchPathRegexp($request);
     }
 
     public function __invoke(Request $request): mixed
