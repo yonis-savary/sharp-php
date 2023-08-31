@@ -21,7 +21,9 @@ class RouterTest extends TestCase
         $r->addRoutes(
             Route::get("/", function() use (&$dummy) { $dummy="A"; }, []),
             Route::post("/", function() use (&$dummy) { $dummy="B"; }, []),
-            Route::get("/home", fn() => Response::json("OK"), [])
+            Route::get("/home", fn() => Response::json("OK"), []),
+
+            Route::get("/{int:n}", function($_, int $n) use (&$dummy) { $dummy=$n; }, [])
         );
 
         $r->route(new Request("GET", "/"));
@@ -32,6 +34,12 @@ class RouterTest extends TestCase
 
         $res = $r->route(new Request("GET", "/home"));
         $this->assertInstanceOf(Response::class, $res);
+
+        $r->route(new Request("GET", "/50"));
+        $this->assertEquals(50, $dummy);
+
+        $r->route(new Request("GET", "/25"));
+        $this->assertEquals(25, $dummy);
     }
 
     public function test_group()
