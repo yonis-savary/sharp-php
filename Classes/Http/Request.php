@@ -256,4 +256,93 @@ class Request
             unset($this->get[$k]);
         }
     }
+
+
+
+
+    protected function parseHeaders(string $headers)
+    {
+        $headers = explode("\n", $headers);
+        $headers = array_filter($headers, fn($line) => preg_match('/^.+:.+$/', $line));
+        $headers = array_map(fn($line) => preg_replace("/\r$/", '', $line), $headers);
+        $headers = array_map(fn($line) => explode(':', $line, 2), $headers);
+
+        $assocHeaders = array_combine(
+            array_map(fn($e) => strtolower(trim($e[0] ?? null)), $headers),
+            array_map(fn($e) => trim($e[1] ?? null), $headers)
+        );
+        return $assocHeaders;
+    }
+
+    /**
+     * Fetch a Request target with Curl !
+     * @param Logger $logger Optionnal Logger that can be used to log info about the request/response
+     * @param int $timeout Optionnal request timeout (seconds)
+     * @param string $userAgent User-agent to use with curl
+     * @param bool $supportRedirection If `true`, `fetch()` will follow redirect responses
+     * @throws \JsonException Possibly when parsing the response body if fetched JSON is incorrect
+     */
+    public function fetch(
+        Logger $logger=null,
+        int $timeout=null,
+        string $userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0',
+        bool $supportRedirection=true
+    ): Response
+    {
+        $logger ??= new Logger(null);
+
+        $url = $this->getPath();
+        $method = $this->getMethod();
+        $headers = $this->getHeaders();
+        $post = $this->post();
+        $get = http_build_query($this->get(), "?", ";");
+
+        $headers['User-Agent'] = $userAgent;
+        foreach ($headers as $key => &$value)
+            $value = "$key: $value";
+        $requestHeaderString = array_values($headers);
+
+        $handle = curl_init($url . $get);
+
+        curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, $requestHeaderString);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handle, CURLOPT_HEADER, true);
+
+        if ($post && count($post))
+            curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        if ($timeout)
+            curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
+
+        $logger->info("$method $url");
+        $result = curl_exec($handle);
+
+        $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
+        $resStatus = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        curl_close($handle);
+
+        $resHeaders = substr($result, 0, $headerSize);
+        $resHeaders = $this->parseHeaders($resHeaders);
+
+        if ($supportRedirection && $redirection = $resHeaders['location'] ?? null)
+        {
+            $request = new self("GET", $redirection);
+            return $request->fetch(
+                $logger,
+                $timeout,
+                $userAgent,
+                $supportRedirection
+            );
+        }
+
+        $contentType = $resHeaders['content-type'] ?? null;
+
+        $logger->info($resStatus . ' '. ($contentType??'Unknown') .  ' - ' .strlen($result). ' bytes');
+
+        $resBody = substr($result, $headerSize);
+        if (str_starts_with($contentType ?? "", 'application/json'))
+            $resBody = json_decode($resBody, true, flags: JSON_THROW_ON_ERROR);
+
+        return new Response($resBody, $resStatus, $resHeaders);
+    }
 }
