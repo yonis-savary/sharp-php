@@ -205,15 +205,6 @@ class Route
             $request = $middlewareResponse;
         }
 
-        try
-        {
-            return ($this->callback)($request, ...array_values($request->getSlugs()));
-        }
-        catch(Throwable $err)
-        {
-            // Error message
-            Logger::getInstance()->logThrowable($err);
-            throw $err;
-        }
+        return ($this->callback)($request, ...array_values($request->getSlugs()));
     }
 }
