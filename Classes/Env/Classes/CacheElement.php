@@ -18,7 +18,7 @@ class CacheElement
     protected int $creationDate;
     protected int $timeToLive;
     protected ?string $file;
-    protected mixed $content;
+    protected mixed $content = null;
 
     protected bool $edited = false;
 
