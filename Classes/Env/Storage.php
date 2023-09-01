@@ -31,6 +31,10 @@ class Storage
     public function __construct(string $root)
     {
         $this->root = $root;
+
+        if (!is_dir($this->root))
+            mkdir($this->root, recursive:true);
+
         $this->makeDirectory($root);
     }
 
