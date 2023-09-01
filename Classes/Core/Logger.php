@@ -3,6 +3,7 @@
 
 namespace Sharp\Classes\Core;
 
+use InvalidArgumentException;
 use JsonException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Env\Storage;
@@ -13,11 +14,22 @@ class Logger
     use Component;
 
     protected $stream = null;
+    protected bool $closeStream = true;
     protected string $filename;
 
     public static function getDefaultInstance()
     {
         return new self("sharp.csv");
+    }
+
+    public static function fromStream(mixed $stream, bool $autoclose=false): self
+    {
+        if (!is_resource($stream))
+            throw new InvalidArgumentException("\$stream parameter must be a stream");
+
+        $logger = new self();
+        $logger->replaceStream($stream, $autoclose);
+        return $logger;
     }
 
     public function __construct(string $filename=null, Storage $storage=null)
@@ -26,6 +38,7 @@ class Logger
             return;
 
         $storage ??= Storage::getInstance();
+        $storage->assertIsWritable();
 
         $this->filename = $storage->path($filename);
         $exists = $storage->isFile($filename);
@@ -43,8 +56,24 @@ class Logger
 
     public function __destruct()
     {
-        if ($this->stream)
+        $this->closeStream();
+    }
+
+    public function closeStream()
+    {
+        if ($this->closeStream && $this->stream)
             fclose($this->stream);
+    }
+
+    public function replaceStream(mixed $stream, bool $autoclose=false)
+    {
+        $this->closeStream();
+
+        if (!is_resource($stream))
+            throw new InvalidArgumentException("[\$stream] parameter must be a resource");
+
+        $this->stream = $stream;
+        $this->closeStream = $autoclose;
     }
 
     public function getPath(): string
@@ -81,7 +110,7 @@ class Logger
             $line = $this->toString($line);
             $line = [$now, $ip, $method, $level, $line];
 
-            if (is_resource($this->stream))
+            if ($this->stream)
                 fputcsv($this->stream, $line, "\t");
             else
                 echo "Error while shutting down : $line \n";

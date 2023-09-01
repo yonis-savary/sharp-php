@@ -75,4 +75,16 @@ class LoggerTest extends TestCase
         $this->genericLoggerTest(
         function(Logger $logger){ $logger->emergency("hello"); });
     }
+
+
+    public function test_fromStream()
+    {
+        $logger = Logger::fromStream(fopen("php://output", "w"));
+
+        ob_start();
+        $logger->info("Hello");
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString("Hello", $output);
+    }
 }
