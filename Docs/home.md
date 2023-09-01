@@ -42,6 +42,7 @@ Database
 Extras
 - ⭐️ [Serve assets with `AssetServer`](./extras/assets.md)
 - 🚘 [Automatic CRUD API with `Autobahn`](./extras/autobahn.md) (TODO)
+- 🔐 [Authentication](./security/auth.md)
 
 File/Comment documentation:
 
