@@ -28,6 +28,13 @@ class Storage
         $this->makeDirectory($root);
     }
 
+    public function assertIsWritable(string $path=null)
+    {
+        $path = $this->path($path ?? "/");
+        if (!is_writable($path))
+            throw new RuntimeException("[$path] is not writable !");
+    }
+
     public function __destruct()
     {
         foreach ($this->openedStreams as $stream)
@@ -83,7 +90,7 @@ class Storage
         $path = $this->path($path);
         $stream = fopen($path, $mode);
         if (!$stream)
-            throw new RuntimeException("Could not open [$path]");
+            throw new RuntimeException("Could not open [$path] with mode [$mode]");
 
         if ($autoclose)
             $this->openedStreams[] = &$stream;
@@ -96,10 +103,13 @@ class Storage
      * @param string $content Content to write
      * @param int $flags file_put_contents() flags
      */
-    public function write(string $path, string $content, int $flags=0)
+    public function write(string $path, string $content, int $flags=0): void
     {
         $path = $this->path($path);
-        $this->makeDirectory(dirname($path));
+
+        $directory = dirname($path);
+        $this->makeDirectory($directory);
+        $this->assertIsWritable($directory);
 
         file_put_contents($path, $content, $flags);
     }
@@ -123,17 +133,17 @@ class Storage
     public function unlink(string $path): bool
     {
         $path = $this->path($path);
-        if (is_file($path))
-            return unlink($path);
-        return true;
+        return is_file($path) ?
+            unlink($path):
+            true;
     }
 
     public function removeDirectory(string $path): bool
     {
         $path = $this->path($path);
-        if (is_dir($path))
-            return rmdir($path);
-        return true;
+        return is_dir($path) ?
+            rmdir($path):
+            true;
     }
 
 

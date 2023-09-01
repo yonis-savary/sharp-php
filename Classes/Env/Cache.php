@@ -30,6 +30,7 @@ class Cache
 
     public function __construct(Storage $storage)
     {
+        $storage->assertIsWritable();
         $this->storage = $storage;
 
         foreach ($this->storage->listFiles() as $file)

@@ -12,11 +12,15 @@ class Session extends AbstractStorage
 
     public static function getDefaultInstance()
     {
-        if (PHP_SESSION_DISABLED)
+        if (session_status() === PHP_SESSION_DISABLED)
             throw new Exception("Cannot use Session when sessions are disabled !");
 
-        if (PHP_SESSION_NONE)
-            session_start(["save_path" => Storage::getInstance()->path("Sharp/Sessions")]);
+        if (session_status() === PHP_SESSION_NONE)
+        {
+            $storage = Storage::getInstance()->getNewStorage("Sharp/Sessions");
+            $storage->assertIsWritable();
+            session_start(["save_path" => $storage->getRoot()]);
+        }
 
         return new self($_SESSION);
     }
