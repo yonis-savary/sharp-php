@@ -91,7 +91,11 @@ class Route
     public function setMethods(array $methods) { $this->methods = $methods; }
 
     public function getMiddlewares(): array { return $this->middlewares; }
-    public function setMiddlewares(array $middlewares) { $this->addMiddlewares(...$middlewares); }
+    public function setMiddlewares(array $middlewares)
+    {
+        $this->middlewares = [];
+        $this->addMiddlewares(...$middlewares);
+    }
 
     public function getExtras(): array { return $this->extras; }
     public function setExtras(array $extras) { $this->extras = $extras;}
