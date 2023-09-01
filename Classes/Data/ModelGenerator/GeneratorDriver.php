@@ -29,14 +29,11 @@ abstract class GeneratorDriver
         return [];
     }
 
-    public function generate(string $table, string $targetApplication): void
-    {
-
-    }
-
     public function generateAll(string $targetApplication): void
     {
         foreach ($this->listTables() as $table)
             $this->generate($table, $targetApplication);
     }
+
+    public abstract function generate(string $table, string $targetApplication);
 }

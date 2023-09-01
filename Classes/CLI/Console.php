@@ -17,10 +17,7 @@ class Console
     public function listCommands(): array
     {
         $classes = Autoloader::classesThatExtends(Command::class);
-        $commands = [];
-        foreach ($classes as $class)
-            $commands[] = new $class();
-        return $commands;
+        return array_map(fn($x) => new $x(), $classes);
     }
 
     /**

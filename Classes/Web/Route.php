@@ -21,6 +21,10 @@ class Route
 
     protected $callback;
 
+    protected string $path;
+    protected ?array $methods=[];
+    protected ?array $extras=[];
+
     /** @var array<MiddlewareInterface> $middlewares */
     protected array $middlewares = [];
 
@@ -61,70 +65,36 @@ class Route
     }
 
     public function __construct(
-        protected string $path,
+        string $path,
         callable $callback,
-        protected ?array $methods=[],
+        ?array $methods=[],
         array $middlewares=[],
-        protected ?array $extras=[]
+        ?array $extras=[]
     ) {
-        if (!str_starts_with($this->path, "/"))
-            $this->path = "/" . $this->path;
-
+        $this->path = $path;
+        $this->methods = $methods ?? [];
+        $this->extras = $extras ?? [];
         $this->callback = $callback;
         $this->addMiddlewares(...$middlewares);
+
+        if (!str_starts_with($this->path, "/"))
+            $this->path = "/" . $this->path;
     }
 
-    public function getPath(): string
-    {
-        return $this->path;
-    }
+    public function getPath(): string { return $this->path; }
+    public function setPath(string $path) { $this->path = $path; }
 
-    public function setPath(string $path)
-    {
-        $this->path = $path;
-    }
+    public function getCallback(): callable { return $this->callback; }
+    public function setCallback(callable $callback) { $this->callback = $callback; }
 
-    public function getCallback(): callable
-    {
-        return $this->callback;
-    }
+    public function getMethods(): array { return $this->methods; }
+    public function setMethods(array $methods) { $this->methods = $methods; }
 
-    public function setCallback(callable $callback)
-    {
-        $this->callback = $callback;
-    }
+    public function getMiddlewares(): array { return $this->middlewares; }
+    public function setMiddlewares(array $middlewares) { $this->addMiddlewares(...$middlewares); }
 
-    public function getMethods(): array
-    {
-        return $this->methods;
-    }
-
-    public function setMethods(array $methods)
-    {
-        $this->methods = $methods;
-    }
-
-    public function getMiddlewares(): array
-    {
-        return $this->middlewares;
-    }
-
-    public function setMiddlewares(array $middlewares)
-    {
-        $this->middlewares = [];
-        foreach ($middlewares as $m)
-            $this->addMiddlewares($m);
-    }
-
-    public function getExtras(): array
-    {
-        return $this->extras;
-    }
-
-    public function setExtras(array $extras)
-    {
-        $this->extras = $extras;
-    }
+    public function getExtras(): array { return $this->extras; }
+    public function setExtras(array $extras) { $this->extras = $extras;}
 
 
     public function addMiddlewares(string ...$middlewares)

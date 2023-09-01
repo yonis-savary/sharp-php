@@ -9,7 +9,6 @@ use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Cache;
-use Sharp\Classes\Env\Storage;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
 use Throwable;
@@ -42,9 +41,6 @@ class Router
             "cached" => false
         ];
     }
-
-
-
 
     protected function getCacheKey(Request $request): string
     {
@@ -108,7 +104,6 @@ class Router
             $class::declareRoutes();
         }
     }
-
 
     public function group(
         array $group,

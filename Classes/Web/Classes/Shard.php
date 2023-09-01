@@ -31,7 +31,7 @@ class Shard
         $this->parentContext = $context;
     }
 
-    public function getParentInfos()
+    public function getParentInfos(): ?array
     {
         return $this->parentTemplate ? [$this->parentTemplate, $this->parentContext]: null;
     }

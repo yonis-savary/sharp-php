@@ -12,6 +12,16 @@ use Sharp\Core\Utils;
  */
 class Dependencies extends AbstractBuildTask
 {
+    public function execute()
+    {
+        echo "Installing dependencies...\n";
+        $applications = Config::getInstance()->toArray("applications");
+        array_unshift($applications, "Sharp");
+
+        foreach ($applications as $appName)
+            $this->installDependenciesInApp($appName);
+    }
+
     protected function installDependenciesInApp(string $appName)
     {
         $appPath = Utils::relativePath($appName);
@@ -34,15 +44,5 @@ class Dependencies extends AbstractBuildTask
             $this->shellInDirectory("composer install", $appPath);
             echo "---\n";
         }
-    }
-
-    public function execute()
-    {
-        echo "Installing dependencies...\n";
-        $applications = Config::getInstance()->toArray("applications");
-        array_unshift($applications, "Sharp");
-
-        foreach ($applications as $appName)
-            $this->installDependenciesInApp($appName);
     }
 }

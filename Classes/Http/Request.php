@@ -63,13 +63,13 @@ class Request
         return $request;
     }
 
-    public function logSelf(Logger $logger=null)
+    public function logSelf(Logger $logger=null): void
     {
         $logger ??= Logger::getInstance();
         $logger->info(sprintf("Request: %s %s", $this->getMethod(), $this->getPath()));
     }
 
-    protected function getCleanUploadData(array $data)
+    protected function getCleanUploadData(array $data): array
     {
         $cleanedUploads = [];
 
@@ -102,26 +102,17 @@ class Request
     /**
      * @return array Array from POST data
      */
-    public function post(): array
-    {
-        return $this->post;
-    }
+    public function post(): array { return $this->post; }
 
     /**
      * @return array Array from GET data
      */
-    public function get() : array
-    {
-        return $this->get;
-    }
+    public function get() : array { return $this->get; }
 
     /**
      * @return array Array from both GET and POST data
      */
-    public function all() : array
-    {
-        return array_merge($this->post, $this->get);
-    }
+    public function all() : array { return array_merge($this->post, $this->get); }
 
     /**
      * This function can be used with PHP's list function
@@ -179,52 +170,31 @@ class Request
     /**
      * @return string HTTP Method
      */
-    public function getMethod(): string
-    {
-        return $this->method;
-    }
+    public function getMethod(): string { return $this->method; }
 
     /**
      * @return string Request path WITHOUT any GET parameters (pathname)
      */
-    public function getPath(): string
-    {
-        return $this->path;
-    }
+    public function getPath(): string { return $this->path; }
 
     /**
      * @return array<string,string> An associative array as `header-name => value`
      */
-    public function getHeaders(): array
-    {
-        return $this->headers;
-    }
+    public function getHeaders(): array { return $this->headers; }
 
     /**
      * @return array<UploadFile>
      */
-    public function getUploads(): array
-    {
-        return $this->uploads;
-    }
+    public function getUploads(): array { return $this->uploads; }
 
     /**
      * @note !TEST-PURPOSE-METHOD!
      */
-    public function setUploads(UploadFile ...$uploads): void
-    {
-        $this->uploads = $uploads;
-    }
+    public function setUploads(UploadFile ...$uploads): void { $this->uploads = $uploads; }
 
-    public function setSlugs(array $slugs): void
-    {
-        $this->slugs = $slugs;
-    }
+    public function setSlugs(array $slugs): void { $this->slugs = $slugs; }
 
-    public function getSlugs(): array
-    {
-        return $this->slugs;
-    }
+    public function getSlugs(): array { return $this->slugs; }
 
     public function getSlug(string $key, mixed $default=null) : mixed
     {
@@ -235,15 +205,9 @@ class Request
      * Associate a route to the request object
      * (To retrieve it in a controller for example)
      */
-    public function setRoute(Route $route)
-    {
-        $this->route = $route;
-    }
+    public function setRoute(Route $route) { $this->route = $route; }
 
-    public function getRoute(): ?Route
-    {
-        return $this->route;
-    }
+    public function getRoute(): ?Route { return $this->route; }
 
     /**
      * Unset parameters from both GET and POST data
@@ -256,9 +220,6 @@ class Request
             unset($this->get[$k]);
         }
     }
-
-
-
 
     protected function parseHeaders(string $headers)
     {

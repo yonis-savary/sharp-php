@@ -10,13 +10,13 @@ class Events
 
     protected array $handlers = [];
 
-    public function on(string $event, callable $callback)
+    public function on(string $event, callable $callback): void
     {
         $this->handlers[$event] ??= [];
         $this->handlers[$event][] = $callback;
     }
 
-    public function dispatch(string $event, ...$args)
+    public function dispatch(string $event, ...$args): void
     {
         foreach ($this->handlers[$event] ?? [] as $handler)
             $handler(...$args);

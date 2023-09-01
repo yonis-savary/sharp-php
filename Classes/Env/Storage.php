@@ -10,8 +10,14 @@ class Storage
 {
     use Component;
 
-    protected array $openedStreams = [];
+    /** Used for `exploreDirectory()` to return both directories and files */
+    const NO_FILTER = 0;
+    /** Used for `exploreDirectory()` to only return directories */
+    const ONLY_DIRS = 1;
+    /** Used for `exploreDirectory()` to only return files */
+    const ONLY_FILES = 2;
 
+    protected array $openedStreams = [];
     protected string $root;
 
     public static function getDefaultInstance()
@@ -37,11 +43,9 @@ class Storage
 
     public function __destruct()
     {
-        foreach ($this->openedStreams as $stream)
-        {
-            if ($stream)
-                fclose($stream);
-        }
+        $toClose = array_filter($this->openedStreams);
+        foreach ($toClose as $stream)
+            fclose($stream);
     }
 
     /**
@@ -146,20 +150,11 @@ class Storage
             true;
     }
 
-
-
-
-
-    const NO_FILTER = 0;
-    const ONLY_DIRS = 1;
-    const ONLY_FILES = 2;
-
     public function exploreDirectory(string $path="/", int $mode=self::NO_FILTER)
     {
         $path = $this->path($path);
         return Utils::exploreDirectory($path, $mode);
     }
-
 
     public function listFiles(string $path="/")
     {

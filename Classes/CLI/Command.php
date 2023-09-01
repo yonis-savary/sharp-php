@@ -40,8 +40,5 @@ abstract class Command
     /**
      * This function is executed when the command is called
      */
-    public function __invoke(Args $args)
-    {
-
-    }
+    public abstract function __invoke(Args $args);
 }

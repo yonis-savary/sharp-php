@@ -182,11 +182,8 @@ class Response
     /** Indicates that the client needs to authenticate to gain network access. */
     const NETWORK_AUTHENTICATION_REQUIRED = 511;
 
-
     /** @var array (`NULL` is NOT supported as it can represent an absence of function response !) */
-    const INTERPRETED_TYPES = ['boolean', 'integer', 'double', 'string', 'array', 'object'];
-
-
+    const ADAPT_SUPPORTED_TYPES = ['boolean', 'integer', 'double', 'string', 'array', 'object'];
 
     protected $content;
     protected int $responseCode = self::OK;
@@ -314,7 +311,7 @@ class Response
         if ($content === null)
             return new Response(null, 204);
 
-        if (!in_array(gettype($content), self::INTERPRETED_TYPES))
+        if (!in_array(gettype($content), self::ADAPT_SUPPORTED_TYPES))
         {
             Logger::getInstance()->logThrowable(new InvalidArgumentException(
                 "A reponse with an unsupported type (".gettype($content).") was returned and cannot be adapted"

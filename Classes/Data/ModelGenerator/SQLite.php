@@ -182,4 +182,3 @@ class SQLite extends GeneratorDriver
         2));
     }
 }
-

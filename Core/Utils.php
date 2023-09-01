@@ -4,6 +4,12 @@ namespace Sharp\Core;
 
 class Utils
 {
+    /*
+        -------------------------------------
+        Classes/Implementation Uils Functions
+        -------------------------------------
+    */
+
     /**
      * This function check if a class uses a specific trait
      *
@@ -52,16 +58,11 @@ class Utils
         return $parents ? in_array($parent, $parents) : false;
     }
 
-
-
-
-
-
-
-
-
-
-
+    /*
+        --------------------
+        Path Utils Functions
+        --------------------
+    */
 
     /**
      * Given a path, this function make sure the path is valid
@@ -115,14 +116,11 @@ class Utils
         return Utils::relativePath(str_replace("\\", "/", $classname).".php");
     }
 
-
-
-
-
-
-
-
-
+    /*
+        -----------------------------
+        Directory/File Utils function
+        -----------------------------
+    */
 
     const NO_FILTER = 0;
     const ONLY_DIRS = 1;
@@ -180,14 +178,11 @@ class Utils
         return array_values($onlyDirectories);
     }
 
-
-
-
-
-
-
-
-
+    /*
+        ------------------------------
+        Byte/Transform utils functions
+        ------------------------------
+    */
 
     /**
      * Do a bitwise AND to check if `$needle` is present in `$haystack`

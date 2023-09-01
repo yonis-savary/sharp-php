@@ -47,6 +47,8 @@ class Autobahn
     public function create(string $model, callable ...$middlewares): void
     {
         $this->throwOnInvalidModel($model);
+        /** @var \Sharp\Classes\Data\Model $model */
+
         $table = $model::getTable();
         $this->router->addRoutes(
             Route::post("/$table", function(Request $req) use ($model, $middlewares)
@@ -67,6 +69,8 @@ class Autobahn
     public function read(string $model, callable ...$middlewares): void
     {
         $this->throwOnInvalidModel($model);
+        /** @var \Sharp\Classes\Data\Model|string $model */
+
         $table = $model::getTable();
         $this->router->addRoutes(
             Route::get("/$table", function(Request $req) use ($model, $middlewares)
@@ -89,25 +93,23 @@ class Autobahn
     public function update(string $model, callable ...$middlewares): void
     {
         $this->throwOnInvalidModel($model);
+        /** @var \Sharp\Classes\Data\Model $model */
+
         $table = $model::getTable();
         $this->router->addRoutes(
             new Route("/$table", function(Request $req) use ($model, $middlewares)
             {
-                $primaryKey = $model::getPrimaryKey();
-
-                if (!$primaryKey)
+                if (!($primaryKey = $model::getPrimaryKey()))
                     throw new Exception("Cannot update a model without a primary key");
 
-                $primaryKeyValue = $req->params($primaryKey);
-                if (!$primaryKeyValue)
+                if (!($primaryKeyValue = $req->params($primaryKey)))
                     return Response::json("A primary key [$primaryKey] is needed to update !", 401);
 
                 $query = new DatabaseQuery($model::getTable(), DatabaseQuery::UPDATE);
+                $query->where($primaryKey, $primaryKeyValue);
 
                 foreach($req->all() as $key => $value)
                     $query->set($key, $value);
-
-                $query->where($primaryKey, $primaryKeyValue);
 
                 foreach ($middlewares as $middleware)
                     $middleware($query);
@@ -120,6 +122,8 @@ class Autobahn
     public function delete(string $model, callable ...$middlewares): void
     {
         $this->throwOnInvalidModel($model);
+        /** @var \Sharp\Classes\Data\Model $model */
+
         $table = $model::getTable();
         $this->router->addRoutes(
             Route::delete("/$table", function(Request $req) use ($model, $middlewares)

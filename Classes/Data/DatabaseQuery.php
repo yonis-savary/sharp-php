@@ -48,19 +48,13 @@ class DatabaseQuery
     protected ?int $limit = null;
     protected ?int $offset = null;
 
-    public function __construct(
-        string $table,
-        int $mode
-    ){
+    public function __construct(string $table, int $mode)
+    {
         $this->targetTable = $table;
         $this->setMode($mode);
     }
 
-    public function set(
-        string $field,
-        string $value,
-        string $table=null,
-    ): self
+    public function set(string $field, string $value, string $table=null): self
     {
         $this->updates[] = new QuerySet($field, $value, $table);
         return $this;
@@ -86,10 +80,7 @@ class DatabaseQuery
         return $this;
     }
 
-    public function addField(
-        string $table,
-        string $field
-    ): self
+    public function addField(string $table, string $field): self
     {
         $this->fields[] = new QueryField($table, $field);
         return $this;
@@ -99,12 +90,13 @@ class DatabaseQuery
     {
         if (!Utils::uses($model, "Sharp\Classes\Data\Model"))
             throw new InvalidArgumentException("[$model] must use model trait");
+        /** @var \Sharp\Classes\Data\Model $model */
 
         $references = [];
 
         $table = $model::getTable();
         $fields = $model::getFields();
-        /** @var DatabaseField $field */
+
         foreach ($fields as $_ => $field)
         {
             $this->addField($table, $field->name);
@@ -124,25 +116,11 @@ class DatabaseQuery
         return $this;
     }
 
-
-    public function limit(int $limit, int $offset=null): self
-    {
-        $this->limit = $limit;
-        if ($offset)
-            $this->offset($offset);
-        return $this;
-    }
-
-    public function offset(int $offset): self
-    {
-        $this->offset = $offset;
-        return $this;
-    }
-
     protected function exploreReferences($references): void
     {
         $nextReferences = [];
 
+        /** @var \Sharp\Classes\Data\Model $model */
         foreach ($references as [$origin, $field, $model, $target, $tableAcc])
         {
             $targetAcc = "$origin&$field";
@@ -157,7 +135,6 @@ class DatabaseQuery
             if (count($this->joins) == self::JOIN_LIMIT)
                 return;
 
-            /** @var DatabaseField $field */
             foreach ($model::getFields() as $_ => $field)
             {
                 $this->addField($targetAcc, $field->name);
@@ -185,6 +162,19 @@ class DatabaseQuery
             $this->exploreReferences($nextReferences);
     }
 
+    public function limit(int $limit, int $offset=null): self
+    {
+        $this->limit = $limit;
+        if ($offset)
+            $this->offset($offset);
+        return $this;
+    }
+
+    public function offset(int $offset): self
+    {
+        $this->offset = $offset;
+        return $this;
+    }
 
     protected function setMode(int $mode): self
     {
@@ -195,12 +185,8 @@ class DatabaseQuery
         return $this;
     }
 
-    public function where(
-        string $field,
-        string $value,
-        string $operator = "=",
-        string $table = null
-    ) : self {
+    public function where(string $field, string $value, string $operator="=", string $table=null) : self
+    {
 
         if (!$table) // Prevent Ambiguous Fields
         {
@@ -246,11 +232,8 @@ class DatabaseQuery
         return $this;
     }
 
-    public function order(
-        string $table,
-        string $field,
-        string $mode="ASC"
-    ): self {
+    public function order(string $table, string $field, string $mode="ASC"): self
+    {
         $this->orders[] = new QueryOrder(
             new QueryField($table, $field),
             $mode
@@ -322,8 +305,7 @@ class DatabaseQuery
 
     public function build(): string
     {
-        $mode = $this->mode;
-        if (!$mode)
+        if (!($mode = $this->mode ?? false))
             throw new Exception("Unconfigured query mode ! Please use setMode() method before building");
 
         switch ($mode)

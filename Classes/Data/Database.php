@@ -62,7 +62,6 @@ class Database
         return $this->connection !== null;
     }
 
-
     public function getDSN(): string
     {
         $driver = $this->driver;

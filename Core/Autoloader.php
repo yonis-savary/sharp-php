@@ -68,7 +68,6 @@ class Autoloader
 
         if (!self::loadAutoloadCache())
             self::loadApplications();
-
     }
 
     /**

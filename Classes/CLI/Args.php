@@ -89,7 +89,7 @@ class Args implements \Countable
         return count(array_keys($this->arguments));
     }
 
-    public function list(): array
+    public function values(): array
     {
         return array_values($this->arguments);
     }

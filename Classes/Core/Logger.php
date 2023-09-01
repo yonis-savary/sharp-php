@@ -59,13 +59,13 @@ class Logger
         $this->closeStream();
     }
 
-    public function closeStream()
+    public function closeStream(): void
     {
         if ($this->closeStream && $this->stream)
             fclose($this->stream);
     }
 
-    public function replaceStream(mixed $stream, bool $autoclose=false)
+    public function replaceStream(mixed $stream, bool $autoclose=false): void
     {
         $this->closeStream();
 
@@ -96,7 +96,7 @@ class Logger
         }
     }
 
-    public function log(string $level, mixed ...$content)
+    public function log(string $level, mixed ...$content): void
     {
         if (!$this->stream)
             return;
@@ -117,16 +117,16 @@ class Logger
         }
     }
 
-    public function debug       (mixed ...$messages) { $this->log("debug", ...$messages); }
-    public function info        (mixed ...$messages) { $this->log("info", ...$messages); }
-    public function notice      (mixed ...$messages) { $this->log("notice", ...$messages); }
-    public function warning     (mixed ...$messages) { $this->log("warning", ...$messages); }
-    public function error       (mixed ...$messages) { $this->log("error", ...$messages); }
-    public function critical    (mixed ...$messages) { $this->log("critical", ...$messages); }
-    public function alert       (mixed ...$messages) { $this->log("alert", ...$messages); }
-    public function emergency   (mixed ...$messages) { $this->log("emergency", ...$messages); }
+    public function debug       (mixed ...$messages): void { $this->log("debug", ...$messages); }
+    public function info        (mixed ...$messages): void { $this->log("info", ...$messages); }
+    public function notice      (mixed ...$messages): void { $this->log("notice", ...$messages); }
+    public function warning     (mixed ...$messages): void { $this->log("warning", ...$messages); }
+    public function error       (mixed ...$messages): void { $this->log("error", ...$messages); }
+    public function critical    (mixed ...$messages): void { $this->log("critical", ...$messages); }
+    public function alert       (mixed ...$messages): void { $this->log("alert", ...$messages); }
+    public function emergency   (mixed ...$messages): void { $this->log("emergency", ...$messages); }
 
-    public function logThrowable(Throwable $throwable)
+    public function logThrowable(Throwable $throwable): void
     {
         $this->error("Got an Exception/Error: ". $throwable->getMessage());
         $this->error(sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()));

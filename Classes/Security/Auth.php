@@ -74,10 +74,7 @@ class Auth
             $this->refreshExpireTime();
     }
 
-    public function attempt(
-        string $login,
-        string $password
-    ): bool
+    public function attempt(string $login,string $password): bool
     {
         $model = $this->model;
 

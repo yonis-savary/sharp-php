@@ -17,4 +17,3 @@ interface MiddlewareInterface
      */
     public static function handle(Request $request) : Request|Response;
 }
-
