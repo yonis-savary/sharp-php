@@ -29,7 +29,6 @@ class Auth
     public static function getDefaultConfiguration(): array
     {
         return [
-            "enabled" => false,
             "model" => 'App\Models\User',
             "login-field" => "login",
             "password-field" => "password",
@@ -133,5 +132,29 @@ class Auth
     public function getUser(): ?array
     {
         return $this->session->get(self::USER_DATA);
+    }
+
+    /**
+     * @return \Sharp\Classes\Data\Model
+     */
+    public function createUser(string $login, string $password, string $salt=null, string $algo=null, array $options=null)
+    {
+        $algo ??= PASSWORD_BCRYPT;
+        $options ??= ["cost" => 8];
+
+        $model = $this->model;
+
+        $password = "$password$salt";
+        $password = password_hash($password, $algo, $options);
+
+        $instance = new $model([
+            [$this->loginField] => $login,
+            [$this->passwordField] => $password
+        ]);
+
+        if ($saltField = $this->saltField)
+            $instance->$saltField = $salt;
+
+        return $instance;
     }
 }
