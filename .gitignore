@@ -4,3 +4,4 @@ Tests/Models
 .phpunit.result.cache
 /autoload.php.cache
 composer.lock
+/Extensions

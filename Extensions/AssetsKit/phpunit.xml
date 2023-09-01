@@ -1,5 +1,0 @@
-<phpunit bootstrap="../../bootstrap.php">
-  <testsuite name="AssetsKit Unit test">
-    <directory>Tests</directory>
-  </testsuite>
-</phpunit>
