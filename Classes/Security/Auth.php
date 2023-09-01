@@ -5,6 +5,7 @@ namespace Sharp\Classes\Security;
 use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
+use Sharp\Classes\Env\Config;
 use Sharp\Classes\Env\Session;
 use Sharp\Core\Utils;
 
@@ -37,11 +38,11 @@ class Auth
         ];
     }
 
-    public function __construct(Session $session=null)
+    public function __construct(Session $session=null, Config $config=null)
     {
         $this->session = $session ?? Session::getInstance();
 
-        $this->loadConfiguration();
+        $this->loadConfiguration($config);
 
         $model = $this->model = $this->configuration["model"];
         $loginField = $this->loginField = $this->configuration["login-field"];
