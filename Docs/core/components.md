@@ -25,3 +25,6 @@ final public static function setInstance(self $newInstance);
 /* Remove the global instance if needed (useful to call the destructor) */
 final public static function removeInstance();
 ```
+
+
+[< Back to summary](../home.md)

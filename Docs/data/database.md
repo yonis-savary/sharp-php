@@ -47,6 +47,19 @@ $db->hasTable("ship_order");
 $db->hasField("ship_order", "fk_ship");
 ```
 
+### Working with SQLite !
+
+`Database` also support SQLite configurations ! Here is an example of configuration
+
+```json
+"database": {
+    "driver": "sqlite",
+    "database": "myDatabase.db"
+}
+```
+
+This config will create a `Storage/myDatabase.db` file with your data inside
+
 
 ## Interacting with models
 
@@ -106,3 +119,35 @@ User::update()->set("fk_type", 2)->where("fk_type", 5)->first();
 
 User::delete()->whereSQL("fk_type IN (1, 12, 52, 4)")->order("id", "DESC")->fetch();
 ```
+
+### Select queries format
+
+Select queries are specials, they explore your models relations to select every possible fields
+
+Let's say you have a `User` model, which points to the `Person` model through `fk_person`, which
+points to `PersonPhone` through `fk_phone`, our response format will be
+
+```json
+[
+    "data": {
+        "id": "...",
+        "login": "...",
+        "password": "...",
+        "...": "..."
+    },
+    "fk_person": {
+        "data": {
+            "firstname": "bob",
+            "lastname": "robertson",
+            "...": "..."
+        },
+        "fk_phone": {
+            "number": "0123456789",
+            "...": "..."
+        }
+    }
+]
+```
+
+
+[< Back to summary](../home.md)

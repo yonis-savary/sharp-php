@@ -38,3 +38,6 @@ which is a very tedious task to do
 Using middlewares, you can just write your class one time, apply it to every routes you want.
 And the day it changes, you only have to edit your middleware class.
 Also, middlewares can be combined to give different conditions
+
+
+[< Back to summary](../home.md)

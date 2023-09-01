@@ -1,4 +1,4 @@
-# Sharp Framework
+# 📒 Sharp-PHP Documentation
 
 The goals behind Sharp are :
 1. Removing unecessary abstraction layers (Don't hide the code behind facades)
@@ -10,7 +10,7 @@ The goals behind Sharp are :
 
 (You can browse this documentation with an IDE like Visual Studio Code with the markdown preview)
 
-## Documentation
+## Summary
 
 This documentation directory holds some hand-written docs, but every classes
 got pieces of documentation inside their respective files
@@ -22,12 +22,10 @@ Core
 - 📃 [Logging](./core/logging.md)
 - 🔏 [Session](./core/session.md)
 
-<!--
 Core (Advanced):
-- [(Code) `Events`](../Classes/Core/Events.php)
-- [(Code) `Storage`](../Classes/Env/Storage.php)
-- [(Code) `Cache`](../Classes/Env/Cache.php)
--->
+- [📦 Storage](./env/storage.md)
+- [🔥 Cache](./env/Cache.md)
+- [🪝 Events](./core/events.md)
 
 Routing & Logic
 - 🛣️ [Routing](./logic/routing.md)
@@ -40,8 +38,8 @@ Database
 - 📚 [Database and Models](./data/database.md)
 
 Extras
-- ⭐️ [Serve assets with `AssetServer`](./extras/assets.md)
-- 🚘 [Automatic CRUD API with `Autobahn`](./extras/autobahn.md) (TODO)
+- ⭐️ [Serve assets with AssetServer](./extras/assets.md)
+- 🚘 [Automatic CRUD API with Autobahn](./extras/autobahn.md)
 - 🔐 [Authentication](./security/auth.md)
 
 File/Comment documentation:

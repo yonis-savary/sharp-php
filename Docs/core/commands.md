@@ -55,3 +55,6 @@ $args->isPresent("v", "verbose")
 public function getOption(string $short, string $long);
 $args->getOption("r", "replace")
 ```
+
+
+[< Back to summary](../home.md)

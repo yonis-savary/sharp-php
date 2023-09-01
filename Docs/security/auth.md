@@ -49,3 +49,6 @@ $auth->logout();
 // Number of failed attempts number (reseted when logged in)
 $auth->attemptNumber();
 ```
+
+
+[< Back to summary](../home.md)

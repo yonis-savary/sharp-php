@@ -36,3 +36,6 @@ read/write data from the session
 session("myKey"); // Alias to Session::getInstance()->get()
 sessionSet("myKey", $myValue) // Alias to Session::getInstance()->set()
 ```
+
+
+[< Back to summary](../home.md)

@@ -30,6 +30,10 @@ $logger->logThrowable(new Exception("Something went wrong"));
 # Note that almost everything that can be represented as a string somehow can be logged
 $logger->info([1,2,3]);
 $logger->info(["A"=>1, "B"=>2, "C"=>3]);
+
+// Display logs to stdout
+$logger = Logger::fromStream(fopen("php://output", "w"));
+$logger->info("Hello output !");
 ```
 
 And yet, calling `Logger::getInstance()` or store it inside an object can be tedious too
@@ -60,3 +64,6 @@ $logger = new Logger("errors.csv");
 # will log everything in /var/log/shippingService/service.csv
 $logger = new Logger("service.csv", new Storage("/var/log/shippingService"))
 ```
+
+
+[< Back to summary](../home.md)
