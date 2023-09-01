@@ -55,6 +55,8 @@ class DatabaseTest extends TestCase
         $this->assertEquals("SELECT '1'", $db->build("SELECT '{}'", [1]));
         $this->assertEquals("SELECT '1'", $db->build("SELECT '{}'", ['1']));
 
+        $this->assertEquals("SELECT (1,2,3)", $db->build("SELECT {}", [[1,2,3]]));
+
     }
 
     public function test_query()
@@ -62,14 +64,12 @@ class DatabaseTest extends TestCase
         $db = Database::getInstance();
 
         $this->assertEquals(
-            [
-                [
+            [[
                     "id" => 1,
                     "login" => "admin",
                     "password" => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
                     "salt" => "dummySalt"
-                ]
-            ],
+            ]],
             $db->query("SELECT * FROM user")
         );
     }

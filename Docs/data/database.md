@@ -32,8 +32,10 @@ $query = $db->build("SELECT id FROM ship WHERE name = {}", ["PHP Bounty"]);
 # Used to directly fetch rows
 $results = $db->query("SELECT id FROM ship WHERE name = {}", ["Above the code"]);
 
-$id = $db->lastInsertId();
+# Arrays can also be given
+$results = $db->query("SELECT id FROM ship WHERE name IN {}", [["Above the code", "PHP Bounty"]]);
 
+$id = $db->lastInsertId();
 ```
 
 ### Additionnal properties
