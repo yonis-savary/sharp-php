@@ -76,7 +76,9 @@ trait Model
 
     public static function select(): DatabaseQuery
     {
-        return new DatabaseQuery(self::getTable(), DatabaseQuery::SELECT);
+        $query = new DatabaseQuery(self::getTable(), DatabaseQuery::SELECT);
+        $query->exploreModel(self::class);
+        return $query;
     }
 
     public static function update(): DatabaseQuery
