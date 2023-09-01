@@ -99,7 +99,7 @@ class SQLite extends GeneratorDriver
         return array_values(array_filter(array_map(fn($l) => $this->lineToField($l), $lines)));
     }
 
-    public function lineToField(string $sqlLine)
+    public function lineToField(string $sqlLine): array
     {
         $field = "";
 
@@ -110,7 +110,7 @@ class SQLite extends GeneratorDriver
         if (preg_match($columnRegex, $sqlLine, $matches))
         {
             $fieldName = $matches[1];
-            $field = "(new DatabaseField('$fieldName'))";
+            $field = "'$fieldName' => (new DatabaseField('$fieldName'))";
             /** @todo implements types parsing sqlType = $matches[2]; */
 
             $field .= "->hasDefault(".(str_contains($sqlLine, 'DEFAULT') ? "true": "false").")";
@@ -129,10 +129,8 @@ class SQLite extends GeneratorDriver
             $this->fieldExtras[$matches[1]] = "->references(".$this->sqlNameToPHPName($matches[2])."::class, '".$matches[3]."')";
     }
 
-    public function generate(string $table, string $targetApplication)
+    public function generate(string $table, string $targetApplication): void
     {
-        echo "Generating class for [$table] in [$targetApplication]...\n";
-
         $classBasename = $this->sqlNameToPHPName($table);
 
         $fileName = "$classBasename.php";

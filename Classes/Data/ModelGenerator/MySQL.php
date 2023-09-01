@@ -19,10 +19,10 @@ class MySQL extends GeneratorDriver
         return $res;
     }
 
-    protected function getFieldDescription(array $fieldDescription, array $foreignKey=null, mixed &$primaryKey)
+    protected function getFieldDescription(array $fieldDescription, array $foreignKey=null, mixed &$primaryKey): string
     {
         list($field, $type, $null, $key, $default, $extras) = array_values($fieldDescription);
-        $string = "(new DatabaseField('$field'))";
+        $string = "'$field' => (new DatabaseField('$field'))";
 
         $classType = "STRING";
         if (preg_match("/int\(/", $type))           $classType = "INTEGER";
@@ -42,11 +42,10 @@ class MySQL extends GeneratorDriver
         return "'$field' => $string";
     }
 
-    public function generate(string $table, string $targetApplication)
+    public function generate(string $table, string $targetApplication): void
     {
         $db = $this->connection;
         $databaseName = $db->database;
-        echo "Generating class for [$table] in [$targetApplication]...\n";
 
         $classBasename = $this->sqlNameToPHPName($table);
 
