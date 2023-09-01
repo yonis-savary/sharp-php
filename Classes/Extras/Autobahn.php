@@ -22,6 +22,17 @@ class Autobahn
     public function __construct(Router $router=null)
     {
         $this->router = $router ?? Router::getInstance();
+        $this->loadConfiguration();
+    }
+
+    /**
+     * @experimental Not tested yet
+     */
+    public static function getDefaultConfiguration(): array
+    {
+        return [
+            "prevent-dangerous-delete" => true
+        ];
     }
 
     protected function throwOnInvalidModel(string $model): void
@@ -129,6 +140,12 @@ class Autobahn
             Route::delete("/$table", function(Request $req) use ($model, $middlewares)
             {
                 $query = new DatabaseQuery($model::getTable(), DatabaseQuery::DELETE);
+
+                if ($this->configuration["prevent-dangerous-delete"])
+                {
+                    if (!count($req->all()))
+                        return Response::json("At least one filter must be given", Response::CONFLICT);
+                }
 
                 foreach ($req->all() as $key => $value)
                     $query->where($key, $value);
