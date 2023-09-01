@@ -23,11 +23,13 @@ class Console
         return $commands;
     }
 
+    /**
+     * @return array<Command>
+     */
     public function findCommands(string $identifier): array
     {
         $classes = [];
 
-        /** @var Command $command */
         foreach ($this->listCommands() as $command)
         {
             if ( in_array($identifier, [
@@ -49,14 +51,15 @@ class Console
             printf(" - %s (%s)\n", $command->getName(), $command->getIdentifier());
     }
 
-    public function handleArgv(array $argv): mixed
+    public function handleArgv(array $argv): void
     {
         array_shift($argv); // Ignore script name !
 
         if (!count($argv))
         {
             print("A command name is needed !\n");
-            return $this->printCommandList();
+            $this->printCommandList();
+            return;
         }
 
         $commandName = array_shift($argv);
@@ -65,20 +68,21 @@ class Console
         if (!count($commands))
         {
             print("No command with [$commandName] identifier found !\n");
-            return $this->printCommandList();
+            $this->printCommandList();
+            return;
         }
 
         if (count($commands) > 1)
         {
             echo "Multiple commands for identifier [$commandName] found !\n";
-            /** @var Command $command */
             foreach ($commands as $command)
-            echo " - " . $command->getIdentifier() . "\n";
+                echo " - " . $command->getIdentifier() . "\n";
+            return;
         }
 
-        /** @var Command $command */
         $command = $commands[0];
+
         printf("%s[ %s ]%s\n", str_repeat("-", 5), $command->getIdentifier() , str_repeat("-", 25));
-        return $command(Args::fromArray($argv));
+        $command(Args::fromArray($argv));
     }
 }

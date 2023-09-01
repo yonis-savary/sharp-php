@@ -10,6 +10,7 @@ class Help extends Command
 {
     public function __invoke(Args $args)
     {
+        /** @var array<Command> $commands */
         $commands = Autoloader::classesThatExtends(Command::class);
 
         $maxLength = [
@@ -19,7 +20,6 @@ class Help extends Command
 
         foreach ($commands as $class)
         {
-            /** @var Command $command */
             $command = new $class();
 
             $maxLength["name"] = max($maxLength["name"], strlen($command->getName()));
@@ -30,7 +30,6 @@ class Help extends Command
 
         foreach ($commands as $class)
         {
-            /** @var Command $command */
             $command = new $class();
 
             printf(" - %s %s : %s\n",

@@ -12,9 +12,10 @@ class Build extends Command
     public function __invoke(Args $args)
     {
         echo "Building app...\n\n";
+
+        /** @var AbstractBuildTask $class */
         foreach (Autoloader::classesThatExtends(AbstractBuildTask::class) as $class)
         {
-            /** @var AbstractBuildTask $class */
             printf("Executing [%s]\n", $class);
 
             $task = new $class();

@@ -48,7 +48,7 @@ class Request
 
         $postBody = $_POST;
 
-        if (($headers['Content-Type']??null) === 'application/json')
+        if (($headers['Content-Type'] ?? null) === 'application/json')
             $postBody = json_decode(file_get_contents('php://input'), true, JSON_THROW_ON_ERROR);
 
         $request = new self (

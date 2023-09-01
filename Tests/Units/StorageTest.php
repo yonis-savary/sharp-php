@@ -3,7 +3,6 @@
 namespace Sharp\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Sharp\Classes\Core\Logger;
 use Sharp\Core\Utils;
 use Sharp\Classes\Env\Storage;
 

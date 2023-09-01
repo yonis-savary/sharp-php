@@ -11,10 +11,7 @@ use Sharp\Core\Utils;
 
 require_once __DIR__ . "/../bootstrap.php";
 
-Autoloader::addToList(Autoloader::VIEWS, Utils::relativePath("Sharp/Tests/Views"));
-Autoloader::addToList(Autoloader::AUTOLOAD, Utils::relativePath("Sharp/Tests/Middlewares"));
-Autoloader::addToList(Autoloader::AUTOLOAD, Utils::relativePath("Sharp/Tests/Classes"));
-Autoloader::addToList(Autoloader::ASSETS, Utils::relativePath("Sharp/Tests/Assets"));
+Autoloader::loadApplication("Sharp/Tests");
 
 $defaultStorage = Storage::getInstance();
 $defaultLogger = Logger::getInstance();
@@ -22,12 +19,9 @@ $defaultLogger = Logger::getInstance();
 $tmpStorage = new Storage(Utils::relativePath("Sharp/Tests/tmp_test_storage"));
 Storage::setInstance($tmpStorage);
 
-$tmpConfig = new Config();
-$tmpConfig->set("database", [
-    "driver" => "sqlite",
-    "database" => null
-]);
-Config::setInstance($tmpConfig);
+Config::setInstance(
+    new Config(Utils::relativePath("Sharp/Tests/config.json"))
+);
 
 Cache::setInstance( new Cache($tmpStorage, "Cache")  );
 

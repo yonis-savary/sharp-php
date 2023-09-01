@@ -2,12 +2,11 @@
 
 namespace Sharp\Classes\Http;
 
-use Exception;
 use InvalidArgumentException;
 use Sharp\Classes\Core\Logger;
 
 /**
- * Credit to `https://developer.mozilla.org/en-US/docs/Web/HTTP/Status` for the Status descriptions
+ * Credit to [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) for the Status descriptions
  */
 class Response
 {
@@ -318,7 +317,7 @@ class Response
         if (!in_array(gettype($content), self::INTERPRETED_TYPES))
         {
             Logger::getInstance()->logThrowable(new InvalidArgumentException(
-                "Controller returned a response that is not supported, type of response [".gettype($content)."]"
+                "A reponse with an unsupported type (".gettype($content).") was returned and cannot be adapted"
             ));
             return new Response(null, 204);
         }

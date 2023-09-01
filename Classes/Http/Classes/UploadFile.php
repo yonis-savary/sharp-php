@@ -187,12 +187,12 @@ class UploadFile
     public function getExtension(): string { return $this->extension; }
 
     /**
-     * @return ?string New File basename, `null` is not moved
+     * @return ?string New File basename, `null` if not moved yet
      */
     public function getNewName(): ?string { return $this->newName; }
 
     /**
-     * @return ?string New File path, `null` is not moved
+     * @return ?string New File path, `null` if not moved yet
      */
     public function getNewPath(): ?string { return $this->newPath; }
 

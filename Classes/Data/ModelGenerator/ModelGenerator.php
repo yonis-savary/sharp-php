@@ -37,7 +37,7 @@ class ModelGenerator
         $this->driver = new ($driverClass)($connection);
     }
 
-    public function generateAll(string $application)
+    public function generateAll(string $application): void
     {
         if (!is_dir($application))
             throw new InvalidArgumentException("[$application] does not exists !");

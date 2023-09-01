@@ -5,7 +5,6 @@ namespace Sharp\Core;
 use InvalidArgumentException;
 use RuntimeException;
 use Sharp\Classes\CLI\Terminal;
-use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Config;
 use Throwable;
 
@@ -122,26 +121,35 @@ class Autoloader
         array_unshift($applications, "Sharp");
 
         foreach ($applications as $application)
-        {
-            $application = Utils::relativePath($application);
-
-            if (!is_dir($application))
-                throw new InvalidArgumentException("[$application] is not a directory !");
-
-            foreach (Utils::listDirectories($application) as $directory)
-            {
-                $basename = basename($directory);
-
-                if (!$purpose = self::DIRECTORIES_PURPOSE[$basename] ?? false)
-                    continue;
-
-                self::$lists[$purpose] ??= [];
-                self::$lists[$purpose][] = $directory;
-            }
-        }
+            self::loadApplication($application, false);
 
         foreach (self::getListFiles(self::REQUIRE) as $file)
             require_once $file;
+    }
+
+    public static function loadApplication(string $path, bool $requireHelpers=true)
+    {
+        $application = Utils::relativePath($path);
+
+        if (!is_dir($application))
+            throw new InvalidArgumentException("[$application] is not a directory !");
+
+        foreach (Utils::listDirectories($application) as $directory)
+        {
+            $basename = basename($directory);
+
+            if (!$purpose = self::DIRECTORIES_PURPOSE[$basename] ?? false)
+                continue;
+
+            if ($requireHelpers && $purpose===self::REQUIRE)
+            {
+                foreach (Utils::exploreDirectory($directory, Utils::ONLY_FILES) as $toRequire)
+                    require_once $toRequire;
+            }
+
+            self::$lists[$purpose] ??= [];
+            self::$lists[$purpose][] = $directory;
+        }
     }
 
     public static function getList(string $name): array
@@ -195,21 +203,25 @@ class Autoloader
         return array_values(array_filter(self::getClassesList(), $filter));
     }
 
-    /** @return array List of classes that implements `$interface` interface */
+    /**
+     * @return array List of classes that implements `$interface` interface
+     */
     public static function classesThatImplements(string $interface): array
     {
         return self::filterClasses(fn($e)=> Utils::implements($e, $interface));
     }
 
-
-    /** @return array List of classes that extends `$class` parent class */
+    /**
+     * @return array List of classes that extends `$class` parent class
+     */
     public static function classesThatExtends(string $class): array
     {
         return self::filterClasses(fn($e)=> Utils::extends($e, $class));
     }
 
-
-    /** @return array List of classes that use the `$trait` Trait */
+    /**
+     * @return array List of classes that use the `$trait` Trait
+     */
     public static function classesThatUses(string $trait): array
     {
         return self::filterClasses(fn($e)=> Utils::uses($e, $trait));

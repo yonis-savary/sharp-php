@@ -38,10 +38,7 @@ class Terminal
      */
     public static function chooseApplication(): string
     {
-        $applications = Config::getInstance()->get("applications");
-
-        if (!is_array($applications))
-            return $applications;
+        $applications = Config::getInstance()->toArray("applications");
 
         if (count($applications) === 1)
             return $applications[0];

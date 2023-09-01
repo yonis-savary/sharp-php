@@ -13,7 +13,7 @@ abstract class GeneratorDriver
         $this->connection = $connection;
     }
 
-    public function sqlNameToPHPName(string $name)
+    public function sqlNameToPHPName(string $name): string
     {
         $parts = explode("_", $name);
         $parts = array_filter($parts);
@@ -29,12 +29,12 @@ abstract class GeneratorDriver
         return [];
     }
 
-    public function generate(string $table, string $targetApplication)
+    public function generate(string $table, string $targetApplication): void
     {
 
     }
 
-    public function generateAll(string $targetApplication)
+    public function generateAll(string $targetApplication): void
     {
         foreach ($this->listTables() as $table)
             $this->generate($table, $targetApplication);

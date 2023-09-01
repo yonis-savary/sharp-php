@@ -92,7 +92,7 @@ class Database
         return $this->connection->lastInsertId();
     }
 
-    protected function prepareString($str, $quote=false)
+    protected function prepareString($str, $quote=false): string
     {
         if ($str === null)
             return 'NULL';
@@ -166,7 +166,7 @@ class Database
             $this->query("SELECT 1 FROM `{}` LIMIT 1", [$table]);
             return true;
         }
-        catch (PDOException $_)
+        catch (PDOException)
         {
             return false;
         }

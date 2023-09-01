@@ -66,7 +66,7 @@ class DatabaseTest extends TestCase
                 [
                     "id" => 1,
                     "login" => "admin",
-                    "password" => '$2y$08$t.zEvNyj78yxcX7ZycPjdO4hAVGiaOs92liqtzIoh8dPEFk5iX9hq',
+                    "password" => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
                     "salt" => "dummySalt"
                 ]
             ],

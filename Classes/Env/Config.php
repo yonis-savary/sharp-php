@@ -31,8 +31,8 @@ class Config
         if (!is_file($filename))
             return;
 
-        $body = file_get_contents($filename);
-        $this->content = json_decode($body, true, flags: JSON_THROW_ON_ERROR);
+        $json = file_get_contents($filename);
+        $this->content = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
     }
 
     public function set(string $key, mixed $value): void
@@ -57,9 +57,12 @@ class Config
         return $this->get($key, false) ;
     }
 
-    public function save(string $saveAs=null): void
+    /**
+     * @param string $path This parameter can be used as a "Save As..." feature to copy a configuration, if null, the current path is used
+     */
+    public function save(string $path=null): void
     {
-        $path = $saveAs ?? $this->filename;
+        $path ??= $this->filename;
 
         if (!$path)
             throw new Exception("Couldn't save a config without file name !");

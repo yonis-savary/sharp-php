@@ -9,6 +9,7 @@ use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Cache;
+use Sharp\Classes\Env\Storage;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
 use Throwable;
@@ -21,17 +22,17 @@ class Router
 {
     use Component, Configurable;
 
-    /** @var array (`NULL` is NOT supported as it can represent an absence of function response !) */
-    const INTERPRETED_TYPES = ['boolean', 'integer', 'double', 'string', 'array', 'object'];
-
     protected array $group = [];
+
+    /** @var array<Route> $routes Set of registered routes */
     protected array $routes = [];
 
     protected ?Route $cachedRoute = null;
+    protected ?Cache $cache = null;
 
-
-    public function __construct()
+    public function __construct(Cache $cache=null)
     {
+        $this->cache = $cache ?? Cache::getInstance();
         $this->loadConfiguration();
     }
 
@@ -45,29 +46,28 @@ class Router
 
 
 
-    protected function getCacheKey( Request $request ): string
+    protected function getCacheKey(Request $request): string
     {
         $hash = md5($request->getPath());
         return "sharp-router-index-$hash";
     }
 
-    protected function putRouteToCache(Route $route, Request $request)
+    protected function putRouteToCache(Route $route, Request $request): void
     {
         if (!is_array($route->getCallback()))
             return;
 
         $key = $this->getCacheKey($request);
-        $cache = Cache::getInstance();
-        $cache->set($key, $route);
+        $this->cache->set($key, $route);
     }
 
     protected function getRoutesFromCache(Request $request): bool
     {
-        $cache = Cache::getInstance();
-        if (!($this->cachedRoute = $cache->get($this->getCacheKey($request), null)))
-            return false;
+        $key = $this->getCacheKey($request);
+        if ($this->cachedRoute = $this->cache->get($key, null))
+            return true;
 
-        return true;
+        return false;
     }
 
     /**
@@ -129,27 +129,19 @@ class Router
         foreach ($routes as $route)
         {
             $this->applyGroupsTo($route);
-
-            $path = $route->getPath();
-            if (!str_starts_with($path, "/"))
-            {
-                $path = "/$path";
-                $route->setPath($path);
-            }
-
             $this->routes[] = $route;
         }
     }
 
     protected function applyGroupsTo(Route &$route)
     {
-        if ($this->group["path"] ?? false)
+        if (count($this->group["path"] ?? []))
         {
-            $prefix = join("/", $this->group["path"]);
+            $prefix = "/" . join("/", $this->group["path"]);
             $route->setPath(str_replace("//", "/", $prefix . $route->getPath()));
         }
 
-        if ($this->group["middlewares"] ?? false)
+        if (count($this->group["middlewares"] ?? []))
         {
             foreach ($this->group["middlewares"] as $middleware)
                 $route->addMiddlewares($middleware);
@@ -160,7 +152,6 @@ class Router
     {
         foreach ($this->routes as $route)
         {
-            /** @var Route $route */
             if (!$route->match($req))
                 continue;
 

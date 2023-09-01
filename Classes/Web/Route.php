@@ -5,10 +5,8 @@ namespace Sharp\Classes\Web;
 use Exception;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
-use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Web\Renderer;
 use Sharp\Core\Utils;
-use Throwable;
 
 class Route
 {
@@ -69,6 +67,9 @@ class Route
         array $middlewares=[],
         protected ?array $extras=[]
     ) {
+        if (!str_starts_with($this->path, "/"))
+            $this->path = "/" . $this->path;
+
         $this->callback = $callback;
         $this->addMiddlewares(...$middlewares);
     }

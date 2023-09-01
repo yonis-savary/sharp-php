@@ -7,8 +7,10 @@ CREATE TABLE user (
     salt VARCHAR(100) NOT NULL
 );
 
+-- User logs are admin, admin
+
 INSERT INTO user (login, password, salt)
-VALUES ('admin', '$2y$08$t.zEvNyj78yxcX7ZycPjdO4hAVGiaOs92liqtzIoh8dPEFk5iX9hq', 'dummySalt');
+VALUES ('admin', '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua', 'dummySalt');
 
 CREATE TABLE user_data (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

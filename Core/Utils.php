@@ -2,7 +2,6 @@
 
 namespace Sharp\Core;
 
-
 class Utils
 {
     /**

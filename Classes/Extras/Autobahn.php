@@ -19,14 +19,9 @@ class Autobahn
 
     public ?Router $router = null;
 
-    protected function getRouter(): Router
+    public function __construct(Router $router=null)
     {
-        return $this->router ?? Router::getInstance();
-    }
-
-    public function setRouter(Router $router): void
-    {
-        $this->router = $router;
+        $this->router = $router ?? Router::getInstance();
     }
 
     protected function throwOnInvalidModel(string $model): void
@@ -53,7 +48,7 @@ class Autobahn
     {
         $this->throwOnInvalidModel($model);
         $table = $model::getTable();
-        $this->getRouter()->addRoutes(
+        $this->router->addRoutes(
             Route::post("/$table", function(Request $req) use ($model, $middlewares)
             {
                 $params = $req->all();
@@ -73,7 +68,7 @@ class Autobahn
     {
         $this->throwOnInvalidModel($model);
         $table = $model::getTable();
-        $this->getRouter()->addRoutes(
+        $this->router->addRoutes(
             Route::get("/$table", function(Request $req) use ($model, $middlewares)
             {
                 $query = new DatabaseQuery($model::getTable(), DatabaseQuery::SELECT);
@@ -95,7 +90,7 @@ class Autobahn
     {
         $this->throwOnInvalidModel($model);
         $table = $model::getTable();
-        $this->getRouter()->addRoutes(
+        $this->router->addRoutes(
             new Route("/$table", function(Request $req) use ($model, $middlewares)
             {
                 $primaryKey = $model::getPrimaryKey();
@@ -126,7 +121,7 @@ class Autobahn
     {
         $this->throwOnInvalidModel($model);
         $table = $model::getTable();
-        $this->getRouter()->addRoutes(
+        $this->router->addRoutes(
             Route::delete("/$table", function(Request $req) use ($model, $middlewares)
             {
                 $query = new DatabaseQuery($model::getTable(), DatabaseQuery::DELETE);

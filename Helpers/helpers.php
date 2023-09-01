@@ -49,7 +49,7 @@ function cacheSet(string $key, mixed $value, int $timeToLive=3600*24): void
 
 
 
-function sharpDebugMeasure(callable $callback, string $label="Measurement")
+function sharpDebugMeasure(callable $callback, string $label="Measurement"): void
 {
     $start = hrtime(1000);
     $callback();
@@ -61,7 +61,7 @@ function sharpDebugMeasure(callable $callback, string $label="Measurement")
 
 
 
-function addRoutes(...$routes)
+function addRoutes(...$routes): void
 {
     Router::getInstance()->addRoutes(...$routes);
 }
@@ -70,7 +70,7 @@ function groupRoutes(
     string|array $pathPrefixes,
     string|array $middlewares,
     callable $routeDeclaration
-) {
+): void {
     $router = Router::getInstance();
     $router->group([
         "path" => $pathPrefixes,
@@ -95,11 +95,11 @@ function query(string $query, array $context=[]): array
 
 
 
-function debug    (mixed ...$messages) { Logger::getInstance()->debug(...$messages); }
-function info     (mixed ...$messages) { Logger::getInstance()->info(...$messages); }
-function notice   (mixed ...$messages) { Logger::getInstance()->notice(...$messages); }
-function warning  (mixed ...$messages) { Logger::getInstance()->warning(...$messages); }
-function error    (mixed ...$messages) { Logger::getInstance()->error(...$messages); }
-function critical (mixed ...$messages) { Logger::getInstance()->critical(...$messages); }
-function alert    (mixed ...$messages) { Logger::getInstance()->alert(...$messages); }
+function debug    (mixed ...$messages) { Logger::getInstance()->debug(...$messages);     }
+function info     (mixed ...$messages) { Logger::getInstance()->info(...$messages);      }
+function notice   (mixed ...$messages) { Logger::getInstance()->notice(...$messages);    }
+function warning  (mixed ...$messages) { Logger::getInstance()->warning(...$messages);   }
+function error    (mixed ...$messages) { Logger::getInstance()->error(...$messages);     }
+function critical (mixed ...$messages) { Logger::getInstance()->critical(...$messages);  }
+function alert    (mixed ...$messages) { Logger::getInstance()->alert(...$messages);     }
 function emergency(mixed ...$messages) { Logger::getInstance()->emergency(...$messages); }

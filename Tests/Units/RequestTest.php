@@ -5,7 +5,6 @@ namespace Sharp\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Http\Classes\UploadFile;
 use Sharp\Classes\Http\Request;
-use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Env\Storage;
 

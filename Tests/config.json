@@ -1,0 +1,12 @@
+{
+    "database": {
+        "driver": "sqlite",
+        "database": null
+    },
+    "auth": {
+        "model": "Sharp\\Tests\\Models\\User",
+        "login-field": "login",
+        "password-field": "password",
+        "salt-field": "salt"
+    }
+}

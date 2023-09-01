@@ -11,11 +11,11 @@ use Sharp\Core\Autoloader;
 
 class AssetServer
 {
+    use Component, Configurable;
+
     const EXTENSIONS_MIMES = [
         "js" => "application/javascript"
     ];
-
-    use Component, Configurable;
 
     public static function getDefaultConfiguration(): array
     {
@@ -35,11 +35,11 @@ class AssetServer
     public function handleIfEnabled()
     {
         $this->loadConfiguration();
-        if ($this->isEnabled())
-        {
-            $req = Request::buildFromGlobals();
-            $this->handleRequest($req);
-        }
+        if (!$this->isEnabled())
+            return;
+
+        $req = Request::buildFromGlobals();
+        $this->handleRequest($req);
     }
 
     public function findAsset(string $assetName): string|false

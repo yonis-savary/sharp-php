@@ -128,7 +128,8 @@ class DatabaseQuery
     public function limit(int $limit, int $offset=null): self
     {
         $this->limit = $limit;
-        if ($offset) $this->offset($offset);
+        if ($offset)
+            $this->offset($offset);
         return $this;
     }
 
@@ -200,7 +201,8 @@ class DatabaseQuery
         string $operator = "=",
         string $table = null
     ) : self {
-        if (!$table)
+
+        if (!$table) // Prevent Ambiguous Fields
         {
             $compatibles = array_filter($this->fields, fn($f) => $f->field == $field);
             if (count($compatibles) > 1)
@@ -259,11 +261,16 @@ class DatabaseQuery
     protected function buildEssentials(): string
     {
         $essentials = "";
+        $toString = fn($x)=>"$x";
 
-        $essentials .= count($this->conditions) ? "WHERE " . join(" AND \n", array_map(fn($x) => "$x", $this->conditions)): "";
-        $essentials .= join("\n", array_map(fn($x) => "$x", $this->orders));
+        $essentials .= count($this->conditions) ?
+            "WHERE " . join(" AND \n", array_map($toString, $this->conditions)):
+            "";
+
+        $essentials .= join("\n", array_map($toString, $this->orders));
+
         $essentials .=  $this->limit ?
-            "LIMIT $this->limit ". ($this->offset ? "OFFSET $this->offset" : ""):
+            " LIMIT $this->limit ". ($this->offset ? "OFFSET $this->offset" : ""):
             "";
 
         return $essentials;
@@ -296,7 +303,9 @@ class DatabaseQuery
     {
         return join(" ", [
             "UPDATE `$this->targetTable`",
-            count($this->updates) ? "SET ". join(",\n", array_map(fn($x) => "$x", $this->updates)): "",
+            count($this->updates) ?
+                "SET ". join(",\n", array_map(fn($x) => "$x", $this->updates)):
+                "",
 
             $this->buildEssentials()
         ]);
@@ -313,16 +322,17 @@ class DatabaseQuery
 
     public function build(): string
     {
-        if (!$this->mode)
+        $mode = $this->mode;
+        if (!$mode)
             throw new Exception("Unconfigured query mode ! Please use setMode() method before building");
 
-        switch ($this->mode)
+        switch ($mode)
         {
             case self::INSERT: return $this->buildInsert();
             case self::SELECT: return $this->buildSelect();
             case self::UPDATE: return $this->buildUpdate();
             case self::DELETE: return $this->buildDelete();
-            default : return "";
+            default : throw new Exception("Unknown DatabaseQuery mode [$mode] !");
         }
     }
 

@@ -14,8 +14,7 @@ class AutobahnTest extends TestCase
     protected function getNewAutobahn()
     {
         $r = new Router;
-        $a = new Autobahn();
-        $a->setRouter($r);
+        $a = new Autobahn($r);
 
         return [$a, $r];
     }
