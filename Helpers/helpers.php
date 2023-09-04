@@ -12,6 +12,7 @@ use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Env\Session;
+use Sharp\Classes\Env\Storage;
 use Sharp\Classes\Web\Router;
 
 /**
@@ -103,3 +104,74 @@ function error    (mixed ...$messages) { Logger::getInstance()->error(...$messag
 function critical (mixed ...$messages) { Logger::getInstance()->critical(...$messages);  }
 function alert    (mixed ...$messages) { Logger::getInstance()->alert(...$messages);     }
 function emergency(mixed ...$messages) { Logger::getInstance()->emergency(...$messages); }
+
+
+
+
+
+
+function storeGetNewStorage(string $path)
+{
+    Storage::getInstance()->getNewStorage($path);
+}
+
+function storePath(string $path)
+{
+    Storage::getInstance()->path($path);
+}
+
+function storeMakeDirectory(string $name)
+{
+    Storage::getInstance()->makeDirectory($name);
+}
+
+function storeGetStream(string $path, string $mode="r", bool $autoclose=true)
+{
+    Storage::getInstance()->getStream($path, $mode, $autoclose);
+}
+
+function storeWrite(string $path, string $content, int $flags=0)
+{
+    Storage::getInstance()->write($path, $content, $flags);
+}
+
+function storeRead(string $path)
+{
+    Storage::getInstance()->read($path);
+}
+
+function storeIsFile(string $path)
+{
+    Storage::getInstance()->isFile($path);
+}
+
+function storeIsDirectory(string $path)
+{
+    Storage::getInstance()->isDirectory($path);
+}
+
+function storeUnlink(string $path)
+{
+    Storage::getInstance()->unlink($path);
+}
+
+function storeRemoveDirectory(string $path)
+{
+    Storage::getInstance()->removeDirectory($path);
+}
+
+function storeExploreDirectory(string $path, int $mode=Storage::NO_FILTER)
+{
+    Storage::getInstance()->exploreDirectory($path, $mode);
+}
+
+function storeListFiles(string $path="/")
+{
+    Storage::getInstance()->listFiles($path);
+}
+
+function storeListDirectories(string $path="/")
+{
+    Storage::getInstance()->listDirectories($path);
+}
+
