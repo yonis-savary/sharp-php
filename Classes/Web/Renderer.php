@@ -30,8 +30,7 @@ class Renderer
 
     public function __construct()
     {
-        $this->loadConfiguration();
-        $this->cached = $this->configuration['cached'];
+        $this->cached = $this->getConfiguration()['cached'];
     }
 
     /**

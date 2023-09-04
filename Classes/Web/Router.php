@@ -32,7 +32,7 @@ class Router
     public function __construct(Cache $cache=null)
     {
         $this->cache = $cache ?? Cache::getInstance();
-        $this->loadConfiguration();
+        $this->getConfiguration();
     }
 
     public static function getDefaultConfiguration(): array

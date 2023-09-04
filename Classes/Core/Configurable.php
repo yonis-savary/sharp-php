@@ -8,7 +8,7 @@ use Sharp\Classes\Env\Config;
  * Configurable classes can be configured through any Config object
  * To implement a Configurable class:
  * 1. implements `getDefaultConfiguration()` which return a complete default configuration
- * 2. call `$this->loadConfiguration()` in your constructor/code
+ * 2. Use `getConfiguration()` to load/read the configuration
  */
 trait Configurable
 {
@@ -50,16 +50,6 @@ trait Configurable
     }
 
     /**
-     * Load the configuration from the given or global Config instance
-     * and the key given by `getConfigurationKey()`
-     */
-    final public function loadConfiguration(Config $config=null)
-    {
-        $this->configuration = self::readConfiguration($config);
-        $this->configurationIsLoaded = true;
-    }
-
-    /**
      * @return bool `true` or `false` depending if the configuration is loaded
      */
     final public function configurationIsLoaded(): bool
@@ -74,16 +64,23 @@ trait Configurable
      */
     final public function isEnabled(): bool
     {
-        return boolval($this->configuration["enabled"] ?? false);
+        return boolval($this->getConfiguration()["enabled"] ?? false);
     }
 
-    final public function getConfiguration(): array
+    final public function getConfiguration(Config $config=null): array
     {
+        if ((!$this->configurationIsLoaded()) || $config)
+            $this->setConfiguration(self::readConfiguration($config));
+
         return $this->configuration;
     }
 
     final public function setConfiguration(array $config)
     {
-        $this->configuration = $config;
+        $this->configuration = array_merge(
+            $this->configuration ?? self::getDefaultConfiguration(),
+            $config
+        );
+        $this->configurationIsLoaded = true;
     }
 }

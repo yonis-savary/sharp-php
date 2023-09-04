@@ -53,10 +53,7 @@ trait Component
     final public static function setInstance(self $newInstance)
     {
         if (Utils::uses($newInstance, "\Sharp\Classes\Core\Configurable"))
-        {
-            if (!$newInstance->isConfigurationLoaded())
-                $newInstance->loadConfiguration();
-        }
+            $newInstance->getConfiguration();
 
         self::$instance = $newInstance;
     }

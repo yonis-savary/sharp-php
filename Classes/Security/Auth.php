@@ -41,12 +41,12 @@ class Auth
     {
         $this->session = $session ?? Session::getInstance();
 
-        $this->loadConfiguration($config);
+        $config = $this->getConfiguration();
 
-        $model = $this->model = $this->configuration["model"];
-        $loginField = $this->loginField = $this->configuration["login-field"];
-        $passwordField = $this->passwordField = $this->configuration["password-field"];
-        $saltField = $this->saltField = $this->configuration["salt-field"];
+        $model         = $this->model         = $config["model"];
+        $loginField    = $this->loginField    = $config["login-field"];
+        $passwordField = $this->passwordField = $config["password-field"];
+        $saltField     = $this->saltField     = $config["salt-field"];
 
         if (!class_exists($model))
             throw new InvalidArgumentException("[$model] class does not exists");

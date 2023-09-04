@@ -22,7 +22,7 @@ class Autobahn
     public function __construct(Router $router=null)
     {
         $this->router = $router ?? Router::getInstance();
-        $this->loadConfiguration();
+        $this->getConfiguration();
     }
 
     /**

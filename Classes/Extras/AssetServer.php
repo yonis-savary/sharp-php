@@ -32,9 +32,14 @@ class AssetServer
         self::getInstance()->handleIfEnabled();
     }
 
+    public function __construct()
+    {
+        $this->getConfiguration();
+    }
+
+
     public function handleIfEnabled()
     {
-        $this->loadConfiguration();
         if (!$this->isEnabled())
             return;
 
