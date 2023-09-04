@@ -2,7 +2,6 @@
 
 namespace Sharp\Classes\Http\Classes;
 
-use Exception;
 use Sharp\Core\Utils;
 
 /**
@@ -23,6 +22,9 @@ class UploadFile
     const KB = 1024;
     const MB = 1024**2;
     const GB = 1024**3;
+
+    /** Target directory does not exists */
+    const REASON_OK = 1<<0 ;
 
     /** Target directory does not exists */
     const REASON_INEXISTANT_DIRECTORY = 1<<1 ;
@@ -55,7 +57,7 @@ class UploadFile
 
     protected bool $wasMoved = false;
 
-    protected ?int $failReason = null;
+    protected int $failReason = self::REASON_OK;
 
     /**
      * @param array $data Data from PHP $_FILES
@@ -110,14 +112,14 @@ class UploadFile
      * @param string $destination Target directory
      * @param string $newName New name of the file, a name is generated if null is given
      * @param bool $makeDirectory On true: allow to create the target directory if not existant
-     * @return bool `true` on success, `false` on fail, see `getFailReason()` to get the reason behind a failure
+     * @return string|false The new file path on success, `false` on fail, see `getFailReason()` to get the reason behind a failure
      */
-    public function move(string $destination, string $newName=null, bool $makeDirectory=true): bool
+    public function move(string $destination, string $newName=null, bool $makeDirectory=true): string|false
     {
-        if (!$this->movable())
-            throw new Exception("File cannot be moved when already moved somewhere!");
+        if ($this->isMoved())
+            return false;
 
-        $this->failReason = null;
+        $this->failReason = self::REASON_OK;
 
         $dirname = dirname($destination);
         $this->newName = $newName ?? $this->makeUniqueName();
@@ -148,7 +150,7 @@ class UploadFile
             return $this->failWithReason(self::REASON_INVALID_NEW_SIZE);
 
         $this->wasMoved = true;
-        return true;
+        return $this->newPath;
     }
 
     /**
@@ -160,6 +162,11 @@ class UploadFile
      * @return string original file basename
      */
     public function getName(): string { return $this->name; }
+
+    /**
+     * @return string temp file path
+     */
+    public function getTempName(): string { return $this->tempName; }
 
     /**
      * @return string file MIME type
