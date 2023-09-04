@@ -2,6 +2,8 @@
 
 namespace Sharp\Classes\Core;
 
+use Sharp\Core\Utils;
+
 /**
  * `AbstractStorage` is a way to store `key-values` data
  * in a class, which got very simple methods like 'set', 'get', 'has'...
@@ -77,5 +79,10 @@ abstract class AbstractStorage
             if (array_key_exists($key, $this->storage))
                 unset($this->storage[$key]);
         }
+    }
+
+    final public function toArray(string $key): array
+    {
+        return Utils::toArray($this->get($key, []));
     }
 }
