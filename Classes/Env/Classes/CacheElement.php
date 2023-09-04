@@ -79,19 +79,24 @@ class CacheElement
     /**
      * Save the file if needed, otherwise it won't do anything
      * @param Storage $storage Storage to save the file in
+     * @return ?string Saved file path or null if not saved
      */
-    public function save(Storage $storage): void
+    public function save(Storage $storage): ?string
     {
         if ($this->file && (!$this->edited))
-            return;
+            return null;
 
         if (!$this->content)
-            return;
+            return null;
+
+        $filename = join("_", [$this->creationDate, $this->timeToLive, $this->key]);
 
         $storage->write(
-            join("_", [$this->creationDate, $this->timeToLive, $this->key]),
+            $filename,
             serialize($this->content)
         );
+
+        return $storage->path($filename);
     }
 
     public function delete(): void

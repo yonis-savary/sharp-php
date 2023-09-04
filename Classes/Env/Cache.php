@@ -98,7 +98,10 @@ class Cache
      */
     public function delete(string $key): void
     {
-        if ($this->has($key))
-            $this->index[$key]->delete();
+        if (!$this->has($key))
+            return;
+
+        $this->index[$key]->delete();
+        unset($this->index[$key]);
     }
 }
