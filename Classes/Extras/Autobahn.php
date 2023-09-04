@@ -66,8 +66,8 @@ class Autobahn
             {
                 $params = $req->all();
                 $query = new DatabaseQuery($model::getTable(), DatabaseQuery::INSERT);
-                $query->setInsertField(...array_keys($params));
-                $query->insertValues(...array_values($params));
+                $query->setInsertField(array_keys($params));
+                $query->insertValues(array_values($params));
 
                 foreach ($middlewares as $middleware)
                     $middleware($query);

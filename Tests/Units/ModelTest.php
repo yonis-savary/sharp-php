@@ -4,9 +4,12 @@ namespace Sharp\Tests\Units;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Sharp\Classes\Data\Database;
 use Sharp\Classes\Data\DatabaseQuery;
 use Sharp\Classes\Data\Model;
 use Sharp\Classes\Data\DatabaseField;
+use Sharp\Tests\Models\User;
+use Sharp\Tests\Models\UserData;
 
 class ModelTest extends TestCase
 {
@@ -136,4 +139,22 @@ class ModelTest extends TestCase
         (new $user(["id" => 1, "login" => "admin"]))->validate();
     }
 
+    public function test_insertArray()
+    {
+        $db = Database::getInstance();
+        $nextId = $db->query("SELECT MAX(id) + 1 as next FROM user_data")[0]["next"];
+
+        $inserted = UserData::insertArray([
+            "fk_user" => 1,
+            "data" => "someString"
+        ]);
+
+        $this->assertEquals($nextId, $inserted);
+    }
+
+    public function test_fromId()
+    {
+        $this->assertIsArray(User::fromId(1));
+        $this->assertNull(User::fromId(1309809));
+    }
 }

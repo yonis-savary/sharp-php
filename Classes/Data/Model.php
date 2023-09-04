@@ -4,6 +4,7 @@ namespace Sharp\Classes\Data;
 
 use InvalidArgumentException;
 use Sharp\Classes\Data\DatabaseField;
+use Sharp\Core\Utils;
 
 /**
  * Classes that uses `Model` represents tables from your Database
@@ -71,7 +72,7 @@ trait Model
 
     public static function insert(): DatabaseQuery
     {
-        return (new DatabaseQuery(self::getTable(), DatabaseQuery::INSERT))->setInsertField(self::getTable(), ...self::getFieldNames());
+        return (new DatabaseQuery(self::getTable(), DatabaseQuery::INSERT))->setInsertField(self::getFieldNames());
     }
 
     public static function select(): DatabaseQuery
@@ -94,6 +95,26 @@ trait Model
     public function toArray(): array
     {
         return $this->data;
+    }
+
+    public static function insertArray(array $data, Database $database=null): ?int
+    {
+        if (!Utils::isAssoc($data))
+            throw new InvalidArgumentException("Given data must be an associative array !");
+
+        $database ??= Database::getInstance();
+
+        $insert = new DatabaseQuery(self::getTable(), DatabaseQuery::INSERT);
+        $insert->setInsertField(array_keys($data));
+        $insert->insertValues(array_values($data));
+        $insert->fetch($database);
+
+        return $database->lastInsertId();
+    }
+
+    public static function fromId(int $id): ?array
+    {
+        return self::select()->where(self::getPrimaryKey(), $id)->first();
     }
 
     public static function validate(array $data=null): bool

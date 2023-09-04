@@ -60,13 +60,13 @@ class DatabaseQuery
         return $this;
     }
 
-    public function setInsertField(string ...$fields): self
+    public function setInsertField(array $fields): self
     {
         $this->insertFields = $fields;
         return $this;
     }
 
-    public function insertValues(mixed ...$values): self
+    public function insertValues(array $values): self
     {
         if (!count($this->insertFields))
             throw new Exception("Cannot insert values until insert fields are defined");
