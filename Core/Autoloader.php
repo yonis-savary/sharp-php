@@ -133,6 +133,10 @@ class Autoloader
         if (!is_dir($application))
             throw new InvalidArgumentException("[$application] is not a directory !");
 
+        $vendorFile = Utils::joinPath($application, "vendor/autoload.php");
+        if (is_file($vendorFile))
+            require_once $vendorFile;
+
         foreach (Utils::listDirectories($application) as $directory)
         {
             $basename = basename($directory);
