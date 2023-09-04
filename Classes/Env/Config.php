@@ -20,8 +20,6 @@ class Config extends AbstractStorage
 
     public function __construct(string $filename=null)
     {
-        parent::__construct();
-
         if (!$filename)
             return;
 

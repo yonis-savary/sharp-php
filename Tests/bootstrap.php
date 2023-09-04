@@ -11,19 +11,27 @@ use Sharp\Core\Utils;
 
 require_once __DIR__ . "/../bootstrap.php";
 
-Autoloader::loadApplication("Sharp/Tests");
+/*
+
+This script purpose is to be an alternative to /Sharp/bootstrap.php
+
+The goal is to make a good envrionment to Test (with Database, Config...etc)
+------------------------------------------------
+
+*/
 
 $defaultStorage = Storage::getInstance();
 $defaultLogger = Logger::getInstance();
 
-$tmpStorage = new Storage(Utils::relativePath("Sharp/Tests/tmp_test_storage"));
-Storage::setInstance($tmpStorage);
 
-Config::setInstance(
-    new Config(Utils::relativePath("Sharp/Tests/config.json"))
-);
+Autoloader::loadApplication("Sharp/Tests");
 
-Cache::setInstance( new Cache($tmpStorage, "Cache")  );
+
+$testStorage = new Storage(Utils::relativePath("Sharp/Tests/tmp_test_storage"));
+
+Storage::setInstance($testStorage);
+Config::setInstance(new Config(Utils::relativePath("Sharp/Tests/config.json")));
+Cache::setInstance(new Cache($testStorage, "Cache"));
 
 
 $database = Database::getInstance();
@@ -35,19 +43,23 @@ $schema = array_filter($schema);
 foreach ($schema as $line)
     $database->query($line);
 
-ModelGenerator::getInstance()->generateAll(Utils::relativePath("Sharp/Tests"));
 
-register_shutdown_function(function () use (&$tmpStorage){
+$generator = ModelGenerator::getInstance();
+$generator->generateAll(Utils::relativePath("Sharp/Tests"));
 
-    $files = array_reverse($tmpStorage->exploreDirectory(mode: Storage::ONLY_FILES));
-    $dirs = array_reverse($tmpStorage->exploreDirectory(mode: Storage::ONLY_DIRS));
+/*
+    Remove every files in the Test Storage before deleting the directory
+*/
+register_shutdown_function(function () use (&$testStorage){
+
+    $files = array_reverse($testStorage->exploreDirectory(mode: Storage::ONLY_FILES));
+    $dirs = array_reverse($testStorage->exploreDirectory(mode: Storage::ONLY_DIRS));
 
     foreach ($files as $file)
-        $tmpStorage->unlink($file);
+        $testStorage->unlink($file);
 
     foreach ($dirs as $directory)
-        $tmpStorage->removeDirectory($directory);
+        $testStorage->removeDirectory($directory);
 
-    $tmpStorage->removeDirectory($tmpStorage->getRoot());
+    $testStorage->removeDirectory($testStorage->getRoot());
 });
-// */

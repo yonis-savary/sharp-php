@@ -96,8 +96,8 @@ class Storage
     public function getStream(string $path, string $mode="r", bool $autoclose=true)
     {
         $path = $this->path($path);
-        $stream = fopen($path, $mode);
-        if (!$stream)
+
+        if (!($stream = fopen($path, $mode)))
             throw new RuntimeException("Could not open [$path] with mode [$mode]");
 
         if ($autoclose)

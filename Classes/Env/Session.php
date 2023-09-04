@@ -22,6 +22,11 @@ class Session extends AbstractStorage
             session_start(["save_path" => $storage->getRoot()]);
         }
 
-        return new self($_SESSION);
+        return new self();
+    }
+
+    public function __construct()
+    {
+        parent::__construct($_SESSION);
     }
 }
