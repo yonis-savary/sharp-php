@@ -17,7 +17,9 @@ class Console
     public function listCommands(): array
     {
         $classes = Autoloader::classesThatExtends(Command::class);
-        return array_map(fn($x) => new $x(), $classes);
+        $classes = array_map(fn($x) => new $x(), $classes);
+        $classes = array_filter($classes, fn($x) => $x->getOrigin() != "tests");
+        return $classes;
     }
 
     /**
