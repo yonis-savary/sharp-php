@@ -136,18 +136,18 @@ class Autobahn
         list($model, $middlewares) = self::extractRequestData($request);
 
         $query = new DatabaseQuery($model::getTable(), DatabaseQuery::SELECT);
-        $query->exploreModel(
-            $model,
-            $request->params("_join") ?? true,
-            Utils::toArray($request->params("_ignores") ?? [])
-        );
+
+        $doJoin = boolval($request->params("_join") ?? true);
+        $ignores = Utils::toArray($request->params("_ignores") ?? []);
+
+        $request->unset("_ignores", "_joins");
+        $query->exploreModel($model, $doJoin, $ignores);
 
         foreach ($request->all() as $key => $value)
             $query->where($key, $value);
 
         foreach ($middlewares as $middleware)
             $middleware($query);
-
 
         $events = Events::getInstance();
         $events->dispatch("autobahnReadBefore", ["model"=> $model, "query"=> $query]);

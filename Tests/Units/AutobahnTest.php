@@ -98,11 +98,19 @@ class AutobahnTest extends TestCase
         $this->assertArrayHasKey("data", $data["fk_user"]);
         $this->assertArrayHasKey("id", $data["fk_user"]["data"]);
 
-        $this->resetUserDataTable();
+        $res = $router->route(new Request("GET", "/user_data", ["data" => "B", "_ignores" => ["user_data&fk_user"]]));
+        $this->assertCount(1, $res->getContent());
+
+        $data = $res->getContent()[0];
+        $this->assertArrayHasKey("data", $data);
+        $this->assertArrayHasKey("data", $data["data"]);
+        $this->assertArrayNotHasKey("fk_user", $data);
     }
 
     public function test_update()
     {
+        $this->resetUserDataTable();
+
         list($autobahn, $router) = $this->getNewAutobahn();
         $db = Database::getInstance();
 
@@ -114,12 +122,12 @@ class AutobahnTest extends TestCase
 
         $router->route(new Request("PUT", "/user_data", ["id" => 1, "data" => "Z"]));
         $this->assertEquals("Z", $db->query("SELECT data FROM user_data WHERE id = 1")[0]["data"]);
-
-        $this->resetUserDataTable();
     }
 
     public function test_delete()
     {
+        $this->resetUserDataTable();
+
         list($autobahn, $router) = $this->getNewAutobahn();
         $autobahn->delete(UserData::class);
         $this->assertCount(1, $router->getRoutes());
@@ -130,8 +138,6 @@ class AutobahnTest extends TestCase
         # Dangerous query prevention
         $router->route(new Request("DELETE", "/user_data"));
         $this->assertTableCount(2);
-
-        $this->resetUserDataTable();
     }
 
 }
