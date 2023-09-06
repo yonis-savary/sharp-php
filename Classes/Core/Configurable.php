@@ -29,7 +29,7 @@ trait Configurable
      *
      * @example name `MyComponentThatFetch` will give `my-component-that-fetch`
      * @return string Key to load in the configuration
-     * @note It is not advised to override this method but not forbidden
+     * @note It is not advised (but not forbidden) to override this method
      */
     public static function getConfigurationKey(): string
     {

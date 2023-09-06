@@ -34,15 +34,11 @@ class Dependencies extends AbstractBuildTask
             return print("Skipping [$appName] (no composer.json)\n");
 
         if ($app->isDirectory("vendor"))
-        {
-            echo "Skipping [$appName] (Already installed)\n";
-        }
-        else
-        {
-            echo "Installing in [$appName]\n";
-            echo "---\n";
-            $this->shellInDirectory("composer install", $appPath);
-            echo "---\n";
-        }
+            return print("Skipping [$appName] (Already installed)\n");
+
+        echo "Installing in [$appName]\n";
+        echo "---\n";
+        $this->shellInDirectory("composer install", $appPath);
+        echo "---\n";
     }
 }
