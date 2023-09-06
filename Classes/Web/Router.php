@@ -105,6 +105,23 @@ class Router
         }
     }
 
+    /**
+     * Create a Group route that your can re-use whith `group()`
+     */
+    public function createGroup(
+        string|array $urlPrefix,
+        string|array $middlewares
+    ): array {
+        return [
+            "path" => Utils::toArray($urlPrefix),
+            "middlewares" => Utils::toArray($middlewares),
+        ];
+    }
+
+    /**
+     * Group routes that are declared in given callback
+     * @note You can easily create a group by `createGroup()`
+     */
     public function group(
         array $group,
         callable $callback

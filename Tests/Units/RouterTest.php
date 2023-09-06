@@ -70,6 +70,24 @@ class RouterTest extends TestCase
             $this->assertStringStartsWith("/api", $route->getPath());
             $this->assertEquals([RequestHasPostData::class], $route->getMiddlewares());
         }
+
+        $r->deleteRoutes();
+
+        $r->group(
+            $r->createGroup("api", RequestHasPostData::class)
+        , function($r) {
+            $r->addRoutes(
+                Route::get("/", fn()=>false),
+                Route::post("/login", fn()=>false)
+            );
+        });
+
+        $this->assertCount(2, $r->getRoutes());
+        foreach ($r->getRoutes() as $route)
+        {
+            $this->assertStringStartsWith("/api", $route->getPath());
+            $this->assertEquals([RequestHasPostData::class], $route->getMiddlewares());
+        }
     }
 
     /*
