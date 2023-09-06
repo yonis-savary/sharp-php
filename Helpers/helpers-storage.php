@@ -35,9 +35,9 @@ function storePath(string $path): string
  *
  * @param string $name Relative path of the new directory (relative to your main Storage directory)
  */
-function storeMakeDirectory(string $name)
+function storeMakeDirectory(string $path): void
 {
-    Storage::getInstance()->makeDirectory($name);
+    Storage::getInstance()->makeDirectory($path);
 }
 
 /**
@@ -64,7 +64,7 @@ function storeGetStream(string $path, string $mode="r", bool $autoclose=true): m
  * @param int $flags Flags for `file_put_contents()`
  * @link https://www.php.net/manual/en/function.file-put-contents.php
  */
-function storeWrite(string $path, string $content, int $flags=0)
+function storeWrite(string $path, string $content, int $flags=0): void
 {
     Storage::getInstance()->write($path, $content, $flags);
 }

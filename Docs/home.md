@@ -21,6 +21,7 @@ Core
 - 💻 [CLI command](./core/commands.md)
 - 📃 [Logging](./core/logging.md)
 - 🔏 [Session](./core/session.md)
+- 🌐 [Code Helpers](./core/helpers.md)
 
 Core (Advanced):
 - [📦 Storage](./env/storage.md)

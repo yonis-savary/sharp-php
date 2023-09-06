@@ -107,20 +107,16 @@ function addRoutes(Route ...$routes): void
 /**
  * Shortcut to `Router::getInstance()->createGroup()`
  */
-function createGroup(
-    string|array $urlPrefix,
-    string|array $middlewares
-): array {
+function createGroup(string|array $urlPrefix, string|array $middlewares): array
+{
     return Router::getInstance()->createGroup($urlPrefix, $middlewares);
 }
 
 /**
  * Shortcut to `Router::getInstance()->groupRoutes()`
  */
-function groupRoutes(
-    array $group,
-    callable $routeDeclaration
-): void {
+function groupRoutes(array $group, callable $routeDeclaration): void
+{
     $router = Router::getInstance();
     $router->group($group, $routeDeclaration);
 }
@@ -169,7 +165,7 @@ function query(string $query, array $context=[]): array
  * @param string $event Target event name
  * @param callable ...$callbacks Callbacks to call when $event is triggered
  */
-function onEvent(string $event, callable ...$callbacks)
+function onEvent(string $event, callable ...$callbacks): void
 {
     $events = Events::getInstance();
 

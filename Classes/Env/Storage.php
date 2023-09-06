@@ -85,13 +85,13 @@ class Storage
     /**
      * Make a new directory in your main Storage
      *
-     * @param string $name Relative path of the new directory (relative to the Storage root)
+     * @param string $path Relative path of the new directory (relative to the Storage root)
      */
-    public function makeDirectory(string $name): void
+    public function makeDirectory(string $path): void
     {
-        $name = $this->path($name);
-        if (!is_dir($name))
-            mkdir($name, recursive: true);
+        $path = $this->path($path);
+        if (!is_dir($path))
+            mkdir($path, recursive: true);
     }
 
     /**

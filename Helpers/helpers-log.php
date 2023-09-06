@@ -93,7 +93,7 @@ function alert(mixed ...$messages)
  *
  * @param mixed ...$messages Informations to log (Not necessary a string)
  */
-function emergenc(mixed ...$messages)
+function emergency(mixed ...$messages)
 {
     Logger::getInstance()->emergency(...$messages);
 }
