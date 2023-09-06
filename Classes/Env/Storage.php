@@ -69,8 +69,10 @@ class Storage
     }
 
     /**
-     * @param string Absolute/Relative path to adapt
-     * @return string Adapted path relative to the Storage root directory
+     * Get an absolute path from a relative one
+     *
+     * @param string $path Relative path to get (relative to the Storage root)
+     * @return string Absolute path from given relative path
      */
     public function path(string $path): string
     {
@@ -80,6 +82,11 @@ class Storage
         return Utils::joinPath($this->root, $path);
     }
 
+    /**
+     * Make a new directory in your main Storage
+     *
+     * @param string $name Relative path of the new directory (relative to the Storage root)
+     */
     public function makeDirectory(string $name): void
     {
         $name = $this->path($name);
@@ -88,10 +95,13 @@ class Storage
     }
 
     /**
-     * @param string $path Relative/Absolute path to open
-     * @param string $mode fopen() mode
-     * @param bool $autoclose If `true`, you don't need to close requested resource manually
-     * @return resource
+     * Get a resource (create it if needed)
+     *
+     * @param string $path Relative name (relative to the Storage root)
+     * @param string $mode Mode for `fopen()`
+     * @param bool $autoclose If `true`, the storage will close returned stream on desctruct
+     * @return resource Opened resource
+     * @link https://www.php.net/manual/en/function.fopen.php
      */
     public function getStream(string $path, string $mode="r", bool $autoclose=true)
     {
@@ -107,9 +117,10 @@ class Storage
     }
 
     /**
-     * @param string $path Relative/Absolute path to write
+     * @param string $path Relative path to write (relative to the Storage root)
      * @param string $content Content to write
-     * @param int $flags file_put_contents() flags
+     * @param int $flags Flags for `file_put_contents()`
+     * @link https://www.php.net/manual/en/function.file-put-contents.php
      */
     public function write(string $path, string $content, int $flags=0): void
     {
@@ -122,22 +133,38 @@ class Storage
         file_put_contents($path, $content, $flags);
     }
 
+    /**
+     * @param string File's to read relative path (relative to the Storage root)
+     * @return string File's content
+     */
     public function read(string $path): string
     {
         $path = $this->path($path);
         return file_get_contents($path);
     }
 
+    /**
+     * @param string File to check (relative to the Storage root)
+     * @return bool `true` if the target is a file, `false` otherwise
+     */
     public function isFile(string $path): bool
     {
         return is_file($this->path($path));
     }
 
+    /**
+     * @param string Directory to check (relative to the Storage root)
+     * @return bool `true` if the target is a directory, `false` otherwise
+     */
     public function isDirectory(string $path): bool
     {
         return is_dir($this->path($path));
     }
 
+    /**
+     * @param string File to unlink (relative to the Storage root)
+     * @return bool `true` on success, `false` on failure
+     */
     public function unlink(string $path): bool
     {
         $path = $this->path($path);
@@ -146,6 +173,11 @@ class Storage
             true;
     }
 
+    /**
+     * Remove an EMPTY directory
+     *
+     * @param string Directory to remove (relative to the Storage root)
+     */
     public function removeDirectory(string $path): bool
     {
         $path = $this->path($path);
@@ -154,19 +186,38 @@ class Storage
             true;
     }
 
-    public function exploreDirectory(string $path="/", int $mode=self::NO_FILTER)
+    /**
+     * Explore a directory and return every sub-dir/files absolute path
+     *
+     * @param string Directory to explore (relative to the Storage root)
+     * @param int $mode `Storage::NO_FILTER|ONLY_DIR|ONLY_FILES` flag to filter the results
+     * @return array List of absolute sub-dirs/files paths (unless filtered with `$mode`)
+     */
+    public function exploreDirectory(string $path="/", int $mode=self::NO_FILTER): array
     {
         $path = $this->path($path);
         return Utils::exploreDirectory($path, $mode);
     }
 
-    public function listFiles(string $path="/")
+    /**
+     * List direct files in a directory
+     *
+     * @param string $path Path to list (relative to the Storage root)
+     * @return array List of direct files in given directory
+     */
+    public function listFiles(string $path="/"): array
     {
         $path = $this->path($path);
         return Utils::listFiles($path);
     }
 
-    public function listDirectories(string $path="/")
+    /**
+     * List direct directories in a directory
+     *
+     * @param string $path Path to list (relative to the Storage root)
+     * @return array List of direct directories in given directory
+     */
+    public function listDirectories(string $path="/"): array
     {
         $path = $this->path($path);
         return Utils::listDirectories($path);

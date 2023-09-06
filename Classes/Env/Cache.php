@@ -71,6 +71,8 @@ class Cache
     /**
      * Alias to `get($key, false)`, can be used
      * in assignement-conditions for better readability
+     *
+     * @return mixed Key value, `false` on failure
      */
     public function try(string $key): mixed
     {
@@ -95,6 +97,8 @@ class Cache
 
     /**
      * Delete the object from the cache (useful for persitent objects)
+     *
+     * @param string $key Key to unset
      */
     public function delete(string $key): void
     {

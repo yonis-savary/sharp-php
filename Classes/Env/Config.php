@@ -36,7 +36,7 @@ class Config extends AbstractStorage
     }
 
     /**
-     * @param string $path This parameter can be used as a "Save As..." feature to copy a configuration, if null, the current path is used
+     * @param string $path This parameter can be used as a "Save As..." feature to copy a configuration, if `null`, the current path is used
      */
     public function save(string $path=null): void
     {
