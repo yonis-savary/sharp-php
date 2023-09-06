@@ -86,7 +86,7 @@ class DatabaseQuery
         return $this;
     }
 
-    public function exploreModel(string $model): self
+    public function exploreModel(string $model, bool $recursive=true, array $foreignKeyIgnores=[]): self
     {
         if (!Utils::uses($model, "Sharp\Classes\Data\Model"))
             throw new InvalidArgumentException("[$model] must use model trait");
@@ -112,11 +112,13 @@ class DatabaseQuery
             ];
         }
 
-        $this->exploreReferences($references);
+        if ($recursive)
+            $this->exploreReferences($references, $foreignKeyIgnores);
+
         return $this;
     }
 
-    protected function exploreReferences($references): void
+    protected function exploreReferences($references, array $foreignKeyIgnores=[]): void
     {
         $nextReferences = [];
 
@@ -124,6 +126,10 @@ class DatabaseQuery
         foreach ($references as [$origin, $field, $model, $target, $tableAcc])
         {
             $targetAcc = "$origin&$field";
+
+            if (in_array($targetAcc, $foreignKeyIgnores))
+                continue;
+
             $this->joins[] = new QueryJoin(
                 "LEFT",
                 $model::getTable(),
