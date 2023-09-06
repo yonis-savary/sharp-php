@@ -15,6 +15,15 @@ function asset(string $target) : string
     return AssetServer::getInstance()->getURL($target);
 }
 
+/**
+ * Get a script tag for your view
+ *
+ * @param string $target Asset name used for `AssetServer->getURL()`
+ * @param bool $inject If `true`, returned string contains the file content directly,
+ *             if false, the attribute src will contain an URL to the file
+ * @return string `script` tag with the script linked to it or inside directly (see the `$inject` parameter)
+ * @see \Sharp\Classes\Extras\AssetServer::getUrl()
+ */
 function script(string $target, bool $inject=false): string
 {
     return $inject ?
@@ -22,6 +31,16 @@ function script(string $target, bool $inject=false): string
         "<script src='".asset($target)."'></script>";
 }
 
+/**
+ * Get a script tag for your view
+ *
+ * @param string $target Asset name used for `AssetServer->getURL()`
+ * @param bool $inject If `true`, returned string contains the file content directly,
+ *             if false, the attribute href will contain an URL to the file
+ * @return string `link` tag with the stylesheet linked to it,
+ *                or a `style` tag with the stylesheet inside directly injected (see the `$inject` parameter)
+ * @see \Sharp\Classes\Extras\AssetServer::getUrl()
+ */
 function style(string $target, bool $inject=false): string
 {
     return $inject ?
