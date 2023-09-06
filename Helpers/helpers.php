@@ -8,6 +8,7 @@
  * it is easier to create an alias for common actions
  */
 
+use Sharp\Classes\Core\Events;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Env\Cache;
@@ -107,6 +108,19 @@ function emergency(mixed ...$messages) { Logger::getInstance()->emergency(...$me
 
 
 
+
+function onEvent(string $event, callable ...$callbacks)
+{
+    $events = Events::getInstance();
+
+    foreach ($callbacks as $callback)
+        $events->on($event, $callback);
+}
+
+function dispatch(string $event, ...$args)
+{
+    Events::getInstance()->dispatch($event, ...$args);
+}
 
 
 

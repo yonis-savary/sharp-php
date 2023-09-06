@@ -18,7 +18,16 @@ class Events
 
     public function dispatch(string $event, ...$args): void
     {
+        $results = [];
         foreach ($this->handlers[$event] ?? [] as $handler)
-            $handler(...$args);
+            $results[] = $handler(...$args);
+
+        $selfEvent = "dispatchedEvent";
+        if ($event != $selfEvent)
+            $this->dispatch($selfEvent, [
+                "event" => $event,
+                "args" => $args,
+                "results" => $results
+            ]);
     }
 }

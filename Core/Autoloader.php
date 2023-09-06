@@ -5,6 +5,7 @@ namespace Sharp\Core;
 use InvalidArgumentException;
 use RuntimeException;
 use Sharp\Classes\CLI\Terminal;
+use Sharp\Classes\Core\Events;
 use Sharp\Classes\Env\Config;
 use Throwable;
 
@@ -68,6 +69,8 @@ class Autoloader
 
         if (!self::loadAutoloadCache())
             self::loadApplications();
+
+        Events::getInstance()->dispatch("frameworkLoaded");
     }
 
     /**
@@ -107,6 +110,10 @@ class Autoloader
 
             if (is_file($file))
                 require_once $file;
+            else
+                Events::getInstance()->dispatch("autoloadFailed", [
+                    "class" => $class
+                ]);
         });
     }
 
