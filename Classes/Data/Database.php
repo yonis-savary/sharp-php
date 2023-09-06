@@ -4,6 +4,7 @@ namespace Sharp\Classes\Data;
 
 use PDO;
 use PDOException;
+use PDOStatement;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Env\Storage;
@@ -13,6 +14,8 @@ class Database
     use Component, Configurable;
 
     protected ?PDO $connection = null;
+
+    protected PDOStatement $lastStatement;
 
     public static function getDefaultConfiguration(): array
     {
@@ -158,7 +161,14 @@ class Database
         $statement = $this->connection->query($queryWithContext);
         $response = $statement->fetchAll($fetchMode);
 
+        $this->lastStatement = $statement;
+
         return $response;
+    }
+
+    public function getLastStatement(): PDOStatement
+    {
+        return $this->lastStatement;
     }
 
     public function hasTable(string $table): bool

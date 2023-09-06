@@ -5,6 +5,7 @@ namespace Sharp\Classes\Data;
 use Exception;
 use InvalidArgumentException;
 use PDO;
+use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\Classes\QueryCondition;
 use Sharp\Classes\Data\Classes\QueryField;
 use Sharp\Classes\Data\Classes\QueryJoin;
@@ -17,7 +18,11 @@ use Sharp\Core\Utils;
 class DatabaseQuery
 {
     const INSERT = 1;
+    /** Alias of DatabaseQuery::CREATE */
+    const CREATE = 1;
     const SELECT = 2;
+    /** Alias of DatabaseQuery::READ */
+    const READ   = 2;
     const UPDATE = 3;
     const DELETE = 4;
 
@@ -132,9 +137,10 @@ class DatabaseQuery
 
             $this->joins[] = new QueryJoin(
                 "LEFT",
+                new QueryField($origin, $field),
+                "=",
                 $model::getTable(),
                 $targetAcc,
-                new QueryField($origin, $field),
                 $target
             );
 
@@ -218,22 +224,22 @@ class DatabaseQuery
 
     public function join(
         string $mode,
+        QueryField $source,
+        string $joinOperator,
         string $table,
         string $alias,
-        QueryField $source,
-        string $targetField,
-        string $joinOperator="="
+        string $targetField
     ): self {
         if (count($this->joins)+1 >= self::JOIN_LIMIT)
             throw new Exception("Cannot exceed ". self::JOIN_LIMIT . " join statement on a query");
 
         $this->joins[] = new QueryJoin(
             $mode,
+            $source,
+            $joinOperator,
             $table,
             $alias,
-            $source,
-            $targetField,
-            $joinOperator
+            $targetField
         );
         return $this;
     }
@@ -256,7 +262,12 @@ class DatabaseQuery
             "WHERE " . join(" AND \n", array_map($toString, $this->conditions)):
             "";
 
-        $essentials .= join("\n", array_map($toString, $this->orders));
+        $essentials .= count($this->orders) ?
+            "ORDER BY ". join(",\n", array_map($toString, $this->orders)):
+            '';
+
+        if ($this->offset && is_null($this->limit))
+            Logger::getInstance()->logThrowable(new Exception("DatabaseQuery: setting an offset without a limit does not have any effect on the query"));
 
         $essentials .=  $this->limit ?
             " LIMIT $this->limit ". ($this->offset ? "OFFSET $this->offset" : ""):
@@ -312,7 +323,7 @@ class DatabaseQuery
     public function build(): string
     {
         if (!($mode = $this->mode ?? false))
-            throw new Exception("Unconfigured query mode ! Please use setMode() method before building");
+            throw new Exception("Unconfigured query mode ! Please provide a valid DatabaseQuery mode when building");
 
         switch ($mode)
         {
@@ -330,10 +341,16 @@ class DatabaseQuery
         return $res[0] ?? null;
     }
 
-    public function fetch(Database $database=null): array
+    /**
+     * @return array|int Return selected rows if the query is a SELECT query, affected row count otherwise
+     */
+    public function fetch(Database $database=null): array|int
     {
         $database ??= Database::getInstance();
         $res = $database->query($this->build(), [], PDO::FETCH_NUM);
+
+        if ($this->mode !== self::SELECT)
+            return $database->getLastStatement()->rowCount();
 
         $data = [];
 

@@ -15,7 +15,7 @@ class QuerySet
     public function __toString()
     {
         return Database::getInstance()->build(
-            ($this->table ? "`$this->table`." : "") . $this->field." = {}",
+            ($this->table ? "`$this->table`." : "") . "`$this->field` = {}",
             [$this->value]
         );
     }

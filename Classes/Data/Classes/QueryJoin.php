@@ -6,15 +6,15 @@ class QueryJoin
 {
     public function __construct(
         public string $mode,
+        public QueryField $source,
+        public string $joinOperator,
         public string $table,
         public string $alias,
-        public QueryField $source,
-        public string $targetField,
-        public string $joinOperator="="
+        public string $targetField
     ){ }
 
     public function __toString()
     {
-        return "$this->mode JOIN `$this->table` as `$this->alias` ON $this->source $this->joinOperator `$this->alias`.$this->targetField";
+        return "$this->mode JOIN `$this->table` AS `$this->alias` ON $this->source $this->joinOperator `$this->alias`.$this->targetField";
     }
 }

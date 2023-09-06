@@ -16,6 +16,6 @@ class QueryCondition
     public function __toString()
     {
         $field = ($this->table ? "`$this->table`." : "") . $this->field;
-        return Database::getInstance()->build("$field $this->operator {}", [$this->value]);
+        return Database::getInstance()->build("($field $this->operator {})", [$this->value]);
     }
 }
