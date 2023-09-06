@@ -49,7 +49,11 @@ INSERT INTO user (login, password) VALUES ('bob', 'mike');
 SELECT ... FROM user WHERE login = 'bob' AND id = 2
 ```
 
-**(Note, the returned data format is described in the [`Database & Model documentation`](../data/database.md))**
+Note:
+- You can put `_join` (`true|false`) in your request to dis/enable model foreign keys exploration
+- You can also set `_ignores` (`string|array`) to ignores some foreign keys in the model foreign keys exploration
+(example: `ignores = ['user&fk_type']` will ignore any foreign key that pass through the `fk_type` field of the `user` table)
+- The returned data format is described in the [`Database & Model documentation`](../data/database.md))
 
 ### 🟣 UPDATE - update ONE user by using its primary key
 
