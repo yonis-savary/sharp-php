@@ -1,6 +1,6 @@
 <?php
 
-namespace Sharp\Tests\Unit;
+namespace Sharp\Tests\Units;
 
 use PDO;
 use PHPUnit\Framework\TestCase;

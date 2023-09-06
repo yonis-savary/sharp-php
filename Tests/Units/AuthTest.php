@@ -1,6 +1,6 @@
 <?php
 
-namespace Sharp\Tests\Unit;
+namespace Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Security\Auth;
