@@ -127,13 +127,9 @@ class AutobahnTest extends TestCase
         $router->route(new Request("DELETE", "/user_data", ["id" => 1]));
         $this->assertTableCount(2);
 
-        $autobahn->setConfiguration(["prevent-dangerous-delete" => true]);
+        # Dangerous query prevention
         $router->route(new Request("DELETE", "/user_data"));
         $this->assertTableCount(2);
-
-        $autobahn->setConfiguration(["prevent-dangerous-delete" => false]);
-        $router->route(new Request("DELETE", "/user_data"));
-        $this->assertTableCount(0);
 
         $this->resetUserDataTable();
     }
