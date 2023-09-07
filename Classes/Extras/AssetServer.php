@@ -4,6 +4,7 @@ namespace Sharp\Classes\Extras;
 
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
+use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
@@ -13,15 +14,20 @@ class AssetServer
 {
     use Component, Configurable;
 
+    const CACHE_KEY = "sharp.asset-server.path-index";
+
     const EXTENSIONS_MIMES = [
         "js" => "application/javascript"
     ];
+
+    protected $cacheIndex = [];
 
     public static function getDefaultConfiguration(): array
     {
         return [
             "enabled" => true,
             "path" => "/assets",
+            "cached" => false,
             "middlewares" => [],
             "max-age" => false
         ];
@@ -35,6 +41,10 @@ class AssetServer
     public function __construct()
     {
         $this->getConfiguration();
+
+        $this->cacheIndex = $this->configuration["cached"] ?
+            Cache::getInstance()->getReference(self::CACHE_KEY):
+            [];
     }
 
 
@@ -47,16 +57,33 @@ class AssetServer
         $this->handleRequest($req);
     }
 
+    /**
+     * Find an asset absolute path from its path end
+     *
+     * @param string $assetName Requested asset name path's end
+     * @return string|false Absolute asset's path or false if not found
+     */
     public function findAsset(string $assetName): string|false
     {
+        if ($path = $this->cacheIndex[$assetName] ?? false)
+            return $path;
+
         foreach (Autoloader::getListFiles(Autoloader::ASSETS) as $file)
         {
-            if (str_ends_with($file, $assetName))
-                return $file;
+            if (!str_ends_with($file, $assetName))
+                continue;
+
+            $this->cacheIndex[$assetName] = $file;
+
+            return $file;
         }
         return false;
     }
 
+    /**
+     * @param string $assetName Requested asset name path's end
+     * @return string An URL that will work with the assetServer internal route
+     */
     public function getURL(string $assetName): string
     {
         $routePath = $this->configuration["path"];

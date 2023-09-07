@@ -100,8 +100,23 @@ class CacheTest extends TestCase
 
         $filename = $element->save($storage);
 
+        $this->assertIsString($filename);
+
         $this->assertInstanceOf(CacheElement::class, CacheElement::fromFile($filename));
-        sleep(2);
+        sleep(1);
         $this->assertNull(CacheElement::fromFile($filename));
+    }
+
+    public function test_getReference()
+    {
+        $cache = $this->getDummyCache();
+
+        $reference = &$cache->getReference("my-key");
+        $reference = 5;
+
+        $this->assertEquals(5, $cache->get("my-key"));
+
+        $reference = 10;
+        $this->assertEquals(10, $cache->get("my-key"));
     }
 }

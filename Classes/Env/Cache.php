@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Env;
 
+use RuntimeException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Env\Classes\CacheElement;
 
@@ -34,10 +35,18 @@ class Cache
         $storage->assertIsWritable();
         $this->storage = $storage;
 
+        $cacheKeys = [];
         foreach ($this->storage->listFiles() as $file)
         {
-            if ($element = CacheElement::fromFile($file))
-                $this->index[$element->key] = $element;
+            if (!($element = CacheElement::fromFile($file)))
+                continue;
+
+            $key = $element->key;
+            if (in_array($key, $cacheKeys))
+                throw new RuntimeException("Duplicate key in cache directory [$key]");
+
+            $cacheKeys[] = $key;
+            $this->index[$key] = $element;
         }
     }
 
@@ -66,6 +75,21 @@ class Cache
             return $default;
 
         return $this->index[$key]->getContent();
+    }
+
+    /**
+     * Get a cache element content that you can edit directly
+     *
+     * @param mixed $defaultStarted default value to put in cache in case the key does not exists
+     * @note don't forget to put '&' before calling this method
+     * @example NULL `$ref = &$cache->getReference("key")`
+     */
+    public function &getReference(string $key, mixed $defaultStarter=[]): mixed
+    {
+        if (!$this->has($key))
+            $this->set($key, $defaultStarter);
+
+        return $this->index[$key]->getReference();
     }
 
     /**

@@ -20,7 +20,7 @@ class CacheElement
     protected ?string $file;
     protected mixed $content = null;
 
-    protected bool $edited = false;
+    protected ?string $baseMD5 = null;
 
     public function __construct(
         string $key,
@@ -32,6 +32,8 @@ class CacheElement
         $this->creationDate = $creationDate ?? time();
         $this->timeToLive = $timeToLive;
         $this->file = $file;
+
+        $this->baseMD5 = $file ? md5_file($this->file) : null;
     }
 
     /**
@@ -70,10 +72,27 @@ class CacheElement
 
     public function setContent(mixed $content, int $timeToLive=null): void
     {
-        $this->edited = true;
         $this->timeToLive = $timeToLive ?? $this->timeToLive;
-        $this->creationDate = time();
         $this->content = $content;
+    }
+
+    /**
+     * @return mixed Return a reference to the content object, which can be edited
+     */
+    public function &getReference(): mixed
+    {
+        $this->getContent();
+        return $this->content;
+    }
+
+    /**
+     * @return bool `true` if the element was edited, `false` otherwise
+     */
+    public function wasEdited(): bool
+    {
+        return $this->baseMD5 ?
+            $this->baseMD5 === md5(serialize($this->content)) :
+            true;
     }
 
     /**
@@ -83,18 +102,25 @@ class CacheElement
      */
     public function save(Storage $storage): ?string
     {
-        if ($this->file && (!$this->edited))
+        if (!$this->content)
             return null;
 
-        if (!$this->content)
+        if (!$this->wasEdited())
             return null;
 
         $filename = join("_", [$this->creationDate, $this->timeToLive, $this->key]);
 
-        $storage->write(
-            $filename,
-            serialize($this->content)
-        );
+        // If the timeToLive or creationDate has changed,
+        // we delete the old file to avoid duplicate keys
+        if ($this->file && (basename($this->file) !== $filename))
+            unlink($this->file);
+
+        $serialized = serialize($this->content);
+
+        $this->baseMD5 = md5($serialized);
+        $this->file = $storage->path($filename);
+
+        $storage->write($filename, $serialized);
 
         return $storage->path($filename);
     }
@@ -102,9 +128,10 @@ class CacheElement
     public function delete(): void
     {
         $this->content = null;
-        $this->edited = false;
 
         if ($this->file)
             unlink($this->file);
+
+        $this->file = null;
     }
 }
