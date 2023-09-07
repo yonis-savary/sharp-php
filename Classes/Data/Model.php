@@ -70,11 +70,17 @@ trait Model
         }
     }
 
+    /**
+     * Start a DatabaseQuery to insert values in the model's table
+     */
     public static function insert(): DatabaseQuery
     {
         return (new DatabaseQuery(self::getTable(), DatabaseQuery::INSERT))->setInsertField(self::getFieldNames());
     }
 
+    /**
+     * Start a DatabaseQuery to select rows from the model's table
+     */
     public static function select(): DatabaseQuery
     {
         $query = new DatabaseQuery(self::getTable(), DatabaseQuery::SELECT);
@@ -82,11 +88,17 @@ trait Model
         return $query;
     }
 
+    /**
+     * Start a DatabaseQuery to update row(s) of the model's table
+     */
     public static function update(): DatabaseQuery
     {
         return new DatabaseQuery(self::getTable(), DatabaseQuery::UPDATE);
     }
 
+    /**
+     * Start a DatabaseQuery to delete row(s) from the model's table
+     */
     public static function delete(): DatabaseQuery
     {
         return new DatabaseQuery(self::getTable(), DatabaseQuery::DELETE);
@@ -97,21 +109,44 @@ trait Model
         return $this->data;
     }
 
-    public static function insertArray(array $data, Database $database=null): ?int
+    /**
+     * Insert a row of data in the model's table
+     *
+     * @param array $data Associative array (with `field => value`) to insert
+     * @param Database $database Database to use (global instance if `null`)
+     * @return int|false Return the inserted Id or false on failure
+     */
+    public static function insertArray(array $data, Database $database=null): int|false
     {
         if (!Utils::isAssoc($data))
             throw new InvalidArgumentException("Given data must be an associative array !");
 
+        $fields = array_keys($data);
+        $modelFields = self::getFieldNames();
+
+        $invalidFields = array_diff($fields, $modelFields);
+        if (count($invalidFields))
+        {
+            $invalidFields = join(", ", $invalidFields);
+            throw new InvalidArgumentException(self::class . " model does not contains these fields: $invalidFields");
+        }
+
         $database ??= Database::getInstance();
 
         $insert = new DatabaseQuery(self::getTable(), DatabaseQuery::INSERT);
-        $insert->setInsertField(array_keys($data));
+        $insert->setInsertField($fields);
         $insert->insertValues(array_values($data));
         $insert->fetch($database);
 
         return $database->lastInsertId();
     }
 
+    /**
+     * Select a row where the primary key is the one given
+     *
+     * @param int $id Id to select
+     * @return ?array Matching row or `null` otherwise
+     */
     public static function fromId(int $id): ?array
     {
         return self::select()->where(self::getPrimaryKey(), $id)->first();

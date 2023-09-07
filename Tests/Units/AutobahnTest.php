@@ -7,7 +7,7 @@ use Sharp\Classes\Http\Request;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Extras\Autobahn;
 use Sharp\Classes\Web\Router;
-use Sharp\Tests\Models\UserData;
+use Sharp\Tests\Models\TestUserData;
 
 class AutobahnTest extends TestCase
 {
@@ -19,16 +19,16 @@ class AutobahnTest extends TestCase
         return [$a, $r];
     }
 
-    protected function resetUserDataTable()
+    protected function resetTestUserDataTable()
     {
         $db = Database::getInstance();
-        $db->query("DELETE FROM user_data;");
-        $db->query("INSERT INTO user_data (id, fk_user, data) VALUES (1, 1, 'A'), (2, 1, 'B'), (3, 1, 'C');");
+        $db->query("DELETE FROM test_user_data;");
+        $db->query("INSERT INTO test_user_data (id, fk_user, data) VALUES (1, 1, 'A'), (2, 1, 'B'), (3, 1, 'C');");
 
         $this->assertTableCount(3);
     }
 
-    protected function assertTableCount(int $count, string $table="user_data")
+    protected function assertTableCount(int $count, string $table="test_user_data")
     {
         $this->assertEquals(
             $count,
@@ -39,22 +39,22 @@ class AutobahnTest extends TestCase
     public function test_all()
     {
         list($autobahn, $router) = $this->getNewAutobahn();
-        $autobahn->all(UserData::class);
+        $autobahn->all(TestUserData::class);
         $this->assertCount(4, $router->getRoutes());
 
-        $this->resetUserDataTable();
+        $this->resetTestUserDataTable();
     }
 
     public function test_create()
     {
         list($autobahn, $router) = $this->getNewAutobahn();
-        $autobahn->create(UserData::class);
+        $autobahn->create(TestUserData::class);
         $this->assertCount(1, $router->getRoutes());
 
-        $this->resetUserDataTable();
+        $this->resetTestUserDataTable();
 
         $router->route(
-            new Request("POST", "/user_data", [], ["fk_user" => 1, "data" => "NEW!"])
+            new Request("POST", "/test_user_data", [], ["fk_user" => 1, "data" => "NEW!"])
         );
 
         $this->assertTableCount(4);
@@ -63,13 +63,13 @@ class AutobahnTest extends TestCase
     public function test_read()
     {
         list($autobahn, $router) = $this->getNewAutobahn();
-        $autobahn->read(UserData::class);
+        $autobahn->read(TestUserData::class);
         $this->assertCount(1, $router->getRoutes());
 
-        $res = $router->route(new Request("GET", "/user_data"));
+        $res = $router->route(new Request("GET", "/test_user_data"));
         $this->assertCount(4, $res->getContent());
 
-        $res = $router->route(new Request("GET", "/user_data", ["data" => "B"]));
+        $res = $router->route(new Request("GET", "/test_user_data", ["data" => "B"]));
         $this->assertCount(1, $res->getContent());
 
         /*
@@ -98,7 +98,7 @@ class AutobahnTest extends TestCase
         $this->assertArrayHasKey("data", $data["fk_user"]);
         $this->assertArrayHasKey("id", $data["fk_user"]["data"]);
 
-        $res = $router->route(new Request("GET", "/user_data", ["data" => "B", "_ignores" => ["user_data&fk_user"]]));
+        $res = $router->route(new Request("GET", "/test_user_data", ["data" => "B", "_ignores" => ["test_user_data&fk_user"]]));
         $this->assertCount(1, $res->getContent());
 
         $data = $res->getContent()[0];
@@ -109,34 +109,34 @@ class AutobahnTest extends TestCase
 
     public function test_update()
     {
-        $this->resetUserDataTable();
+        $this->resetTestUserDataTable();
 
         list($autobahn, $router) = $this->getNewAutobahn();
         $db = Database::getInstance();
 
-        $autobahn->update(UserData::class);
+        $autobahn->update(TestUserData::class);
         $this->assertCount(1, $router->getRoutes());
 
-        $router->route(new Request("PUT", "/user_data", ["id" => 1, "data" => "Y"]));
-        $this->assertEquals("Y", $db->query("SELECT data FROM user_data WHERE id = 1")[0]["data"]);
+        $router->route(new Request("PUT", "/test_user_data", ["id" => 1, "data" => "Y"]));
+        $this->assertEquals("Y", $db->query("SELECT data FROM test_user_data WHERE id = 1")[0]["data"]);
 
-        $router->route(new Request("PUT", "/user_data", ["id" => 1, "data" => "Z"]));
-        $this->assertEquals("Z", $db->query("SELECT data FROM user_data WHERE id = 1")[0]["data"]);
+        $router->route(new Request("PUT", "/test_user_data", ["id" => 1, "data" => "Z"]));
+        $this->assertEquals("Z", $db->query("SELECT data FROM test_user_data WHERE id = 1")[0]["data"]);
     }
 
     public function test_delete()
     {
-        $this->resetUserDataTable();
+        $this->resetTestUserDataTable();
 
         list($autobahn, $router) = $this->getNewAutobahn();
-        $autobahn->delete(UserData::class);
+        $autobahn->delete(TestUserData::class);
         $this->assertCount(1, $router->getRoutes());
 
-        $router->route(new Request("DELETE", "/user_data", ["id" => 1]));
+        $router->route(new Request("DELETE", "/test_user_data", ["id" => 1]));
         $this->assertTableCount(2);
 
         # Dangerous query prevention
-        $router->route(new Request("DELETE", "/user_data"));
+        $router->route(new Request("DELETE", "/test_user_data"));
         $this->assertTableCount(2);
     }
 

@@ -22,6 +22,12 @@ class Logger
         return new self("sharp.csv");
     }
 
+    /**
+     * Create a logger from a stream (which must be writable)
+     *
+     * @param resource $stream Stream to write to
+     * @param bool $autoclose If `true`, the Logger will close the stream on destruct
+     */
     public static function fromStream(mixed $stream, bool $autoclose=false): self
     {
         if (!is_resource($stream))
@@ -32,6 +38,11 @@ class Logger
         return $logger;
     }
 
+    /**
+     * @param ?string $filename File BASENAME for the Logger
+     * @param ?Storage $storage Optionnal target Storage directory (global instance if `null`)
+     * @example NULL `new Logger('error.csv', new Storage('/var/log/sharp/my-app'))`
+     */
     public function __construct(string $filename=null, Storage $storage=null)
     {
         if (!$filename)
@@ -59,12 +70,18 @@ class Logger
         $this->closeStream();
     }
 
-    public function closeStream(): void
+    protected function closeStream(): void
     {
         if ($this->closeStream && $this->stream)
             fclose($this->stream);
     }
 
+    /**
+     * Replace the Logger stream with another
+     *
+     * @param resource $stream Stream that replace the current one
+     * @param bool $autoclose If `true`, the Logger will close the stream on destruct
+     */
     public function replaceStream(mixed $stream, bool $autoclose=false): void
     {
         $this->closeStream();
@@ -76,11 +93,17 @@ class Logger
         $this->closeStream = $autoclose;
     }
 
+    /**
+     * @return string Absolute path to the Logger's output file
+     */
     public function getPath(): string
     {
         return $this->filename;
     }
 
+    /**
+     * @return string `$content`, represented as a string
+     */
     protected function toString(mixed $content): string
     {
         if (is_string($content) || is_numeric($content))

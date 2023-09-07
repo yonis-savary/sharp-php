@@ -10,6 +10,10 @@ class Args implements \Countable
     protected $arguments = [];
     protected $shortOptions = [];
 
+    /**
+     * Build Args Object from raw argv
+     * @param string $argv String argv with dashes (ex: `--verbose --stop-on-error -flags=5`)
+     */
     public function __construct(string $argv=null)
     {
         if (!$argv)

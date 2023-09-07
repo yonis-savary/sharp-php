@@ -40,10 +40,10 @@ class DatabaseTest extends TestCase
     public function test_lastInsertId()
     {
         $db = Database::getInstance();
-        $db->query("DELETE FROM sqlite_sequence WHERE name = 'user_data'");
-        $db->query("DELETE FROM user_data");
+        $db->query("DELETE FROM sqlite_sequence WHERE name = 'test_user_data'");
+        $db->query("DELETE FROM test_user_data");
 
-        $db->query("INSERT INTO user_data (fk_user, data) VALUES ({}, {})", [1, 'next_id_test']);
+        $db->query("INSERT INTO test_user_data (fk_user, data) VALUES ({}, {})", [1, 'next_id_test']);
         $this->assertEquals(1, $db->lastInsertId());
     }
 
@@ -70,26 +70,26 @@ class DatabaseTest extends TestCase
                     "password" => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
                     "salt" => "dummySalt"
             ]],
-            $db->query("SELECT * FROM user")
+            $db->query("SELECT * FROM test_user")
         );
     }
 
     public function test_hasTable()
     {
         $db = Database::getInstance();
-        $this->assertTrue($db->hasTable("user"));
-        $this->assertTrue($db->hasTable("user_data"));
-        $this->assertFalse($db->hasTable("user_favorite"));
+        $this->assertTrue($db->hasTable("test_user"));
+        $this->assertTrue($db->hasTable("test_user_data"));
+        $this->assertFalse($db->hasTable("test_user_favorite"));
     }
 
     public function test_hasField()
     {
         $db = Database::getInstance();
-        $this->assertTrue($db->hasField("user", "id"));
-        $this->assertFalse($db->hasField("user", "inexistant"));
-        $this->assertTrue($db->hasField("user_data", "fk_user"));
-        $this->assertFalse($db->hasField("user_data", "inexistant"));
-        $this->assertFalse($db->hasField("user_favorite", "id"));
+        $this->assertTrue($db->hasField("test_user", "id"));
+        $this->assertFalse($db->hasField("test_user", "inexistant"));
+        $this->assertTrue($db->hasField("test_user_data", "fk_user"));
+        $this->assertFalse($db->hasField("test_user_data", "inexistant"));
+        $this->assertFalse($db->hasField("test_user_favorite", "id"));
     }
 
 

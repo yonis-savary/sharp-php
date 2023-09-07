@@ -40,6 +40,12 @@ trait Configurable
         return $class;
     }
 
+    /**
+     * Return an array from given configuration
+     *
+     * @param Config $config Config to read from (global instance is used if `null`)
+     * @return array Configuration merged with the default one
+     */
     final public static function readConfiguration(Config $config=null): array
     {
         $config ??= Config::getInstance();
@@ -75,11 +81,15 @@ trait Configurable
         return $this->configuration;
     }
 
-    final public function setConfiguration(array $config)
+    /**
+     * Overwrite the configuration
+     * (Also merge it with the current one if some keys are missing)
+     */
+    final public function setConfiguration(array $newConfiguration): void
     {
         $this->configuration = array_merge(
             $this->configuration ?? self::getDefaultConfiguration(),
-            $config
+            $newConfiguration
         );
         $this->configurationIsLoaded = true;
     }

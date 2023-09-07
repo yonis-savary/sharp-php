@@ -45,40 +45,33 @@ class Autobahn
         $this->delete($model, ...$deleteMiddlewares);
     }
 
-    public function create(string $model, callable ...$middlewares): void
+    protected function addRoute(string $model, $middlewares, string $callback, array $methods)
     {
         list($model, $routeExtras) = $this->makeRequestData($model, ...$middlewares);
 
         $this->router->addRoutes(
-            Route::post($model::getTable(), [self::class, "routeCallbackForCreate"], extras:$routeExtras)
+            new Route($model::getTable(), [self::class, $callback], $methods, $middlewares, $routeExtras)
         );
+    }
+
+    public function create(string $model, callable ...$middlewares): void
+    {
+        $this->addRoute($model, $middlewares, "routeCallbackForCreate", ["POST"]);
     }
 
     public function read(string $model, callable ...$middlewares): void
     {
-        list($model, $routeExtras) = $this->makeRequestData($model, ...$middlewares);
-
-        $this->router->addRoutes(
-            Route::get($model::getTable(), [self::class, "routeCallbackForRead"], extras:$routeExtras)
-        );
+        $this->addRoute($model, $middlewares, "routeCallbackForRead", ["GET"]);
     }
 
     public function update(string $model, callable ...$middlewares): void
     {
-        list($model, $routeExtras) = $this->makeRequestData($model, ...$middlewares);
-
-        $this->router->addRoutes(
-            new Route($model::getTable(), [self::class, "routeCallbackForUpdate"], ["PUT", "PATCH"], [], extras:$routeExtras)
-        );
+        $this->addRoute($model, $middlewares, "routeCallbackForUpdate", ["PUT", "PATCH"]);
     }
 
     public function delete(string $model, callable ...$middlewares): void
     {
-        list($model, $routeExtras) = $this->makeRequestData($model, ...$middlewares);
-
-        $this->router->addRoutes(
-            Route::delete($model::getTable(), [self::class, "routeCallbackForDelete"], extras:$routeExtras)
-        );
+        $this->addRoute($model, $middlewares, "routeCallbackForDelete", ["DELETE"]);
     }
 
 

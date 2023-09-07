@@ -8,8 +8,8 @@ use Sharp\Classes\Data\Database;
 use Sharp\Classes\Data\DatabaseQuery;
 use Sharp\Classes\Data\Model;
 use Sharp\Classes\Data\DatabaseField;
-use Sharp\Tests\Models\User;
-use Sharp\Tests\Models\UserData;
+use Sharp\Tests\Models\TestUser;
+use Sharp\Tests\Models\TestUserData;
 
 class ModelTest extends TestCase
 {
@@ -21,7 +21,7 @@ class ModelTest extends TestCase
 
             public static function getTable(): string
             {
-                return "user";
+                return "test_user";
             }
 
             public static function getPrimaryKey(): string
@@ -142,9 +142,9 @@ class ModelTest extends TestCase
     public function test_insertArray()
     {
         $db = Database::getInstance();
-        $nextId = $db->query("SELECT MAX(id) + 1 as next FROM user_data")[0]["next"];
+        $nextId = $db->query("SELECT MAX(id) + 1 as next FROM test_user_data")[0]["next"];
 
-        $inserted = UserData::insertArray([
+        $inserted = TestUserData::insertArray([
             "fk_user" => 1,
             "data" => "someString"
         ]);
@@ -154,7 +154,7 @@ class ModelTest extends TestCase
 
     public function test_fromId()
     {
-        $this->assertIsArray(User::fromId(1));
-        $this->assertNull(User::fromId(1309809));
+        $this->assertIsArray(TestUser::fromId(1));
+        $this->assertNull(TestUser::fromId(1309809));
     }
 }

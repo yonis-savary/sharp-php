@@ -63,6 +63,11 @@ class Request
         return $request;
     }
 
+    /**
+     * Log both the http method and path to given Logger (or global instance)
+     *
+     * @param Logger $logger Logger to log to (global instance if `null`)
+     */
     public function logSelf(Logger $logger=null): void
     {
         $logger ??= Logger::getInstance();

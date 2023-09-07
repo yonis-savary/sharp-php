@@ -51,6 +51,11 @@ class Console
             printf(" - %s (%s)\n", $command->getName(), $command->getIdentifier());
     }
 
+    /**
+     * Handle PHP's $argv variable by trying to find a command that match it,
+     * and then execute it by giving it arguments
+     * @param array $argv Raw PHP $argv variable
+     */
     public function handleArgv(array $argv): void
     {
         array_shift($argv); // Ignore script name !

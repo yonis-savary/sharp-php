@@ -84,12 +84,18 @@ class Database
         return "{$driver}:host={$host};port={$port};dbname={$dbname}";
     }
 
+    /**
+     * Shortcut to `(PDO)->quote()`
+     */
     public function quote($value): string
     {
         return $this->connection->quote($value);
     }
 
-    public function lastInsertId(): ?int
+    /**
+     * @return int The last inserted Id by the connection (if any, `false` otherwise)
+     */
+    public function lastInsertId(): int|false
     {
         return $this->connection->lastInsertId();
     }
@@ -114,6 +120,13 @@ class Database
             $str;
     }
 
+    /**
+     * Build a query by replacing placeholders (`{}`) with `$context` values
+     *
+     * @param string $sql Query to complete
+     * @param array $context Placeholders-replacing values
+     * @example NULL `build('UPDATE ... SET name = {}', ['Dale']) // UPDATE ... SET name = 'Dale'`
+     */
     function build(string $sql, array $context=[]): string
     {
         $queryClone = $sql;

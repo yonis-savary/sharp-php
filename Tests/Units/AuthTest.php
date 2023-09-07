@@ -4,7 +4,7 @@ namespace Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Security\Auth;
-use Sharp\Tests\Models\User;
+use Sharp\Tests\Models\TestUser;
 
 class AuthTest extends TestCase
 {
@@ -26,7 +26,7 @@ class AuthTest extends TestCase
 
         $this->assertCount(
             1,
-            User::select()->fetch()
+            TestUser::select()->fetch()
         );
     }
 
@@ -71,7 +71,7 @@ class AuthTest extends TestCase
         $this->assertEquals(3, $auth->attemptNumber());
     }
 
-    public function test_getUser()
+    public function test_getTestUser()
     {
         $auth = new Auth();
 

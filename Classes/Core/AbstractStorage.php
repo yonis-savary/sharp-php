@@ -81,6 +81,12 @@ abstract class AbstractStorage
         }
     }
 
+    /**
+     * Shortcut to `Utils::toArray($this->get())`
+     *
+     * Represent any key value as an array
+     * (If the key is inexistant, return an empty array)
+     */
     final public function toArray(string $key): array
     {
         return Utils::toArray($this->get($key, []));

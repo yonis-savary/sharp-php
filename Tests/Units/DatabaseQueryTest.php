@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Data\Classes\QueryField;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Data\DatabaseQuery;
-use Sharp\Tests\Models\User;
-use Sharp\Tests\Models\UserData;
+use Sharp\Tests\Models\TestUser;
+use Sharp\Tests\Models\TestUserData;
 
 class DatabaseQueryTest extends TestCase
 {
@@ -59,29 +59,29 @@ class DatabaseQueryTest extends TestCase
 
     public function test_exploreModel()
     {
-        $q = new DatabaseQuery("user_data", DatabaseQuery::SELECT);
-        $q->exploreModel(UserData::class);
-        $this->assertBuiltQueryContains($q, "`user_data`.fk_user");
-        $this->assertBuiltQueryContains($q, "`user_data`.data");
-        $this->assertBuiltQueryContains($q, "`user_data&fk_user`.id");
-        $this->assertBuiltQueryContains($q, "`user_data&fk_user`.login");
-        $this->assertBuiltQueryContains($q, "`user_data&fk_user`.password");
+        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
+        $q->exploreModel(TestUserData::class);
+        $this->assertBuiltQueryContains($q, "`test_user_data`.fk_user");
+        $this->assertBuiltQueryContains($q, "`test_user_data`.data");
+        $this->assertBuiltQueryContains($q, "`test_user_data&fk_user`.id");
+        $this->assertBuiltQueryContains($q, "`test_user_data&fk_user`.login");
+        $this->assertBuiltQueryContains($q, "`test_user_data&fk_user`.password");
 
-        $q = new DatabaseQuery("user_data", DatabaseQuery::SELECT);
-        $q->exploreModel(UserData::class, false);
-        $this->assertBuiltQueryContains($q, "`user_data`.fk_user");
-        $this->assertBuiltQueryContains($q, "`user_data`.data");
-        $this->assertBuiltQueryNotContains($q, "`user_data&fk_user`.id");
-        $this->assertBuiltQueryNotContains($q, "`user_data&fk_user`.login");
-        $this->assertBuiltQueryNotContains($q, "`user_data&fk_user`.password");
+        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
+        $q->exploreModel(TestUserData::class, false);
+        $this->assertBuiltQueryContains($q, "`test_user_data`.fk_user");
+        $this->assertBuiltQueryContains($q, "`test_user_data`.data");
+        $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.id");
+        $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.login");
+        $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.password");
 
-        $q = new DatabaseQuery("user_data", DatabaseQuery::SELECT);
-        $q->exploreModel(UserData::class, true, ["user_data&fk_user"]);
-        $this->assertBuiltQueryContains($q, "`user_data`.fk_user");
-        $this->assertBuiltQueryContains($q, "`user_data`.data");
-        $this->assertBuiltQueryNotContains($q, "`user_data&fk_user`.id");
-        $this->assertBuiltQueryNotContains($q, "`user_data&fk_user`.login");
-        $this->assertBuiltQueryNotContains($q, "`user_data&fk_user`.password");
+        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
+        $q->exploreModel(TestUserData::class, true, ["test_user_data&fk_user"]);
+        $this->assertBuiltQueryContains($q, "`test_user_data`.fk_user");
+        $this->assertBuiltQueryContains($q, "`test_user_data`.data");
+        $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.id");
+        $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.login");
+        $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.password");
     }
 
 
@@ -185,8 +185,8 @@ class DatabaseQueryTest extends TestCase
 
     public function test_first()
     {
-        $q = new DatabaseQuery("user_data", DatabaseQuery::SELECT);
-        $q->exploreModel(UserData::class);
+        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
+        $q->exploreModel(TestUserData::class);
 
         $this->assertIsArray($q->first());
 
@@ -196,22 +196,22 @@ class DatabaseQueryTest extends TestCase
 
     public function test_fetch()
     {
-        $q = new DatabaseQuery("user_data", DatabaseQuery::SELECT);
-        $q->exploreModel(UserData::class);
+        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
+        $q->exploreModel(TestUserData::class);
 
         $this->assertCount(
-            Database::getInstance()->query("SELECT COUNT(*) as max FROM user_data")[0]["max"],
+            Database::getInstance()->query("SELECT COUNT(*) as max FROM test_user_data")[0]["max"],
             $q->fetch()
         );
 
         $q->where("id", -1);
         $this->assertCount(0, $q->fetch());
 
-        $q = new DatabaseQuery("user", DatabaseQuery::UPDATE);
+        $q = new DatabaseQuery("test_user", DatabaseQuery::UPDATE);
         $q->set("login", "blah");
         $this->assertEquals(1, $q->fetch());
 
         // Set back the edited login
-        User::update()->set("login", "admin")->fetch();
+        TestUser::update()->set("login", "admin")->fetch();
     }
 }

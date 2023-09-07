@@ -4,7 +4,7 @@
         "database": null
     },
     "auth": {
-        "model": "Sharp\\Tests\\Models\\User",
+        "model": "Sharp\\Tests\\Models\\TestUser",
         "login-field": "login",
         "password-field": "password",
         "salt-field": "salt"
