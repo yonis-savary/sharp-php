@@ -209,6 +209,17 @@ class Response
         $this->responseTransformer = $responseTransformer;
     }
 
+    /**
+     * Log both the response code and content type to given Logger (or global instance)
+     *
+     * @param Logger $logger Logger to log to (global instance if `null`)
+     */
+    public function logSelf(Logger $logger=null): void
+    {
+        $logger ??= Logger::getInstance();
+        $logger->info($this->responseCode . " ". $this->headers["Content-Type"] ?? "Unknown MIME");
+    }
+
     public function getContent(): mixed
     {
         return $this->content;
