@@ -19,7 +19,7 @@ Before using your database, you have to configure its connection
 ```
 
 Note: the default database config is `driver=mysql, host=localhost, port=3306, user=root`, so you only have to
-configure `database` and `password`
+configure `database` and `password` if working on a local MySQL database
 
 Then, your database usage is done through three main methods
 

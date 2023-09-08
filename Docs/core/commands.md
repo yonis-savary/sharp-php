@@ -2,7 +2,7 @@
 
 # 💻 CLI Commands
 
-Sharp got the [`do`](../../../do) script, which can be used to execute
+Sharp got the [`do`](../../Core/Server/do) script, which can be used to execute
 commands from your Terminal
 
 ## Create a command
@@ -26,22 +26,24 @@ class ClearCaches extends Commands
 }
 ```
 
-Then, to execute it, type
+To execute it, type `php do <your-command>` in your terminal
 ```bash
 php do clear-caches
 # or
 php do super-app@clear-caches
 ```
-in your terminal, and voilà !
+And voilà !
 
-Note: you can also implements the `getHelp()` method which should display a help menu/documentation
+Note:
+- you may have noticed, the PascalCase name was transformed into a snake-case name, this
+  was made to improve readability
+- you can also implements the `getHelp()` method which should display a help menu/documentation
 
 ## Using Args object
 
 The args object represent the arguments given to your command through the cli (like `--verbose`, `--help`...etc)
 
 [`Args`](../../Classes/CLI/Args.php) most useful methods are :
-
 ```php
 # Return the parameter value or null if absent
 public function get(string $short, string $long);

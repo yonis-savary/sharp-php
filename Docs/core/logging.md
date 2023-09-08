@@ -12,8 +12,7 @@ You can log by calling the `log()` method
 $logger->log("DEBUG", "Hello there");
 ```
 
-But writting log level can be quite tedious, that is why the `Logger` class got those shortcut
-
+But writting log level can be quite tedious, that is why the `Logger` class got some shortcuts:
 ```php
 $logger->debug("I'm a debug line");
 $logger->info("I'm an info line");
@@ -24,7 +23,7 @@ $logger->critical("I'm a critical line");
 $logger->alert("I'm an alert line");
 $logger->emergency("I'm an emergency line");
 
-# It can also be used to log error in a more verbose way
+# It can also be used to log error/traces in a more verbose way
 $logger->logThrowable(new Exception("Something went wrong"));
 
 # Note that almost everything that can be represented as a string somehow can be logged
@@ -36,9 +35,9 @@ $logger = Logger::fromStream(fopen("php://output", "w"));
 $logger->info("Hello output !");
 ```
 
-And yet, calling `Logger::getInstance()` or store it inside an object can be tedious too
-(especially if you're debugging your application),
-to address this, some shortcuts where made in [Helpers/helpers.php](../../Helpers/helpers.php)
+Yet, calling `Logger::getInstance()` or store it inside a variable can be tedious too !
+(Especially if you're debugging your application),
+to address this, some shortcuts where made in [Helpers/helpers-log.php](../../Helpers/helpers-log.php)
 
 ```php
 # Log every line with Logger::getInstance()
@@ -52,7 +51,7 @@ alert("I'm an alert line");
 emergency("I'm an emergency line");
 ```
 
-## Create a new Logger
+## Advanced Usage
 
 You may want to create a new Logger to log informations inside another file
 
@@ -63,6 +62,15 @@ $logger = new Logger("errors.csv");
 # A custom Storage can also be given
 # will log everything in /var/log/shippingService/service.csv
 $logger = new Logger("service.csv", new Storage("/var/log/shippingService"))
+```
+
+Or work with stream directly
+```php
+$stdLogger = Logger::fromStream(fopen("php://output", "w"));
+$stdLogger->info("Hello!"); // Display Hello! in the console/page
+
+// Replace the stream to redirect the output
+$stdLogger->replaceStream(fopen("myFile.txt", "a"), true);
 ```
 
 

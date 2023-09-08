@@ -57,6 +57,14 @@ $router->group(["path" => "api"], function($router){
         $router->addRoutes(...);
     });
 });
+
+// createGroup() method can be used to to have a more verbose code
+$router->group(
+    $router->createGroup("api"),
+    function(){
+        /* ... */
+    }
+)
 ```
 
 ## Slugs
@@ -105,7 +113,9 @@ The [helper.php](../../Helpers/helpers.php) file got two useful function to decl
 ```php
 groupRoutes("api", TokenMiddleware::class, function(){
     addRoutes(
-        Route::get("/", fn()=>"Hello")
+        Route::get("/", fn()=>"Hello"),
+        Router::view("/about", "aboutPage"),
+        Router::redirect("/contact", "/#contact")
     );
 });
 ```

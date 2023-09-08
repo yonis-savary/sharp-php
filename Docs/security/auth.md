@@ -8,7 +8,7 @@ Authentication is made through [Models](../data/database.md)
 
 ## Configuration
 
-You have to configure those four parameters in your configuration
+You have to configure those five parameters in your configuration:
 
 ```json
 "auth": {
@@ -20,7 +20,7 @@ You have to configure those four parameters in your configuration
 }
 ```
 
-- `model` is the full namespace to your mode class
+- `model` is the full namespace to your model class
 - `login-field` is the name of the unique field in your model
 - `password-field` is the name of the field where your password hash is stored
 - `salt-field` (optionnal, can be `null`) is the name of the field where your password salt is stored

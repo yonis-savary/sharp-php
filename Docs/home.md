@@ -32,6 +32,7 @@ Routing & Logic
 - 🛣️ [Routing](./logic/routing.md)
 - ⚙️  [Controllers](./logic/controllers.md)
 - 🚦 [Middlewares](./logic/middlewares.md)
+- 📨 [Requests & Responses](./logic/requests-and-responses.md)
 <!-- [(Code) `Request`](../Classes/Http/Request.php) -->
 <!-- [(Code) `Response`](../Classes/Http/Response.php) -->
 

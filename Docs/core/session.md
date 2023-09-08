@@ -29,12 +29,12 @@ $session->unset("temp-file");
 ```
 
 
-Also, two shortcuts are present in [Helpers/helpers.php](../../Helpers/helpers.php) to help you
-read/write data from the session
+**Also, two shortcuts are present in [Helpers/helpers.php](../../Helpers/helpers.php) to help you
+read/write data from the session**
 
 ```php
 session("myKey"); // Alias to Session::getInstance()->get()
-sessionSet("myKey", $myValue) // Alias to Session::getInstance()->set()
+sessionSet("myKey", $myValue); // Alias to Session::getInstance()->set()
 ```
 
 

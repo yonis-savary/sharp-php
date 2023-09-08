@@ -6,8 +6,7 @@ The main purpose of controllers is to hold your code logic (and therefore your r
 
 ## Plain Controllers
 
-You can simply create a controller by creating a class with its methods
-and then declare its routes in a separate file
+TO create a controller, You can simply create a class with its methods and then declare its routes in a separate file
 
 `App/Controllers/MyController.php`:
 ```php
@@ -55,5 +54,6 @@ class MyController
 
 This structure allows you to organize your code by feature or domain
 
+<!-- @todo Write docs for Controller->view()|asset() -->
 
 [< Back to summary](../home.md)
