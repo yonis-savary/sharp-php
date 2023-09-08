@@ -236,6 +236,12 @@ class Response
         return $this;
     }
 
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
     /**
      * Send headers and display the response content
      * @param bool $sendHeaders If `true`, send the headers, otherwise, only display the content
@@ -254,7 +260,8 @@ class Response
         if ($callback = $this->responseTransformer)
             $toDisplay = $callback($this->content);
 
-        echo "$toDisplay";
+        if ($toDisplay)
+            echo "$toDisplay";
     }
 
     /**
@@ -275,7 +282,7 @@ class Response
             throw new InvalidArgumentException("Inexistant file [$file] !");
 
         return new Response(
-            fn() => readfile($file),
+            null,
             self::OK,
             [
                 "Content-Description" => "File Transfer",
@@ -285,7 +292,10 @@ class Response
                 "Cache-Control" => "must-revalidate",
                 "Pragma" => "public",
                 "Content-Length" => filesize($file),
-            ]
+            ],
+            function() use ($file){
+                readfile($file);
+            }
         );
     }
 
