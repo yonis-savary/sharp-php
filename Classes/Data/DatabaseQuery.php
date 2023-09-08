@@ -216,9 +216,9 @@ class DatabaseQuery
         return $this;
     }
 
-    public function whereSQL(string $condition): self
+    public function whereSQL(string $condition, array $context=[]): self
     {
-        $this->conditions[] = new QueryConditionRaw($condition);
+        $this->conditions[] = new QueryConditionRaw($condition, $context);
         return $this;
     }
 

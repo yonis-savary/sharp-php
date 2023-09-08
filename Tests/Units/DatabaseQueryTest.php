@@ -3,6 +3,7 @@
 namespace Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
+use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\Classes\QueryField;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Data\DatabaseQuery;
@@ -105,10 +106,17 @@ class DatabaseQueryTest extends TestCase
 
         $this->assertBuiltQueryContains($q, "LIMIT 500 OFFSET 100");
 
+        $tempLogger = new Logger();
+        $originalLogger = Logger::getInstance();
+
+        Logger::setInstance($tempLogger);
+
         # Offset without query test
         $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
         $q->offset(100);
         $this->assertBuiltQueryNotContains($q, "OFFSET 100");
+
+        Logger::setInstance($originalLogger);
     }
 
     public function test_where()
@@ -127,19 +135,21 @@ class DatabaseQueryTest extends TestCase
     {
         $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
         $q->whereSQL("roses = 'Red'");
-
         $this->assertBuiltQueryContains($q, "(roses = 'Red')");
 
         $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
         $q->whereSQL("roses = 'Red'");
         $q->whereSQL("violets = 'Blue'");
+        $this->assertBuiltQueryContains($q, "(roses = 'Red') AND (violets = 'Blue')");
 
+        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q->whereSQL("roses = {}", ['Red']);
+        $q->whereSQL("violets = {}", ['Blue']);
         $this->assertBuiltQueryContains($q, "(roses = 'Red') AND (violets = 'Blue')");
 
         $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
         $q->whereSQL("roses = 'Red'");
         $q->where("violets", "Blue");
-
         $this->assertBuiltQueryContains($q, "(roses = 'Red') AND (violets = 'Blue')");
     }
 
