@@ -22,6 +22,7 @@ Core
 - 📃 [Logging](./core/logging.md)
 - 🔏 [Session](./core/session.md)
 - 🌐 [Code Helpers](./core/helpers.md)
+- 💬 [Q/A & Snippets](./extras/snippets.md)
 
 Core (Advanced):
 - [📦 Storage](./env/storage.md)
@@ -39,13 +40,14 @@ Routing & Logic
 Database
 - 📚 [Database and Models](./data/database.md)
 
+Business Logic
+- 🥤 [Session Straw](./extras/session-straw.md)
+
 Extras
 - ⭐️ [Serve assets with AssetServer](./extras/assets.md)
 - 🚘 [Automatic CRUD API with Autobahn](./extras/autobahn.md)
 - 🔐 [Authentication](./security/auth.md)
 
-Business Logic
-- 🥤 [Session Straw](./extras/session-straw.md)
 
 File/Comment documentation:
 

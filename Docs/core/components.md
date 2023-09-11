@@ -26,4 +26,66 @@ final public static function removeInstance();
 ```
 
 
+
+## ✅ Tutorial: Creating a Component
+
+### Context
+
+1. Our application is named `MagicShip`
+
+### Creation
+
+Let's say we want to create a `MagicOrderPrinter`, which is a class that
+can print a PDF of an order and log informations about it
+
+First we have to define our class
+
+```php
+class MagicOrderPrinter
+{
+    protected Logger $logger;
+
+    public function __construct(Logger $logger=null)
+    {
+        $this->logger = $logger ?? new Logger(null);
+    }
+
+    public function printOrder(int $orderId)
+    {
+        $this->logger->info("Printing order $orderId");
+        //...
+    }
+}
+```
+
+Then to transform it, we only have to use the `Component` trait, and implement `getDefaultInstance`
+
+
+```php
+class MagicOrderPrinter
+{
+    use Component;
+
+    public static function getDefaultInstance()
+    {
+        return new self(new Logger("magic-printer.csv"));
+    }
+
+    /* ... */
+}
+```
+
+From here, the first time we call `MagicOrderPrinter::getInstance()`,
+a global instance will be created, and shall log informations to `magic-printer.csv` by default
+
+```php
+# Using the default instance
+MagicOrderPrinter::getInstance()->printOrder(204987);
+
+# Create another instance for specific situations
+$debugPrinter = new MagicOrderPrinter(new Logger("magic-printer-debug.csv"));
+$debugPrinter->printOrder(209409);
+```
+
+
 [< Back to summary](../home.md)
