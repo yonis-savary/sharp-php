@@ -103,11 +103,25 @@ class RouteTest extends TestCase
     }
 
 
-    /*
     public function test_match()
     {
+        $dummyCallback = fn()=>false;
 
-    }*/
+        // Any path - any method
+        $anyRoute = new Route("/", $dummyCallback);
+        $this->assertTrue($anyRoute->match(new Request("GET", "/")));
+        $this->assertTrue($anyRoute->match(new Request("POST", "/")));
+
+        // Specific path - any method
+        $postRoute = new Route("/A", $dummyCallback);
+        $this->assertFalse($postRoute->match(new Request("GET", "/")));
+        $this->assertTrue($postRoute->match(new Request("GET", "/A")));
+
+        // Specific path - Specific method
+        $postRoute = new Route("/A", $dummyCallback, ["POST"]);
+        $this->assertFalse($postRoute->match(new Request("GET", "/A")));
+        $this->assertTrue($postRoute->match(new Request("POST", "/A")));
+    }
 
     public function test___invoke()
     {
@@ -116,6 +130,54 @@ class RouteTest extends TestCase
 
         $res = $route($dummyRequest);
         $this->assertEquals(5, $res->getContent());
+    }
+
+
+
+
+    const FORMAT_SAMPLES = [
+        "int"      => "/5",
+        "float"    => "/5.398",
+        "any"      => "/I'am a complete sentence !",
+        "date"     => "/2023-07-16",
+        "time"     => "/16:20:00",
+        "datetime" => "/2000-10-01 15:00:00",
+    ];
+
+    protected function genericSlugFormatTest(
+        string $routePath,
+        string $successRequestPath,
+        array $failRequestPath,
+    ) {
+        $route =Route::get($routePath, fn()=>false);
+
+        foreach ($failRequestPath as $path)
+        {
+            $req = new Request("GET", $path);
+            $this->assertFalse($route->match($req), "Failed fail Request for [$routePath] route");
+        }
+
+        $req = new Request("GET", $successRequestPath);
+        $this->assertTrue($route->match($req), "Failed success Request for [$routePath] route");
+    }
+
+    public function test_slugFormats()
+    {
+        $samples = self::FORMAT_SAMPLES;
+
+        $samplesWithout = function($keys) use ($samples) {
+            $copy = $samples;
+            foreach ($keys as $k)
+                unset($copy[$k]);
+            return array_values($copy);
+        };
+
+        $this->genericSlugFormatTest("/{int:x}",      $samples["int"],  $samplesWithout(["int"]));
+        $this->genericSlugFormatTest("/{float:x}",    $samples["float"],  $samplesWithout(["float", "int"]));
+        $this->genericSlugFormatTest("/{any:x}",      $samples["any"],  []);
+        $this->genericSlugFormatTest("/{date:x}",     $samples["date"],  $samplesWithout(["date"]));
+        $this->genericSlugFormatTest("/{time:x}",     $samples["time"],  $samplesWithout(["time"]));
+        $this->genericSlugFormatTest("/{datetime:x}", $samples["datetime"],  $samplesWithout(["datetime"]));
     }
 
 }
