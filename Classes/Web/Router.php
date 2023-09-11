@@ -145,6 +145,13 @@ class Router
         }
     }
 
+    public function groupAndAdd(array $group, Route ...$routes)
+    {
+        $this->group($group, function() use ($routes) {
+            $this->addRoutes(...$routes);
+        });
+    }
+
     protected function applyGroupsTo(Route &$route)
     {
         if (count($this->group["path"] ?? []))
