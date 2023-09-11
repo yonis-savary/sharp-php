@@ -25,8 +25,6 @@ final public static function setInstance(self $newInstance);
 final public static function removeInstance();
 ```
 
-
-
 ## ✅ Tutorial: Creating a Component
 
 ### Context
@@ -60,7 +58,6 @@ class MagicOrderPrinter
 
 Then to transform it, we only have to use the `Component` trait, and implement `getDefaultInstance`
 
-
 ```php
 class MagicOrderPrinter
 {
@@ -86,6 +83,5 @@ MagicOrderPrinter::getInstance()->printOrder(204987);
 $debugPrinter = new MagicOrderPrinter(new Logger("magic-printer-debug.csv"));
 $debugPrinter->printOrder(209409);
 ```
-
 
 [< Back to summary](../home.md)

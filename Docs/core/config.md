@@ -62,6 +62,4 @@ Every namespace is set by its relative path, example: for `./App/Controllers/Pro
 - `Autoloader::getListFiles(Autoloader::ROUTES)` can retrieve files in `Routes`
 - `Autoloader::getListFiles(Autoloader::REQUIRE)` can retrieve files in `Helpers` and `Others`
 
-
-
 [< Back to summary](../home.md)

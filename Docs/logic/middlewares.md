@@ -38,5 +38,4 @@ Using middlewares, you just have to write your code once, and group your routes 
 
 Also, middlewares can be combined to give different conditions, you can have one to check if the user is authenticated, one to check the CSRF token...etc.
 
-
 [< Back to summary](../home.md)

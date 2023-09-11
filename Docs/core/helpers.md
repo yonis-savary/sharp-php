@@ -11,7 +11,6 @@ Those files contains shortcuts to basic framework operation (like adding a route
 This list will describe which file contains which function,
 you can click on any file name to see its content
 
-
 ### [`helpers.php`](../../Helpers/helpers.php)
 ```php
 function session          (string $key): mixed;
@@ -33,7 +32,6 @@ function onEvent          (string $event, callable ...$callbacks): void;
 function dispatch         (string $event, mixed ...$args): void;
 ```
 
-
 ### [`helpers-log.php`](../../Helpers/helpers-log.php)
 ```php
 function debug    (mixed ...$messages): void;
@@ -45,7 +43,6 @@ function critical (mixed ...$messages): void;
 function alert    (mixed ...$messages): void;
 function emergency(mixed ...$messages): void;
 ```
-
 
 ### [`helpers-storage.php`](../../Helpers/helpers-storage.php)
 ```php
@@ -69,7 +66,6 @@ function storeListFiles       (string $path="/"): array;
 function storeListDirectories (string $path="/"): array;
 ```
 
-
 ### [`helpers-web.php`](../../Helpers/helpers-web.php)
 ```php
 function asset   (string $target): string;
@@ -83,9 +79,5 @@ function section (string $sectionName): ?string;
 function start   (string $sectionName): void;
 function stop    (): void;
 ```
-
-
-
-
 
 [< Back to summary](../home.md)

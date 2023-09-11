@@ -100,7 +100,6 @@ class Route
     public function getExtras(): array { return $this->extras; }
     public function setExtras(array $extras) { $this->extras = $extras;}
 
-
     public function addMiddlewares(string ...$middlewares)
     {
         foreach ($middlewares as $middleware)

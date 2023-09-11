@@ -4,7 +4,6 @@
 
 [Storage](../../Classes/Env/Storage.php) is a representation of a file directory
 
-
 ## Usage
 
 ```php

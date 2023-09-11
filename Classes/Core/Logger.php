@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Sharp\Classes\Core;
 
 use InvalidArgumentException;

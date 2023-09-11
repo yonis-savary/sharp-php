@@ -113,9 +113,7 @@ class Cache
      */
     public function set(string $key, mixed $content, int $timeToLive=3600*24)
     {
-        if (!$this->has($key))
-            $this->index[$key] = new CacheElement($key);
-
+        $this->index[$key] ??= new CacheElement($key);
         $this->index[$key]->setContent($content, $timeToLive);
     }
 

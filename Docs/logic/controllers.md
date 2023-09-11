@@ -26,7 +26,6 @@ Router::getInstance()->addRoutes(
 );
 ```
 
-
 ## Extended Controllers
 
 If you want to group your logic and routes declaration, you can make your class

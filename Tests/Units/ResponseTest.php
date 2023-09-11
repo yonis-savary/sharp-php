@@ -51,7 +51,6 @@ class ResponseTest extends TestCase
         }
     }
 
-
     public function test_withHeaders()
     {
         $headers = self::DUMMY_HEADERS;
@@ -76,7 +75,6 @@ class ResponseTest extends TestCase
         $response->removeHeaders(["content-type"]);
         $this->assertEquals([], $response->getHeaders());
     }
-
 
     public function test_getHeaders()
     {
@@ -122,7 +120,6 @@ class ResponseTest extends TestCase
         $response = Response::html("Hello");
         $this->assertStringContainsString("Hello", $getResponseOutput());
     }
-
 
     public function test_html()
     {

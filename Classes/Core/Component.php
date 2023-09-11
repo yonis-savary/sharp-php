@@ -13,7 +13,9 @@ use Sharp\Core\Utils;
  */
 trait Component
 {
-    /** @var ?static $instance */
+    /**
+     * @var ?static $instance
+     */
     public static $instance = null;
 
     /**

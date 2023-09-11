@@ -73,5 +73,4 @@ $stdLogger->info("Hello!"); // Display Hello! in the console/page
 $stdLogger->replaceStream(fopen("myFile.txt", "a"), true);
 ```
 
-
 [< Back to summary](../home.md)

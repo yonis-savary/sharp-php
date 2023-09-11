@@ -23,16 +23,13 @@ The goal is to make a good envrionment to Test (with Database, Config...etc)
 $defaultStorage = Storage::getInstance();
 $defaultLogger = Logger::getInstance();
 
-
 Autoloader::loadApplication("Sharp/Tests");
-
 
 $testStorage = new Storage(Utils::relativePath("Sharp/Tests/tmp_test_storage"));
 
 Storage::setInstance($testStorage);
 Config::setInstance(new Config(Utils::relativePath("Sharp/Tests/config.json")));
 Cache::setInstance(new Cache($testStorage, "Cache"));
-
 
 $database = Database::getInstance();
 
@@ -42,7 +39,6 @@ $schema = array_map("trim", $schema);
 $schema = array_filter($schema);
 foreach ($schema as $line)
     $database->query($line);
-
 
 $generator = ModelGenerator::getInstance();
 $generator->generateAll(Utils::relativePath("Sharp/Tests"));

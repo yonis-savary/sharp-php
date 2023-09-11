@@ -54,11 +54,10 @@ class Auth
         if (!Utils::uses($model, 'Sharp\Classes\Data\Model'))
             throw new InvalidArgumentException("[$model] class must use Model trait");
 
-        $fields = $model::getFieldNames();
-
+        $modelFields = $model::getFieldNames();
         foreach (array_filter([$loginField, $passwordField, $saltField]) as $field)
         {
-            if (!in_array($field, $fields))
+            if (!in_array($field, $modelFields))
                 throw new InvalidArgumentException("[$model] does not have a [$field] field");
         }
 
@@ -87,7 +86,7 @@ class Auth
         if (!password_verify($password, $hash))
             return $this->failAttempt();
 
-        $session  = $this->session;
+        $session = $this->session;
         $session->set(self::IS_LOGGED, true);
         $session->set(self::USER_DATA, $user);
         $session->set(self::ATTEMPTS_NUMBER, 0);
@@ -144,7 +143,7 @@ class Auth
 
         $model = $this->model;
 
-        $password = "$password$salt";
+        $password = $password . $salt;
         $password = password_hash($password, $algo, $options);
 
         $instance = new $model([

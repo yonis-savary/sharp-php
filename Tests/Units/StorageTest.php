@@ -132,9 +132,6 @@ final class StorageTest extends TestCase
         $this->assertDirectoryDoesNotExist($sample->path("messages"));
     }
 
-
-
-
     private function arrayOfPaths(array $paths, Storage $storage)
     {
         return array_map(fn($e) => Utils::joinPath($storage->getRoot(), $e), $paths);

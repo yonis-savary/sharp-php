@@ -6,7 +6,6 @@ This document hold some code snippets to learn the framework faster
 
 You can search (Ctrl+F) some tags like (Autoload, Config...etc)
 
-
 ## Setup - Creating an App
 
 tags: directory, application

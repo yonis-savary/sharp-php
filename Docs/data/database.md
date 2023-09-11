@@ -2,7 +2,6 @@
 
 # 📚 Database and models
 
-
 ## Using the database
 
 Before using your database, you have to configure its connection
@@ -59,7 +58,6 @@ $db->hasField("ship_order", "fk_ship");
 ```
 
 This config will create a `Storage/myDatabase.db` file with your data inside
-
 
 ## Interacting with models
 
@@ -148,6 +146,5 @@ points to `PersonPhone` through `fk_phone`, our response format will be
     }
 ]
 ```
-
 
 [< Back to summary](../home.md)

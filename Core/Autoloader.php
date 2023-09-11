@@ -117,7 +117,6 @@ class Autoloader
         });
     }
 
-
     protected static function loadApplications()
     {
         $config = Config::getInstance();

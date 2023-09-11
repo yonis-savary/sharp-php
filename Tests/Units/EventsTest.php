@@ -27,7 +27,6 @@ class EventsTest extends TestCase
         $handlerA->dispatch("change");
         $this->assertEquals(1, $myVar);
 
-
         $handlerC = new Events();
         $handlerC->on("change", function($value) use (&$myVar) { $myVar = $value; });
 

@@ -25,7 +25,6 @@ $POST = $request->post(); // Get POST data
 $GET  = $request->get();  // Get GET data
 $ALL  = $request->all(); // Get POST + GET merged data
 
-
 // Params read parameters from both POST and GET sources
 $params = $request->params(["username", "password"]); // Get an associative array
 $params = $request->params(["password"); // Get a value or null if inexistant
@@ -51,7 +50,6 @@ $request->getSlug(); // Get one specific value from slugs
 $request->setRoute();
 // Get the associated route object
 $request->getRoute();
-
 
 $request->getUploads(); // Get an array of UploadFile
 $request->setUploads(); // Overtwrite uploads (Test purpose so far)
@@ -101,7 +99,6 @@ $response->display();
 // Only display the content, skip the headers
 $response->display(false);
 ```
-
 
 ## Advanced Request Usage (Curl !)
 

@@ -251,6 +251,4 @@ class RequestTest extends TestCase
 
         $this->assertEquals([], $req->all());
     }
-
-
 }

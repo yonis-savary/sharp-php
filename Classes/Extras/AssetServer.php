@@ -47,7 +47,6 @@ class AssetServer
             [];
     }
 
-
     public function handleIfEnabled()
     {
         if (!$this->isEnabled())

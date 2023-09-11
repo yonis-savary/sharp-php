@@ -89,7 +89,6 @@ class RouterTest extends TestCase
             $this->assertEquals([RequestHasPostData::class], $route->getMiddlewares());
         }
 
-
         $r->deleteRoutes();
 
         $r->groupAndAdd(

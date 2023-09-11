@@ -48,9 +48,7 @@ Extras
 - 🚘 [Automatic CRUD API with Autobahn](./extras/autobahn.md)
 - 🔐 [Authentication](./security/auth.md)
 
-
 File/Comment documentation:
-
 
 ## Making custom scripts that uses Sharp
 

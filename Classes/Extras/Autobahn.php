@@ -74,7 +74,6 @@ class Autobahn
         $this->addRoute($model, $middlewares, "routeCallbackForDelete", ["DELETE"]);
     }
 
-
     protected function makeRequestData(string $model, callable ...$middlewares)
     {
         $this->throwOnInvalidModel($model);
@@ -100,13 +99,13 @@ class Autobahn
         return [$model, $middlewares];
     }
 
-
     public static function routeCallbackForCreate(Request $request)
     {
-        $params = $request->all();
         list($model, $middlewares) = self::extractRequestData($request);
 
         $query = new DatabaseQuery($model::getTable(), DatabaseQuery::INSERT);
+
+        $params = $request->all();
         $query->setInsertField(array_keys($params));
         $query->insertValues(array_values($params));
 
@@ -117,8 +116,8 @@ class Autobahn
         $events->dispatch("autobahnCreateBefore", ["model"=>$model, "query"=>$query]);
 
         $query->fetch();
-        $inserted = Database::getInstance()->lastInsertId();
 
+        $inserted = Database::getInstance()->lastInsertId();
         $events->dispatch("autobahnCreateAfter", ["model"=>$model, "query"=>$query, "insertedId" => $inserted]);
 
         return Response::json(["insertedId" => $inserted], Response::CREATED);
@@ -205,6 +204,4 @@ class Autobahn
 
         return Response::json("DONE");
     }
-
-
 }

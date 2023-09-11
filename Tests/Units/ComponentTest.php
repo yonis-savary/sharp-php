@@ -19,7 +19,6 @@ class ComponentTest extends TestCase
         return new class {
             use Component;
 
-
             public static function getDefaultInstance()
             {
                 return new self(ComponentTest::DEFAULT);

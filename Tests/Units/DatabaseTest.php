@@ -91,6 +91,4 @@ class DatabaseTest extends TestCase
         $this->assertFalse($db->hasField("test_user_data", "inexistant"));
         $this->assertFalse($db->hasField("test_user_favorite", "id"));
     }
-
-
 }

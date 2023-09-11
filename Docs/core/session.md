@@ -5,7 +5,6 @@
 With Sharp, the session management is really straightforward, it is made
 through [Session](../../Classes/Env/Session.php)
 
-
 ```php
 $session = Session::getInstance();
 
@@ -28,7 +27,6 @@ $hasPrivileges = $session->has("privileges");
 $session->unset("temp-file");
 ```
 
-
 **Also, two shortcuts are present in [Helpers/helpers.php](../../Helpers/helpers.php) to help you
 read/write data from the session**
 
@@ -36,6 +34,5 @@ read/write data from the session**
 session("myKey"); // Alias to Session::getInstance()->get()
 sessionSet("myKey", $myValue); // Alias to Session::getInstance()->set()
 ```
-
 
 [< Back to summary](../home.md)

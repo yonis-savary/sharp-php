@@ -111,7 +111,6 @@ class SQLite extends GeneratorDriver
         {
             $fieldName = $matches[1];
             $field = "'$fieldName' => (new DatabaseField('$fieldName'))";
-            /** @todo implements types parsing sqlType = $matches[2]; */
 
             $field .= "->hasDefault(".(str_contains($sqlLine, 'DEFAULT') ? "true": "false").")";
             if (str_contains($sqlLine, 'PRIMARY KEY'))

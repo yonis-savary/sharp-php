@@ -13,27 +13,37 @@ class RouteTest extends TestCase
 {
     public function test_get()
     {
-        $this->assertInstanceOf(Route::class, Route::get("/", fn()=>"A"));
+        $route = Route::get("/", fn()=>"A");
+        $this->assertInstanceOf(Route::class, $route);
+        $this->assertEquals(["GET"], $route->getMethods());
     }
 
     public function test_post()
     {
-        $this->assertInstanceOf(Route::class, Route::post("/", fn()=>"A"));
+        $route = Route::post("/", fn()=>"A");
+        $this->assertInstanceOf(Route::class, $route);
+        $this->assertEquals(["POST"], $route->getMethods());
     }
 
     public function test_patch()
     {
-        $this->assertInstanceOf(Route::class, Route::patch("/", fn()=>"A"));
+        $route = Route::patch("/", fn()=>"A");
+        $this->assertInstanceOf(Route::class, $route);
+        $this->assertEquals(["PATCH"], $route->getMethods());
     }
 
     public function test_put()
     {
-        $this->assertInstanceOf(Route::class, Route::put("/", fn()=>"A"));
+        $route = Route::put("/", fn()=>"A");
+        $this->assertInstanceOf(Route::class, $route);
+        $this->assertEquals(["PUT"], $route->getMethods());
     }
 
     public function test_delete()
     {
-        $this->assertInstanceOf(Route::class, Route::delete("/", fn()=>"A"));
+        $route = Route::delete("/", fn()=>"A");
+        $this->assertInstanceOf(Route::class, $route);
+        $this->assertEquals(["DELETE"], $route->getMethods());
     }
 
     public function test_getsetPath()
@@ -102,7 +112,6 @@ class RouteTest extends TestCase
         $this->assertEquals($secondMiddlewares, $route->getMiddlewares());
     }
 
-
     public function test_match()
     {
         $dummyCallback = fn()=>false;
@@ -131,9 +140,6 @@ class RouteTest extends TestCase
         $res = $route($dummyRequest);
         $this->assertEquals(5, $res->getContent());
     }
-
-
-
 
     const FORMAT_SAMPLES = [
         "int"      => "/5",

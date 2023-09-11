@@ -16,8 +16,6 @@ use Sharp\Classes\Env\Session;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Web\Router;
 
-
-
 /**
  * Shortcut to `Session::getInstance()->get()`
  *
@@ -40,9 +38,6 @@ function sessionSet(string $key, mixed $value): void
     Session::getInstance()->set($key, $value);
 }
 
-
-
-
 /**
  * Get a value from the global configuration instance
  */
@@ -50,9 +45,6 @@ function config(string $key, mixed $default=null): mixed
 {
     return Config::getInstance()->get($key, $default);
 }
-
-
-
 
 /**
  * Shortcut to `Cache::getInstance()->get()`
@@ -76,12 +68,6 @@ function cacheSet(string $key, mixed $value, int $timeToLive=3600*24): void
     Cache::getInstance()->set($key, $value, $timeToLive);
 }
 
-
-
-
-
-
-
 /**
  * Debug function: used to measure an execution time
  *
@@ -99,12 +85,6 @@ function sharpDebugMeasure(callable $callback, string $label="Measurement"): voi
     debug($infoString);
     echo "$infoString\n";
 }
-
-
-
-
-
-
 
 /**
  * Shortcut to `Router::getInstance()->addRoutes()`
@@ -131,11 +111,6 @@ function groupRoutes(array $group, callable $routeDeclaration): void
     $router->group($group, $routeDeclaration);
 }
 
-
-
-
-
-
 /**
  * Shortcut to `Database::getInstance()->build()`
  *
@@ -161,13 +136,6 @@ function query(string $query, array $context=[]): array
 {
     return Database::getInstance()->query($query, $context);
 }
-
-
-
-
-
-
-
 
 /**
  * Attach callbacks to a given events (`Events::getInstance()` is used)

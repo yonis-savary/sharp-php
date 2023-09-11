@@ -50,7 +50,6 @@ $auth->logout();
 $auth->attemptNumber();
 ```
 
-
 ## ✅ Tutorial: Setting up Authentication !
 
 ### Context

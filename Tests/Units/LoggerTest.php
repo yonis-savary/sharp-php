@@ -76,7 +76,6 @@ class LoggerTest extends TestCase
         function(Logger $logger){ $logger->emergency("hello"); });
     }
 
-
     public function test_fromStream()
     {
         $logger = Logger::fromStream(fopen("php://output", "w"));

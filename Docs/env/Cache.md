@@ -64,6 +64,4 @@ public function setData(mixed $data)
 This is the same as the first solution, the element will be saved on destruct and
 can always be retrieved with `Cache->get`
 
-
-
 [< Back to summary](../home.md)

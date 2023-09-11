@@ -229,7 +229,6 @@ class Utils
         return $value;
     }
 
-
     /**
      * Useful to enable debug-only features
      *

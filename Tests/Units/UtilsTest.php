@@ -16,9 +16,6 @@ use Sharp\Tests\Classes\Interfaces\InterfaceB;
 
 class UtilsTest extends TestCase
 {
-    /**
-     * @todo Test thoses
-     */
     public function test_uses()
     {
         $traitA = 'Sharp\Tests\Classes\Traits\TraitA';
@@ -34,7 +31,6 @@ class UtilsTest extends TestCase
         $this->assertFalse( Utils::implements(AA::class, InterfaceB::class) );
         $this->assertFalse( Utils::implements(BA::class, InterfaceA::class) );
     }
-
 
     public function test_extends()
     {
@@ -55,7 +51,6 @@ class UtilsTest extends TestCase
         $this->assertEquals("domain/class.php", Utils::normalizePath("domain\\\\class.php"));
     }
 
-
     public function test_joinPath()
     {
         $this->assertEquals("domain/class.php", Utils::joinPath("domain", "class.php"));
@@ -72,7 +67,6 @@ class UtilsTest extends TestCase
             Utils::relativePath("domain/class.php")
         );
     }
-
 
     public function test_pathToNamespace()
     {
@@ -160,9 +154,6 @@ class UtilsTest extends TestCase
         $this->assertEquals($this->arrayOfPaths(["dir/subdir"], $storage), Utils::listDirectories($storage->path("dir")));
     }
 
-
-
-
     public function test_valueHasFlag()
     {
         $this->assertFalse(Utils::valueHasFlag(0b1010_1010, 0b0000_0001));
@@ -198,5 +189,4 @@ class UtilsTest extends TestCase
         $this->assertEquals([["A" => 5]], Utils::toArray(["A"=>5]));
         $this->assertEquals([["A" => 5]], Utils::toArray([["A"=>5]]));
     }
-
 }

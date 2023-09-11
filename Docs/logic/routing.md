@@ -6,7 +6,6 @@ Routing in Sharp is made through two classes :
 - [`Route`](../../Classes/Web/Route.php): hold informations about ONE specific route
 - [`Router`](../../Classes/Web/Router.php): hold a set of `Route` objects and is able to route a [`Request`](../../Classes/Http/Request.php) object
 
-
 ## Routes creation
 
 A `Route` object got those informations :
@@ -36,7 +35,6 @@ $router->addRoutes(
     Router::post("/login", [LoginController::class, "handleLogin"])
 );
 ```
-
 
 ## Routes grouping
 
@@ -119,6 +117,5 @@ groupRoutes("api", TokenMiddleware::class, function(){
     );
 });
 ```
-
 
 [< Back to summary](../home.md)

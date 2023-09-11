@@ -221,11 +221,13 @@ class Response
         $logger->info($this->responseCode . " ". ($this->headers["content-type"] ?? "Unknown MIME"));
     }
 
+    /**
+     * @return mixed Raw content as given in the constructor
+     */
     public function getContent(): mixed
     {
         return $this->content;
     }
-
 
     /**
      * @return string Transformed header name to lower case
@@ -256,7 +258,11 @@ class Response
         return $this;
     }
 
-
+    /**
+     * Remove headers with given names
+     *
+     * @param array $headers Names of the headers to remove (Case insensitive)
+     */
     public function removeHeaders(array $headers): Response
     {
         $headers = array_map(fn($x) => $this->headerName($x), $headers);
@@ -378,13 +384,14 @@ class Response
         if ($content instanceof Response)
             return $content;
 
-        if ($content === null)
+        if (is_null($content))
             return new Response(null, 204);
 
-        if (!in_array(gettype($content), self::ADAPT_SUPPORTED_TYPES))
+        $contentType = gettype($content);
+        if (!in_array($contentType, self::ADAPT_SUPPORTED_TYPES))
         {
             Logger::getInstance()->logThrowable(new InvalidArgumentException(
-                "A reponse with an unsupported type (".gettype($content).") was returned and cannot be adapted"
+                "A reponse with an unsupported type ($contentType) was returned and cannot be adapted"
             ));
             return new Response(null, 204);
         }

@@ -74,5 +74,4 @@ DELETE FROM user WHERE login = 'mike'
 By default, dangerous queries with no parameters are blocked, but you can enable them by
 setting `autobahn.prevent-dangerous-delete` to `false`
 
-
 [< Back to summary](../home.md)

@@ -46,7 +46,6 @@ class DatabaseQueryTest extends TestCase
         $q->setInsertField(["A", "B", "C"]);
         $q->insertValues([1,2,3]);
 
-
         $this->assertBuiltQueryContains($q, "('1','2','3')");
     }
 
@@ -84,7 +83,6 @@ class DatabaseQueryTest extends TestCase
         $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.login");
         $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.password");
     }
-
 
     public function test_limit()
     {
@@ -153,7 +151,6 @@ class DatabaseQueryTest extends TestCase
         $this->assertBuiltQueryContains($q, "(roses = 'Red') AND (violets = 'Blue')");
     }
 
-
     public function test_join()
     {
         $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
@@ -169,13 +166,11 @@ class DatabaseQueryTest extends TestCase
         $q->order("dummy", "field");
         $this->assertBuiltQueryContains($q, "ORDER BY `dummy`.field ASC");
 
-
         $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
         $q->order("dummy", "field");
         $q->order("dummy", "id", "DESC");
         $this->assertBuiltQueryContains($q, "ORDER BY `dummy`.field ASC, `dummy`.id DESC");
     }
-
 
     public function test_build()
     {

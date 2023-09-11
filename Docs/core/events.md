@@ -15,7 +15,6 @@ $events->on("log-this", function(...$messages){
 $events->dispatch("log-this", "Hello world");
 ```
 
-
 ## Framework Base Events
 
 The framework has some base events that are automatically dispatched
@@ -32,7 +31,6 @@ $events->on("calledCommand", function($event){
     $returned   = $event["returned"];
 });
 
-
 # Dispatched after any event dispatch
 # `results` are the callbacks return values
 $events->on("dispatchedEvent", function($event){
@@ -41,18 +39,15 @@ $events->on("dispatchedEvent", function($event){
     $results  = $event["results"];
 });:
 
-
 # Dispatched when Autoloaded fail to find a class file
 $events->on("autoloadFailed", function($event){
     $class= $event["class"]
 });
 
-
 # Dispatched when both the framework and applications are loaded
 $events->on("frameworkLoaded", function(){
     /* No argument given */
 });
-
 
 # Dispatched before Autobahn insert a row
 $events->on("autobahnCreateBefore", function($event){
@@ -106,7 +101,5 @@ $events->on("autobahnDeleteAfter", function($event){
 });
 
 ```
-
-
 
 [< Back to summary](../home.md)

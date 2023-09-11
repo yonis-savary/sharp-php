@@ -56,7 +56,6 @@ class MySQL extends GeneratorDriver
         if (!is_dir($fileDir)) mkdir($fileDir);
         $classname = Utils::pathToNamespace($fileDir);
 
-
         $foreignKeysRaw = $db->query("
         SELECT COLUMN_NAME as source_field,
                REFERENCED_TABLE_NAME as target_table,
@@ -87,7 +86,6 @@ class MySQL extends GeneratorDriver
         $description = array_map(function($e) use ($foreignKeys, &$primaryKey) {
             return $this->getFieldDescription($e, $foreignKeys, $primaryKey);
         }, $descriptionRaw);
-
 
         file_put_contents($filePath, Terminal::stringToFile(
         "<?php

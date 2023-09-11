@@ -42,7 +42,7 @@ class UploadFile
     const REASON_DIRECTORY_NOT_WRITABLE = 1<<5;
 
     /** There was an error with PHP Upload, see `getError()` for more (https://www.php.net/manual/en/features.file-upload.errors.php)*/
-    const REASON_PHP_UPLOAD_ERROR = 1<<5;
+    const REASON_PHP_UPLOAD_ERROR = 1<<6;
 
     protected string $name;
     protected string $type;

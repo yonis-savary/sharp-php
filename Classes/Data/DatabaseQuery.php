@@ -5,6 +5,7 @@ namespace Sharp\Classes\Data;
 use Exception;
 use InvalidArgumentException;
 use PDO;
+use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\Classes\QueryCondition;
 use Sharp\Classes\Data\Classes\QueryField;
@@ -17,6 +18,8 @@ use Sharp\Core\Utils;
 
 class DatabaseQuery
 {
+    use Configurable;
+
     const INSERT = 1;
     /** Alias of DatabaseQuery::CREATE */
     const CREATE = 1;
@@ -25,9 +28,6 @@ class DatabaseQuery
     const READ   = 2;
     const UPDATE = 3;
     const DELETE = 4;
-
-    /** @todo Put this in configuration instead */
-    const JOIN_LIMIT = 50;
 
     protected int $mode;
 
@@ -53,10 +53,16 @@ class DatabaseQuery
     protected ?int $limit = null;
     protected ?int $offset = null;
 
+    public static function getDefaultConfiguration(): array
+    {
+        return ["join-limit" => 50];
+    }
+
     public function __construct(string $table, int $mode)
     {
         $this->targetTable = $table;
         $this->setMode($mode);
+        $this->getConfiguration();
     }
 
     public function set(string $field, string $value, string $table=null): self
@@ -144,7 +150,7 @@ class DatabaseQuery
                 $target
             );
 
-            if (count($this->joins) == self::JOIN_LIMIT)
+            if (count($this->joins) == $this->configuration["join-limit"])
                 return;
 
             foreach ($model::getFields() as $_ => $field)
@@ -230,8 +236,10 @@ class DatabaseQuery
         string $alias,
         string $targetField
     ): self {
-        if (count($this->joins)+1 >= self::JOIN_LIMIT)
-            throw new Exception("Cannot exceed ". self::JOIN_LIMIT . " join statement on a query");
+        $joinLimit = $this->configuration["join-limit"];
+
+        if (count($this->joins)+1 >= $joinLimit)
+            throw new Exception("Cannot exceed ". $joinLimit . " join statement on a query");
 
         $this->joins[] = new QueryJoin(
             $mode,

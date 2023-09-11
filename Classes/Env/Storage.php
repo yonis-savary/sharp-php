@@ -38,7 +38,7 @@ class Storage
         $this->makeDirectory($root);
     }
 
-    public function assertIsWritable(string $path=null)
+    public function assertIsWritable(string $path=null): void
     {
         $path = $this->path($path ?? "/");
         if (!is_writable($path))
