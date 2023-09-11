@@ -11,6 +11,7 @@
 use Sharp\Classes\Core\Events;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Env\Cache;
+use Sharp\Classes\Env\Config;
 use Sharp\Classes\Env\Session;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Web\Router;
@@ -40,6 +41,15 @@ function sessionSet(string $key, mixed $value): void
 }
 
 
+
+
+/**
+ * Get a value from the global configuration instance
+ */
+function config(string $key, mixed $default=null): mixed
+{
+    return Config::getInstance()->get($key, $default);
+}
 
 
 

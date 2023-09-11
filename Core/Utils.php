@@ -2,6 +2,8 @@
 
 namespace Sharp\Core;
 
+use Sharp\Classes\Env\Config;
+
 class Utils
 {
     /*
@@ -225,5 +227,17 @@ class Utils
             return [$value];
 
         return $value;
+    }
+
+
+    /**
+     * Useful to enable debug-only features
+     *
+     * @return `true` if "env" is set to "production" in your configuration
+     */
+    public static function isProduction(): bool
+    {
+        $env = Config::getInstance()->get("env", "debug");
+        return strtolower($env) === "production";
     }
 }
