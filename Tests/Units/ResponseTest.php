@@ -11,11 +11,11 @@ use Sharp\Classes\Web\Route;
 class ResponseTest extends TestCase
 {
     const DUMMY_HEADERS = [
-        "Cache-Control" => "no-store, no-cache, must-revalidate",
-        "Connection" => "Keep-Alive",
-        "Content-Encoding" => "gzip",
-        "Content-Length" => "23800",
-        "Content-Type" => "text/html;charset=UTF-8"
+        "cache-control" => "no-store, no-cache, must-revalidate",
+        "connection" => "Keep-Alive",
+        "content-encoding" => "gzip",
+        "content-length" => "23800",
+        "content-type" => "text/html;charset=UTF-8"
     ];
 
     public function test_logSelf()
@@ -66,6 +66,17 @@ class ResponseTest extends TestCase
         $this->assertEquals($headers, $response->getHeaders());
     }
 
+    public function test_removeHeaders()
+    {
+        $response = new Response(null, 200, ["content-type" => "application/json"]);
+        $response->removeHeaders(["Content-Type"]);
+        $this->assertEquals([], $response->getHeaders());
+
+        $response = new Response(null, 200, ["Content-Type" => "application/json"]);
+        $response->removeHeaders(["content-type"]);
+        $this->assertEquals([], $response->getHeaders());
+    }
+
 
     public function test_getHeaders()
     {
@@ -76,6 +87,17 @@ class ResponseTest extends TestCase
 
         $actualHeaders = $response->getHeaders();
         $this->assertEquals($actualHeaders, $response->getHeaders());
+    }
+
+    public function test_getHeader()
+    {
+        $response = new Response(null, 200, [
+            "Content-Type" => "text/html",
+            "Connection" => "Keep-Alive"
+        ]);
+
+        $this->assertEquals("text/html", $response->getHeader("Content-Type"));
+        $this->assertEquals("Keep-Alive", $response->getHeader("Connection"));
     }
 
     public function test_display()
@@ -107,7 +129,7 @@ class ResponseTest extends TestCase
         $response = Response::html("Hello");
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals("Hello", $response->getContent());
-        $this->assertEquals("text/html", $response->getHeaders()["Content-Type"]);
+        $this->assertEquals("text/html", $response->getHeaders()["content-type"]);
     }
 
     public function test_file()
@@ -136,7 +158,7 @@ class ResponseTest extends TestCase
     {
         $response = Response::redirect("/another-one");
         $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals("/another-one", $response->getHeaders()["Location"]);
+        $this->assertEquals("/another-one", $response->getHeaders()["location"]);
     }
 
     public function test_adapt()

@@ -188,6 +188,7 @@ class Response
     protected $content;
     protected int $responseCode = self::OK;
     protected array $headers=[];
+    protected array $headersToRemove = [];
     protected $responseTransformer = null;
 
     /**
@@ -205,7 +206,7 @@ class Response
     ) {
         $this->content = $content;
         $this->responseCode = $responseCode;
-        $this->headers = $headers;
+        $this->withHeaders($headers);
         $this->responseTransformer = $responseTransformer;
     }
 
@@ -217,12 +218,22 @@ class Response
     public function logSelf(Logger $logger=null): void
     {
         $logger ??= Logger::getInstance();
-        $logger->info($this->responseCode . " ". $this->headers["Content-Type"] ?? "Unknown MIME");
+        $logger->info($this->responseCode . " ". ($this->headers["content-type"] ?? "Unknown MIME"));
     }
 
     public function getContent(): mixed
     {
         return $this->content;
+    }
+
+
+    /**
+     * @return string Transformed header name to lower case
+     * @example NULL `headerName("Content-Type") // returns "content-type"`
+     */
+    protected function headerName(string $original): string
+    {
+        return strtolower($original);
     }
 
     /**
@@ -232,14 +243,49 @@ class Response
     public function withHeaders(array $headers): Response
     {
         foreach ($headers as $name => $value)
+        {
+            $name = $this->headerName($name);
             $this->headers[$name] = $value;
+        }
+
+        $addedHeaders = array_keys($headers);
+        $addedHeaders = array_map(fn($x) => $this->headerName($x), $addedHeaders);
+
+        $this->headersToRemove = array_diff($this->headersToRemove, $addedHeaders);
+
         return $this;
     }
 
 
+    public function removeHeaders(array $headers): Response
+    {
+        $headers = array_map(fn($x) => $this->headerName($x), $headers);
+
+        array_push($this->headersToRemove, ...$headers);
+        foreach ($headers as $headerName)
+            unset($this->headers[$headerName]);
+
+        return $this;
+    }
+
+    /**
+     * @return array<string,string> Associative array as `headerName => value`
+     * @note **Header names are converted to lowercase**
+     */
     public function getHeaders(): array
     {
         return $this->headers;
+    }
+
+    /**
+     * Get a header value from its name
+     *
+     * @param string Header name to retrieve (case-insensitive)
+     * @return ?string Header value if defined, `null` otherwise
+     */
+    public function getHeader(string $headerName): ?string
+    {
+        return $this->headers[$this->headerName($headerName)] ?? null;
     }
 
     /**
@@ -251,9 +297,12 @@ class Response
         if ($sendHeaders)
         {
             http_response_code($this->responseCode);
-            header_remove("X-Powered-By");
             foreach ($this->headers as $name => $value)
                 header("$name: $value");
+
+            $this->removeHeaders(["x-powered-by"]);
+            foreach ($this->headersToRemove as $header)
+                header_remove($header);
         }
 
         $toDisplay = $this->content;
