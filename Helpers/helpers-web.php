@@ -26,9 +26,13 @@ function asset(string $target) : string
  */
 function script(string $target, bool $inject=false): string
 {
-    return $inject ?
-        "<script>".file_get_contents(AssetServer::getInstance()->findAsset($target))."</script>":
-        "<script src='".asset($target)."'></script>";
+    if (!$inject)
+        return "<script src='".asset($target)."'></script>";
+
+    if (!($path = AssetServer::getInstance()->findAsset($target)))
+        throw new Exception("Script not found [$target]");
+
+    return "<script>".file_get_contents($path)."</script>";
 }
 
 /**
@@ -43,9 +47,13 @@ function script(string $target, bool $inject=false): string
  */
 function style(string $target, bool $inject=false): string
 {
-    return $inject ?
-        "<style>".file_get_contents(AssetServer::getInstance()->findAsset($target))."</style>":
-        "<link rel='stylesheet' href='".asset($target)."'>";
+    if (!$inject)
+        return "<link rel='stylesheet' href='".asset($target)."'>";
+
+    if (!($path = AssetServer::getInstance()->findAsset($target)))
+        throw new Exception("Stylesheet not found [$target]");
+
+    return "<style>".file_get_contents($path)."</style>";
 }
 
 /**

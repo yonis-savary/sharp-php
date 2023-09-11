@@ -5,6 +5,7 @@ namespace Sharp\Classes\Core;
 
 use InvalidArgumentException;
 use JsonException;
+use RuntimeException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Env\Storage;
 use Throwable;
@@ -54,7 +55,9 @@ class Logger
         $this->filename = $storage->path($filename);
         $exists = $storage->isFile($filename);
 
-        $this->stream = $storage->getStream($filename, "a", false);
+        if (!($this->stream = $storage->getStream($filename, "a", false)))
+            throw new RuntimeException("Could not open [".$this->filename."] file in append mode !");
+
         if (!$exists)
             fputcsv($this->stream, [
                 "DateTime",
@@ -124,7 +127,7 @@ class Logger
         if (!$this->stream)
             return;
 
-        $ip = $_SERVER['REMOTE_ADDR'] ?? 'null';
+        $ip = $_SERVER['REMOTE_ADDR'] ?? "unknown";
         $method = $_SERVER['REQUEST_METHOD'] ?? php_sapi_name();
         $now = date('Y-m-d H:i:s');
 

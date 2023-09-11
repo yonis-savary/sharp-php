@@ -15,7 +15,9 @@ set_exception_handler(function(Throwable $exception){
         die(join("\n", [
             "\n",
             "_____________________________________________",
-            "Got an exception/error, please read your logs\n"
+            "Got an exception/error, please read your logs",
+            "(".$exception->getMessage().")",
+            "\n"
         ]));
 
     $res = new Response("Internal Server Error", 500, ["Content-Type" => "text/plain"]);
