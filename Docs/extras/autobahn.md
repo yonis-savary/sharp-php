@@ -49,6 +49,11 @@ INSERT INTO user (login, password) VALUES ('bob', 'mike');
 SELECT ... FROM user WHERE login = 'bob' AND id = 2
 ```
 
+`GET /user {login: 'bob', id: [2,3]}` will give
+```sql
+SELECT ... FROM user WHERE login = 'bob' AND `id` IN ('2','3')
+```
+
 Note:
 - You can put `_join` (`true|false`) in your request to dis/enable model foreign keys exploration
 - You can also set `_ignores` (`string|array`) to ignores some foreign keys in the model foreign keys exploration
@@ -63,12 +68,20 @@ In our example, not giving `id` in the request will return an error
 ```sql
 UPDATE user SET login = 'dale' WHERE id = 5
 ```
+`PUT /user {id: [5, 76], login: 'mike'}` or `PATCH /user {id: [5, 76], login: 'mike'}` will give
+```sql
+UPDATE user SET login = 'dale' WHERE id IN ('5', '76')
+```
 
 ### 🔴 DELETE - delete multiples users with body as filters
 
 `DELETE /user {login: 'mike'}` will give
 ```sql
 DELETE FROM user WHERE login = 'mike'
+```
+`DELETE /user {login: ['mike', 'bob']}` will give
+```sql
+DELETE FROM user WHERE `login` IN ('mike', 'bob')
 ```
 
 By default, dangerous queries with no parameters are blocked, but you can enable them by

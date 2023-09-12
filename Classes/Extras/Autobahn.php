@@ -136,7 +136,12 @@ class Autobahn
         $query->exploreModel($model, $doJoin, $ignores);
 
         foreach ($request->all() as $key => $value)
-            $query->where($key, $value);
+        {
+            if (is_array($value))
+                $query->whereSQL("`$key` IN {}", [$value]);
+            else
+                $query->where($key, $value);
+        }
 
         foreach ($middlewares as $middleware)
             $middleware($query);
@@ -162,16 +167,26 @@ class Autobahn
             return Response::json("A primary key [$primaryKey] is needed to update !", 401);
 
         $query = new DatabaseQuery($model::getTable(), DatabaseQuery::UPDATE);
-        $query->where($primaryKey, $primaryKeyValue);
+
+        if (is_array($primaryKeyValue))
+            $query->whereSQL("`$primaryKey` IN {}", [$primaryKeyValue]);
+        else
+            $query->where($primaryKey, $primaryKeyValue);
 
         foreach($request->all() as $key => $value)
+        {
+            if ($key === $primaryKey)
+                continue;
             $query->set($key, $value);
+        }
 
         foreach ($middlewares as $middleware)
             $middleware($query);
 
         $events = Events::getInstance();
         $events->dispatch("autobahnUpdateBefore", ["model"=> $model, "query"=> $query]);
+
+        debug($query->build());
 
         $query->fetch();
 
@@ -190,7 +205,12 @@ class Autobahn
             return Response::json("At least one filter must be given", Response::CONFLICT);
 
         foreach ($request->all() as $key => $value)
-            $query->where($key, $value);
+        {
+            if (is_array($value))
+                $query->whereSQL("`$key` IN {}", [$value]);
+            else
+                $query->where($key, $value);
+        }
 
         foreach ($middlewares as $middleware)
             $middleware($query);

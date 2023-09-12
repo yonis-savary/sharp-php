@@ -72,6 +72,9 @@ class AutobahnTest extends TestCase
         $res = $router->route(new Request("GET", "/test_user_data", ["data" => "B"]));
         $this->assertCount(1, $res->getContent());
 
+        $res = $router->route(new Request("GET", "/test_user_data", ["data" => ["A", "B"]]));
+        $this->assertCount(2, $res->getContent());
+
         /*
 
         Expected format : {
@@ -122,6 +125,12 @@ class AutobahnTest extends TestCase
 
         $router->route(new Request("PUT", "/test_user_data", ["id" => 1, "data" => "Z"]));
         $this->assertEquals("Z", $db->query("SELECT data FROM test_user_data WHERE id = 1")[0]["data"]);
+
+        $this->resetTestUserDataTable();
+
+        $router->route(new Request("PUT", "/test_user_data", ["id" => [1,2], "data" => "Z"]));
+        $this->assertEquals("Z", $db->query("SELECT data FROM test_user_data WHERE id = 1")[0]["data"]);
+        $this->assertEquals("Z", $db->query("SELECT data FROM test_user_data WHERE id = 2")[0]["data"]);
     }
 
     public function test_delete()
@@ -138,6 +147,11 @@ class AutobahnTest extends TestCase
         # Dangerous query prevention
         $router->route(new Request("DELETE", "/test_user_data"));
         $this->assertTableCount(2);
+
+        $this->resetTestUserDataTable();
+
+        $router->route(new Request("DELETE", "/test_user_data", ["id" => [1,2]]));
+        $this->assertTableCount(1);
     }
 
 }
