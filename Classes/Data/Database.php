@@ -103,7 +103,10 @@ class Database
     protected function prepareString($str, $quote=false): string
     {
         if (is_array($str))
-            return "(".join(",", array_map(fn ($elem) => $this->prepareString($elem), $str)).")";
+        {
+            $template = "(". join(",", array_map(fn()=>"{}", $str)) .")";
+            return $this->build($template, $str);
+        }
 
         if ($str === null)
             return 'NULL';

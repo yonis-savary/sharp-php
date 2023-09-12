@@ -55,7 +55,7 @@ class DatabaseTest extends TestCase
         $this->assertEquals("SELECT '1'", $db->build("SELECT '{}'", [1]));
         $this->assertEquals("SELECT '1'", $db->build("SELECT '{}'", ['1']));
 
-        $this->assertEquals("SELECT (1,2,3)", $db->build("SELECT {}", [[1,2,3]]));
+        $this->assertEquals("SELECT ('1','2','3')", $db->build("SELECT {}", [[1,2,3]]));
 
     }
 
