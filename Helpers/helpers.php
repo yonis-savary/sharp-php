@@ -108,7 +108,7 @@ function createGroup(string|array $urlPrefix, string|array $middlewares): array
 function groupRoutes(array $group, callable $routeDeclaration): void
 {
     $router = Router::getInstance();
-    $router->group($group, $routeDeclaration);
+    $router->groupCallback($group, $routeDeclaration);
 }
 
 /**

@@ -52,57 +52,52 @@ class RouterTest extends TestCase
 
     public function test_group()
     {
-        $r = new Router();
+        $router = new Router();
 
-        $r->group([
+        $assertRoutesAreGrouped = function() use (&$router) {
+            $this->assertCount(2, $router->getRoutes());
+            foreach ($router->getRoutes() as $route)
+            {
+                $this->assertStringStartsWith("/api", $route->getPath());
+                $this->assertEquals([RequestHasPostData::class], $route->getMiddlewares());
+            }
+        };
+
+        $group = [
             "path" => "api",
             "middlewares" => RequestHasPostData::class
-        ], function($r) {
-            $r->addRoutes(
-                Route::get("/", fn()=>false),
-                Route::post("/login", fn()=>false)
+        ];
+
+        $router->deleteRoutes();
+
+        $router->groupCallback($group, function(Router $router){
+            $router->addRoutes(
+                Route::view("/about", "about"),
+                Route::view("/contact", "contact")
             );
         });
 
-        $this->assertCount(2, $r->getRoutes());
-        foreach ($r->getRoutes() as $route)
-        {
-            $this->assertStringStartsWith("/api", $route->getPath());
-            $this->assertEquals([RequestHasPostData::class], $route->getMiddlewares());
-        }
+        $assertRoutesAreGrouped();
+        $router->deleteRoutes();
 
-        $r->deleteRoutes();
-
-        $r->group(
-            $r->createGroup("api", RequestHasPostData::class)
-        , function($r) {
-            $r->addRoutes(
-                Route::get("/", fn()=>false),
-                Route::post("/login", fn()=>false)
-            );
-        });
-
-        $this->assertCount(2, $r->getRoutes());
-        foreach ($r->getRoutes() as $route)
-        {
-            $this->assertStringStartsWith("/api", $route->getPath());
-            $this->assertEquals([RequestHasPostData::class], $route->getMiddlewares());
-        }
-
-        $r->deleteRoutes();
-
-        $r->groupAndAdd(
-            $r->createGroup("api", RequestHasPostData::class),
-            Route::get("/", fn()=>false),
-            Route::post("/login", fn()=>false)
+        $router->addRoutes(
+            ...$router->group(
+                $group,
+                Route::view("/about", "about"),
+                Route::view("/contact", "contact")
+            )
         );
 
-        $this->assertCount(2, $r->getRoutes());
-        foreach ($r->getRoutes() as $route)
-        {
-            $this->assertStringStartsWith("/api", $route->getPath());
-            $this->assertEquals([RequestHasPostData::class], $route->getMiddlewares());
-        }
+        $assertRoutesAreGrouped();
+        $router->deleteRoutes();
+
+        $router->addGroup(
+            $group,
+            Route::view("/about", "about"),
+            Route::view("/contact", "contact")
+        );
+
+        $assertRoutesAreGrouped();
     }
 
     /*

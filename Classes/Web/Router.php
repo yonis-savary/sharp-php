@@ -122,10 +122,8 @@ class Router
      * Group routes that are declared in given callback
      * @note You can easily create a group by `createGroup()`
      */
-    public function group(
-        array $group,
-        callable $callback
-    ) {
+    public function groupCallback(array $group, callable $callback): void
+    {
         $original = $this->group;
 
         foreach ($group as $key => $value)
@@ -138,33 +136,45 @@ class Router
 
     public function addRoutes(Route ...$routes)
     {
-        foreach ($routes as $route)
-        {
-            $this->applyGroupsTo($route);
-            $this->routes[] = $route;
-        }
+        array_push(
+            $this->routes,
+            ...$this->group($this->group, ...$routes)
+        );
     }
 
-    public function groupAndAdd(array $group, Route ...$routes)
+    /**
+     *
+     */
+    public function group(array $group, Route ...$routes): array
     {
-        $this->group($group, function() use ($routes) {
-            $this->addRoutes(...$routes);
-        });
+        if (!count($group))
+            return $routes;
+
+        foreach ($routes as &$route)
+        {
+            if ($groupPrefix = $group["path"] ?? false)
+            {
+                $groupPrefix = Utils::toArray($groupPrefix);
+
+                $prefix = "/" . join("/", $groupPrefix);
+                $route->setPath(str_replace("//", "/", $prefix . $route->getPath()));
+            }
+
+            if ($middlewares = $group["middlewares"] ?? false)
+            {
+                $middlewares = Utils::toArray($middlewares);
+                $route->addMiddlewares(...$middlewares);
+            }
+        }
+
+        return $routes;
     }
 
-    protected function applyGroupsTo(Route &$route)
+    public function addGroup(array $group, Route ...$routes): void
     {
-        if (count($this->group["path"] ?? []))
-        {
-            $prefix = "/" . join("/", $this->group["path"]);
-            $route->setPath(str_replace("//", "/", $prefix . $route->getPath()));
-        }
-
-        if (count($this->group["middlewares"] ?? []))
-        {
-            foreach ($this->group["middlewares"] as $middleware)
-                $route->addMiddlewares($middleware);
-        }
+        $this->addRoutes(
+            ...$this->group($group, ...$routes)
+        );
     }
 
     protected function findFirstMathingRoute(Request $req) : ?Route

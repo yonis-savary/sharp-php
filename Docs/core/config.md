@@ -24,6 +24,7 @@ One application is made of these directories:
 - Views
 
 **Note: every directories are optionnal**
+
 **Files in `Helpers` and `Others` are directly included with `require_once`**
 
 ### Loading an application

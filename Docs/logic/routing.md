@@ -36,6 +36,9 @@ $router->addRoutes(
 );
 ```
 
+Note: routes SHOULD always have an array callback, as direct functions cannot be put in cache,
+and therefore, cannot be optimized by the Router class
+
 ## Routes grouping
 
 You can group routes together with the `group()` method of any router !
@@ -43,26 +46,65 @@ Routes can be grouped by path and middlewares
 
 ```php
 $router = Router::getInstance();
+$group = ["path" => "api", "middlewares" => IsAuthenticated::class];
 
-$router->group(["path" => "api"], function($router){
-    // Every declared routes in this function has a path that begins with "/api"
+
+# This is the simplest way to group routes
+$router->addGroup(
+    $group,
+    Route::get("/user/actives", [UserController::class, "actives"]),
+    Route::get("/user/blocked", [UserController::class, "blocked"])
+);
+
+# Group callback is useful too !
+# Every routes declared in the callback is included in the parent group
+# Note: you can accumulate groups !
+$router->groupCallback($group, function(Router $router){
+
+    # Routes here
+    # - starts with "/api"
+    # - have the IsAuthenticated middleware
     $router->addRoutes(
-        Route::get("/user/blocked", [UserController::class, "getBlockedList"])
+        Route::get("/user/actives", [UserController::class, "actives"]),
+        Route::get("/user/blocked", [UserController::class, "blocked"])
     );
 
-    $router->group(["middlewares" => AdminOnlyMiddleware::class], function($router){
-        // Every routes here begins with "/api" and have the AdminOnlyMiddleware applied to them
-        $router->addRoutes(...);
+    $router->groupCallback(["path" => "shipping"], function(Router $router){
+
+        # Routes here
+        # - starts with "/api/contact"
+        # - have the IsAuthenticated middleware
+        $router->addRoutes(
+            Route::get("/to-ship", [ShippingController::class, "toShip"])
+        );
     });
 });
 
-// createGroup() method can be used to to have a more verbose code
-$router->group(
-    $router->createGroup("api"),
-    function(){
-        /* ... */
-    }
-)
+# The last method it to manually add routes that are already grouped with group()
+$router->addRoutes(
+    ...$router->group(
+        $group,
+        Route::get("/user/actives", [UserController::class, "actives"]),
+        Route::get("/user/blocked", [UserController::class, "blocked"])
+    )
+);
+```
+
+It is advised to use one method and not mix them, that could lead to something harder to read
+like that
+
+```php
+# Quite a bad working usage !
+$router->addGroup(
+    $group,
+    Route::get(/* ... */),
+    ...$router->group(
+        $group,
+        Route::get(/* ... */),
+        Route::get(/* ... */),
+    ),
+    Route::get(/* ... */)
+);
 ```
 
 ## Slugs
@@ -109,7 +151,10 @@ Note: the `any` keyword means that **ANY** part of the url is taken (which inclu
 The [helper.php](../../Helpers/helpers.php) file got two useful function to declare routes
 
 ```php
-groupRoutes("api", TokenMiddleware::class, function(){
+groupRoutes([
+    "path" => "api",
+    "middlewares" => TokenMiddleware::class
+    ], function(){
     addRoutes(
         Route::get("/", fn()=>"Hello"),
         Router::view("/about", "aboutPage"),
