@@ -8,6 +8,8 @@ class Events
 {
     use Component;
 
+    const SELF_EVENT = "dispatchedEvent";
+
     protected array $handlers = [];
 
     /**
@@ -28,16 +30,18 @@ class Events
      */
     public function dispatch(string $event, mixed ...$args): void
     {
-        $results = [];
-        foreach ($this->handlers[$event] ?? [] as $handler)
-            $results[] = $handler(...$args);
+        $results = array_map(
+            fn($handler) => $handler(...$args),
+            $this->handlers[$event] ?? []
+        );
 
-        $selfEvent = "dispatchedEvent";
-        if ($event != $selfEvent)
-            $this->dispatch($selfEvent, [
-                "event" => $event,
-                "args" => $args,
-                "results" => $results
-            ]);
+        if ($event === self::SELF_EVENT)
+            return;
+
+        $this->dispatch(self::SELF_EVENT, [
+            "event" => $event,
+            "args" => $args,
+            "results" => $results
+        ]);
     }
 }

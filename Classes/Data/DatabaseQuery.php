@@ -129,7 +129,7 @@ class DatabaseQuery
         return $this;
     }
 
-    protected function exploreReferences($references, array $foreignKeyIgnores=[]): void
+    protected function exploreReferences(array $references, array $foreignKeyIgnores=[]): void
     {
         $nextReferences = [];
 
@@ -174,8 +174,8 @@ class DatabaseQuery
                     $tableAcc
                 ];
             }
-
         }
+
         if (count($nextReferences))
             $this->exploreReferences($nextReferences);
     }
@@ -239,7 +239,7 @@ class DatabaseQuery
         $joinLimit = $this->configuration["join-limit"];
 
         if (count($this->joins)+1 >= $joinLimit)
-            throw new Exception("Cannot exceed ". $joinLimit . " join statement on a query");
+            throw new Exception("Cannot exceed $joinLimit join statement on a query");
 
         $this->joins[] = new QueryJoin(
             $mode,
@@ -263,23 +263,20 @@ class DatabaseQuery
 
     protected function buildEssentials(): string
     {
+        if ($this->offset && is_null($this->limit))
+            Logger::getInstance()->logThrowable(new Exception("DatabaseQuery: setting an offset without a limit does not have any effect on the query"));
+
         $essentials = "";
         $toString = fn($x)=>"$x";
 
         $essentials .= count($this->conditions) ?
-            "WHERE " . join(" AND \n", array_map($toString, $this->conditions)):
-            "";
+            "WHERE " . join(" AND \n", array_map($toString, $this->conditions)): "";
 
         $essentials .= count($this->orders) ?
-            "ORDER BY ". join(",\n", array_map($toString, $this->orders)):
-            '';
-
-        if ($this->offset && is_null($this->limit))
-            Logger::getInstance()->logThrowable(new Exception("DatabaseQuery: setting an offset without a limit does not have any effect on the query"));
+            "ORDER BY ". join(",\n", array_map($toString, $this->orders)): '';
 
         $essentials .=  $this->limit ?
-            " LIMIT $this->limit ". ($this->offset ? "OFFSET $this->offset" : ""):
-            "";
+            " LIMIT $this->limit ". ($this->offset ? "OFFSET $this->offset" : ""): "";
 
         return $essentials;
     }

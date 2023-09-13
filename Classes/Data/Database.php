@@ -152,10 +152,8 @@ class Database
         $count = 0;
         $queryClone = preg_replace_callback('/\{\}/',
         function($match) use (&$count, $quotedPositions, $context) {
-            $val = $this->prepareString(
-                $context[$count] ?? null,
-                !in_array($match[0][1], $quotedPositions)
-            );
+            $doQuote = !in_array($match[0][1], $quotedPositions);
+            $val = $this->prepareString($context[$count] ?? null, $doQuote);
             $count++;
             return $val;
         }, $queryClone, flags:PREG_OFFSET_CAPTURE);

@@ -40,16 +40,16 @@ $storage->makeDirectory("MyDirectory/SubDir");
 
 # No filter return both directories and files
 $storage->exploreDirectory("MyDirectory", Storage::NO_FILTER);
-# No filter return only directories
+# ONLY_DIRS return only directories names
 $storage->exploreDirectory("MyDirectory", Storage::ONLY_DIRS);
-# No filter return only files
+# ONLY_FILES return only files names
 $storage->exploreDirectory("MyDirectory", Storage::ONLY_FILES);
 
-# Return a list of files in the root directory (no subdirectory)
+# Return a list of direct dirs/files in the root directory (no subdirectory)
 $storage->listFiles();
 $storage->listDirectories();
 
-// Throws an exception is the directory is not writable
+// Throws an exception if the directory is not writable
 $storage->assertIsWritable();
 ```
 

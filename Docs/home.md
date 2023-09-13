@@ -26,7 +26,7 @@ Core
 
 Core (Advanced):
 - [📦 Storage](./env/storage.md)
-- [🔥 Cache](./env/Cache.md)
+- [🔥 Cache](./env/cache.md)
 - [🪝 Events](./core/events.md)
 
 Routing & Logic

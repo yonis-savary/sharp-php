@@ -32,7 +32,7 @@ class Console
 
         foreach ($this->listCommands() as $command)
         {
-            if ( in_array($identifier, [
+            if (in_array($identifier, [
                 $command->getName(),
                 $command->getIdentifier()
             ]))

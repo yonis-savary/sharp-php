@@ -72,7 +72,7 @@ class Args implements \Countable
             if (!str_starts_with($key, "-"))
                 $value = $value;
             else if ($value)
-                $value = $key."=\"".str_replace('"', '\\"', $value).'"';
+                $value = $key.'="'.str_replace('"', '\\"', $value).'"';
             else
                 $value = $key;
         }
