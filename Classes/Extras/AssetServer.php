@@ -17,7 +17,8 @@ class AssetServer
     const CACHE_KEY = "sharp.asset-server.path-index";
 
     const EXTENSIONS_MIMES = [
-        "js" => "application/javascript"
+        "js" => "application/javascript",
+        "css" => "text/css"
     ];
 
     protected $cacheIndex = [];

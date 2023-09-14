@@ -27,6 +27,6 @@ class Session extends AbstractStorage
 
     public function __construct()
     {
-        parent::__construct($_SESSION);
+        $this->storage = &$_SESSION;
     }
 }

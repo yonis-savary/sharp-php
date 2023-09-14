@@ -186,8 +186,6 @@ class Autobahn
         $events = Events::getInstance();
         $events->dispatch("autobahnUpdateBefore", ["model"=> $model, "query"=> $query]);
 
-        debug($query->build());
-
         $query->fetch();
 
         $events->dispatch("autobahnUpdateAfter", ["model"=> $model, "query"=> $query]);

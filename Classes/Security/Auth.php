@@ -22,7 +22,7 @@ class Auth
     protected $model;
     protected string $loginField;
     protected string $passwordField;
-    protected string $saltField;
+    protected ?string $saltField;
 
     protected Session $session;
 
@@ -80,7 +80,7 @@ class Auth
             return $this->failAttempt();
 
         $hash = $user["data"][$this->passwordField];
-        if ($this->passwordField)
+        if ($this->saltField)
             $password .= $user["data"][$this->saltField];
 
         if (!password_verify($password, $hash))
