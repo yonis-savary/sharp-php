@@ -359,11 +359,11 @@ class DatabaseQuery
 
         $data = [];
 
-        $lastTable = null;
         foreach ($res as $row)
         {
             $data[] = [];
             $lastId = count($data)-1;
+            $lastTable = null;
 
             for ($i=0; $i<count($this->fields); $i++)
             {

@@ -30,10 +30,11 @@ class Request
         protected array $get=[],
         protected array $post=[],
         protected array $uploads=[],
-        protected array $headers=[]
+        protected array $headers=[],
+        protected mixed $body=null
     )
     {
-        $this->path = preg_replace("/\?.+/", "", $this->path);
+        $this->path = preg_replace("/\?.*/", "", $this->path);
         $this->uploads = $this->getCleanUploadData($uploads);
     }
 
@@ -48,8 +49,10 @@ class Request
 
         $postBody = $_POST;
 
+        $body = file_get_contents('php://input');
+
         if (($headers['Content-Type'] ?? null) === 'application/json')
-            $postBody = json_decode(file_get_contents('php://input'), true, JSON_THROW_ON_ERROR);
+            $postBody = json_decode($body, true, JSON_THROW_ON_ERROR);
 
         $request = new self (
             $_SERVER['REQUEST_METHOD'] ?? php_sapi_name(),
@@ -57,7 +60,8 @@ class Request
             $_GET,
             $postBody,
             $_FILES,
-            $headers
+            $headers,
+            $body
         );
 
         return $request;
@@ -118,6 +122,11 @@ class Request
      * @return array Array from both GET and POST data
      */
     public function all() : array { return array_merge($this->post, $this->get); }
+
+    /**
+     * Return raw request's body (`php://input`), useful for octet-stream requests
+     */
+    public function body(): mixed { return $this->body; }
 
     /**
      * This function can be used with PHP's list function

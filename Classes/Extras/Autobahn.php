@@ -50,7 +50,7 @@ class Autobahn
         list($model, $routeExtras) = $this->makeRequestData($model, ...$middlewares);
 
         $this->router->addRoutes(
-            new Route($model::getTable(), [self::class, $callback], $methods, $middlewares, $routeExtras)
+            new Route($model::getTable(), [self::class, $callback], $methods, [], $routeExtras)
         );
     }
 
@@ -129,10 +129,10 @@ class Autobahn
 
         $query = new DatabaseQuery($model::getTable(), DatabaseQuery::SELECT);
 
-        $doJoin = boolval($request->params("_join") ?? true);
+        $doJoin = ($request->params("_join") ?? "true") === "true";
         $ignores = Utils::toArray($request->params("_ignores") ?? []);
 
-        $request->unset("_ignores", "_joins");
+        $request->unset(["_ignores", "_join"]);
         $query->exploreModel($model, $doJoin, $ignores);
 
         foreach ($request->all() as $key => $value)
