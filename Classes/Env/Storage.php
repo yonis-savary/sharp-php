@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Env;
 
+use Exception;
 use RuntimeException;
 use Sharp\Classes\Core\Component;
 use Sharp\Core\Utils;
@@ -160,6 +161,19 @@ class Storage
     {
         return is_dir($this->path($path));
     }
+
+
+    /**
+     * @return `true` if given path is empty, `false` otherwise
+     */
+    public function isEmpty(string $path="/"): bool
+    {
+        if (!$this->isDirectory($path))
+            throw new Exception("[$path] is not a directory");
+
+        return count(scandir($this->path($path))) == 2; // Includes only "." and ".."
+    }
+
 
     /**
      * @param string File to unlink (relative to the Storage root)

@@ -185,4 +185,20 @@ final class StorageTest extends TestCase
         $this->assertEquals($this->arrayOfPaths(["dir"], $storage), $storage->listDirectories());
         $this->assertEquals($this->arrayOfPaths(["dir/subdir"], $storage), $storage->listDirectories("dir"));
     }
+
+    public function test_isEmpty()
+    {
+        $storage = $this->getSampleStorage();
+
+        $storage->write("a.txt", "A");
+        $storage->makeDirectory("A");
+
+        $this->assertFalse($storage->isEmpty());
+        $storage->removeDirectory("A");
+
+        $this->assertFalse($storage->isEmpty());
+        $storage->unlink("a.txt");
+
+        $this->assertTrue($storage->isEmpty());
+    }
 }
