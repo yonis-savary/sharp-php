@@ -26,6 +26,7 @@ class Database
             "port" => 3306,
             "user" => "root",
             "password" => null,
+            "enable-foreign-keys" => true
         ];
     }
 
@@ -52,7 +53,11 @@ class Database
     )
     {
         $dsn = $this->getDSN();
+        $config = $this->getConfiguration();
         $this->connection = new PDO($dsn, $user, $password);
+
+        if ($driver === "sqlite" && $config["enable-foreign-keys"])
+            $this->query("PRAGMA foreign_keys=ON");
     }
 
     public function getConnection(): PDO

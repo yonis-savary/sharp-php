@@ -91,9 +91,9 @@ class DatabaseQuery
         return $this;
     }
 
-    public function addField(string $table, string $field): self
+    public function addField(string $table, string $field, string $alias=null, int $type=DatabaseField::STRING): self
     {
-        $this->fields[] = new QueryField($table, $field);
+        $this->fields[] = new QueryField($table, $field, $alias, $type);
         return $this;
     }
 
@@ -110,7 +110,7 @@ class DatabaseQuery
 
         foreach ($fields as $_ => $field)
         {
-            $this->addField($table, $field->name);
+            $this->addField($table, $field->name, null, $field->type);
 
             if (!($ref = $field->reference))
                 continue;
@@ -155,7 +155,7 @@ class DatabaseQuery
 
             foreach ($model::getFields() as $_ => $field)
             {
-                $this->addField($targetAcc, $field->name);
+                $this->addField($targetAcc, $field->name, null, $field->type);
 
                 if (!($ref = $field->reference))
                     continue;
@@ -208,7 +208,7 @@ class DatabaseQuery
 
         if (!$table) // Prevent Ambiguous Fields
         {
-            $compatibles = array_filter($this->fields, fn($f) => $f->field == $field);
+            $compatibles = array_values(array_filter($this->fields, fn($f) => $f->field == $field));
             if (count($compatibles) > 1)
                 $table = $compatibles[0]->table;
         }
@@ -288,7 +288,7 @@ class DatabaseQuery
             $this->targetTable,
             "(".join(",", $this->insertFields).")",
             "VALUES",
-            ...$this->insertValues
+            join(",", $this->insertValues)
         ]);
     }
 
@@ -383,7 +383,7 @@ class DatabaseQuery
                     $ref = &$ref["data"];
                 }
 
-                $ref[$field->field] = $row[$i];
+                $ref[$field->field] = $field->fromString($row[$i]);
             }
 
             $data[$lastId] = $data[$lastId][$this->targetTable];

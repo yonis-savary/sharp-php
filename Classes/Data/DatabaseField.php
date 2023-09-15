@@ -12,7 +12,7 @@ class DatabaseField
 
     const IS_UNIQUE = 5;
 
-    public int $type;
+    public int $type = self::STRING;
     public bool $nullable = true;
     public bool $unique = false;
 

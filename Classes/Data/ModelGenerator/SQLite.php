@@ -99,7 +99,7 @@ class SQLite extends GeneratorDriver
         return array_values(array_filter(array_map(fn($l) => $this->lineToField($l), $lines)));
     }
 
-    public function lineToField(string $sqlLine): array
+    public function lineToField(string $sqlLine): ?array
     {
         $field = "";
 
@@ -116,6 +116,15 @@ class SQLite extends GeneratorDriver
             if (str_contains($sqlLine, 'PRIMARY KEY'))
                 $this->currentPrimaryKey = $matches[1];
 
+            $type = $matches[2];
+            $classType = "STRING";
+            if (preg_match("/smallint\(1\)/i", $type))  $classType = "BOOLEAN";
+            else if (preg_match("/bool/i", $type))      $classType = "BOOLEAN";
+            else if (preg_match("/int/i", $type))       $classType = "INTEGER";
+            else if (preg_match("/float\(/i", $type))   $classType = "FLOAT";
+            else if (preg_match("/decimal/i", $type))   $classType = "DECIMAL";
+            $field .= "->setType(DatabaseField::$classType)";
+
             $matches = [];
             if (preg_match('/REFERENCES (.+?)\((.+?)\)/', $sqlLine, $matches))
                 $field .= "->references(".$this->sqlNameToPHPName($matches[1])."::class, '".$matches[2]."')";
@@ -126,6 +135,8 @@ class SQLite extends GeneratorDriver
         $matches = [];
         if (preg_match('/^FOREIGN KEY \((.+?)\) REFERENCES (.+?)\((.+?)\)$/', $sqlLine, $matches))
             $this->fieldExtras[$matches[1]] = "->references(".$this->sqlNameToPHPName($matches[2])."::class, '".$matches[3]."')";
+
+        return null;
     }
 
     public function generate(string $table, string $targetApplication): void
