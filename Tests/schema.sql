@@ -4,7 +4,8 @@ CREATE TABLE test_user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     login VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    salt VARCHAR(100) NOT NULL
+    salt VARCHAR(100) NOT NULL,
+    blocked BOOLEAN DEFAULT FALSE
 );
 
 -- User logs are admin, admin

@@ -93,6 +93,21 @@ class ModelTest extends TestCase
         $this->assertInstanceOf(DatabaseQuery::class, $user::select());
     }
 
+    public function test_column_format()
+    {
+        $user = TestUser::select()->where("id", 1)->first();
+
+        $this->assertEquals(
+            [
+                "id" => 1,
+                'login' => 'admin',
+                'password' => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
+                'salt' => 'dummySalt',
+                'blocked' => false
+            ]
+        , $user["data"]);
+    }
+
     public function test_update()
     {
         $user = self::getSampleModel();

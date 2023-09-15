@@ -100,7 +100,8 @@ class AuthenticationTest extends TestCase
                 "id" => 1,
                 "login" => "admin",
                 "password" => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
-                "salt" => "dummySalt"
+                "salt" => "dummySalt",
+                'blocked' => false
             ]
         ], $authentication->getUser());
 
