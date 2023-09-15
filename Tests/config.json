@@ -3,7 +3,7 @@
         "driver": "sqlite",
         "database": null
     },
-    "auth": {
+    "authentication": {
         "model": "Sharp\\Tests\\Models\\TestUser",
         "login-field": "login",
         "password-field": "password",

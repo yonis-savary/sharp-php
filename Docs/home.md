@@ -46,7 +46,7 @@ Business Logic
 Extras
 - ⭐️ [Serve assets with AssetServer](./extras/assets.md)
 - 🚘 [Automatic CRUD API with Autobahn](./extras/autobahn.md)
-- 🔐 [Authentication](./security/auth.md)
+- 🔐 [Authentication](./security/authentication.md)
 
 File/Comment documentation:
 

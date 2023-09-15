@@ -3,20 +3,22 @@
 namespace Sharp\Classes\Security;
 
 use InvalidArgumentException;
+use PHPUnit\Event\Event;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
+use Sharp\Classes\Core\Events;
 use Sharp\Classes\Env\Config;
 use Sharp\Classes\Env\Session;
 use Sharp\Core\Utils;
 
-class Auth
+class Authentication
 {
     use Component, Configurable;
 
-    const ATTEMPTS_NUMBER = "sharp.auth.failed-attempt-number";
-    const SESSION_EXPIRE_TIME = "sharp.auth.session-expire-time";
-    const USER_DATA = "sharp.auth.user_data";
-    const IS_LOGGED = "sharp.auth.is_logged";
+    const ATTEMPTS_NUMBER = "sharp.authentication.failed-attempt-number";
+    const SESSION_EXPIRE_TIME = "sharp.authentication.session-expire-time";
+    const USER_DATA = "sharp.authentication.user_data";
+    const IS_LOGGED = "sharp.authentication.is_logged";
 
     /** @var \Sharp\CLasses\Data\Model $model */
     protected $model;
@@ -91,6 +93,8 @@ class Auth
         $session->set(self::USER_DATA, $user);
         $session->set(self::ATTEMPTS_NUMBER, 0);
         $this->refreshExpireTime();
+
+        Events::getInstance()->dispatch("authenticatedUser", ["user" => $user]);
 
         return true;
     }

@@ -100,6 +100,10 @@ $events->on("autobahnDeleteAfter", function($event){
     $query = $event["query"];
 });
 
+$events->on("authenticatedUser", function($event){
+    $user = $event["user"];
+})
+
 ```
 
 [< Back to summary](../home.md)
