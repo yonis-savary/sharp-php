@@ -3,7 +3,6 @@
 namespace Sharp\Classes\Security;
 
 use InvalidArgumentException;
-use PHPUnit\Event\Event;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Core\Events;
@@ -102,9 +101,7 @@ class Authentication
     protected function failAttempt(): bool
     {
         $this->logout();
-
-        $session = $this->session;
-        $session->set(self::ATTEMPTS_NUMBER, $session->get(self::ATTEMPTS_NUMBER, 0) + 1);
+        $this->session->edit(self::ATTEMPTS_NUMBER, fn($x) => $x+1, 0);
 
         return false;
     }
@@ -117,9 +114,10 @@ class Authentication
 
     public function logout(): void
     {
-        $session = $this->session;
-        $session->set(self::IS_LOGGED, false);
-        $session->set(self::USER_DATA, null);
+        $this->session->merge([
+            self::IS_LOGGED => false,
+            self::USER_DATA => null,
+        ]);
     }
 
     public function isLogged(): bool
@@ -151,8 +149,8 @@ class Authentication
         $password = password_hash($password, $algo, $options);
 
         $instance = new $model([
-            [$this->loginField] => $login,
-            [$this->passwordField] => $password
+            $this->loginField => $login,
+            $this->passwordField => $password
         ]);
 
         if ($saltField = $this->saltField)

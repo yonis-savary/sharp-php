@@ -2,6 +2,7 @@
 
 namespace Sharp\Core;
 
+use InvalidArgumentException;
 use Sharp\Classes\Env\Config;
 
 class Utils
@@ -228,6 +229,25 @@ class Utils
 
         return $value;
     }
+
+
+    /**
+     * Given an associative array, this function return a lowercase-keys version of the same array
+     */
+    public static function lowerArrayKeys(array $array): array
+    {
+        $newArray = [];
+
+        foreach ($array as $key => $value)
+        {
+            if (array_key_exists($key, $newArray))
+                throw new InvalidArgumentException("Duplicate key [$key]");
+
+            $newArray[strtolower($key)] = $value;
+        }
+        return $newArray;
+    }
+
 
     /**
      * Useful to enable debug-only features

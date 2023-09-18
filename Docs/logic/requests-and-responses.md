@@ -52,7 +52,6 @@ $request->setRoute();
 $request->getRoute();
 
 $request->getUploads(); // Get an array of UploadFile
-$request->setUploads(); // Overtwrite uploads (Test purpose so far)
 ```
 
 ## Basic Responses Usage

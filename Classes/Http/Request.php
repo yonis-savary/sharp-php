@@ -36,6 +36,11 @@ class Request
     {
         $this->path = preg_replace("/\?.*/", "", $this->path);
         $this->uploads = $this->getCleanUploadData($uploads);
+
+        $this->headers = Utils::lowerArrayKeys($this->headers);
+
+        if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
+            $this->body = json_decode($this->body, true, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -47,21 +52,14 @@ class Request
         if (function_exists('getallheaders'))
             $headers = getallheaders();
 
-        $postBody = $_POST;
-
-        $body = file_get_contents('php://input');
-
-        if (($headers['Content-Type'] ?? null) === 'application/json')
-            $postBody = json_decode($body, true, JSON_THROW_ON_ERROR);
-
         $request = new self (
             $_SERVER['REQUEST_METHOD'] ?? php_sapi_name(),
             $_SERVER['REQUEST_URI'] ?? '',
             $_GET,
-            $postBody,
+            $_POST,
             $_FILES,
             $headers,
-            $body
+            file_get_contents('php://input')
         );
 
         return $request;
@@ -111,22 +109,34 @@ class Request
     /**
      * @return array Array from POST data
      */
-    public function post(): array { return $this->post; }
+    public function post(): array
+    {
+        return $this->post;
+    }
 
     /**
      * @return array Array from GET data
      */
-    public function get() : array { return $this->get; }
+    public function get() : array
+    {
+        return $this->get;
+    }
 
     /**
      * @return array Array from both GET and POST data
      */
-    public function all() : array { return array_merge($this->post, $this->get); }
+    public function all() : array
+    {
+        return array_merge($this->post, $this->get);
+    }
 
     /**
-     * Return raw request's body (`php://input`), useful for octet-stream requests
+     * @return mixed Raw request's body (`php://input`), useful for octet-stream requests
      */
-    public function body(): mixed { return $this->body; }
+    public function body(): mixed
+    {
+        return $this->body;
+    }
 
     /**
      * This function can be used with PHP's list function
@@ -184,44 +194,65 @@ class Request
     /**
      * @return string HTTP Method
      */
-    public function getMethod(): string { return $this->method; }
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
 
     /**
      * @return string Request path WITHOUT any GET parameters (pathname)
      */
-    public function getPath(): string { return $this->path; }
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 
     /**
      * @return array<string,string> An associative array as `header-name => value`
      */
-    public function getHeaders(): array { return $this->headers; }
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
 
     /**
      * @return array<UploadFile>
      */
-    public function getUploads(): array { return $this->uploads; }
+    public function getUploads(): array
+    {
+        return $this->uploads;
+    }
 
-    /**
-     * @note !TEST-PURPOSE-METHOD!
-     */
-    public function setUploads(UploadFile ...$uploads): void { $this->uploads = $uploads; }
+    public function setSlugs(array $slugs): void
+    {
+        $this->slugs = $slugs;
+    }
 
-    public function setSlugs(array $slugs): void { $this->slugs = $slugs; }
-
-    public function getSlugs(): array { return $this->slugs; }
+    public function getSlugs(): array
+    {
+        return $this->slugs;
+    }
 
     public function getSlug(string $key, mixed $default=null) : mixed
     {
-        return array_key_exists($key, $this->slugs) ? $this->slugs[$key]:  $default;
+        return array_key_exists($key, $this->slugs) ?
+            $this->slugs[$key]:
+            $default;
     }
 
     /**
      * Associate a route to the request object
      * (To retrieve it in a controller for example)
      */
-    public function setRoute(Route $route) { $this->route = $route; }
+    public function setRoute(Route $route)
+    {
+        $this->route = $route;
+    }
 
-    public function getRoute(): ?Route { return $this->route; }
+    public function getRoute(): ?Route
+    {
+        return $this->route;
+    }
 
     /**
      * Unset parameters from both GET and POST data
@@ -266,30 +297,32 @@ class Request
     {
         $logger ??= new Logger(null);
 
-        $url = $this->getPath();
-        $method = $this->getMethod();
-        $headers = $this->getHeaders();
-        $post = $this->post();
-        $get = http_build_query($this->get(), "?", ";");
+        $handle = curl_init(
+            $this->getPath().
+            http_build_query($this->get(), "?", ";")
+        );
 
-        $headers['User-Agent'] = $userAgent;
-        foreach ($headers as $key => &$value)
-            $value = "$key: $value";
-        $requestHeaderString = array_values($headers);
-
-        $handle = curl_init($url . $get);
-
-        curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($handle, CURLOPT_HTTPHEADER, $requestHeaderString);
+        curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $this->getMethod());
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($handle, CURLOPT_HEADER, true);
 
+        $post = $this->post();
         if ($post && count($post))
             curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+
         if ($timeout)
             curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
 
-        $logger->info("$method $url");
+        $headers = $this->getHeaders();
+        $headers['user-agent'] = $userAgent;
+
+        $headersString = [];
+        foreach ($headers as $key => &$value)
+            $headersString[] = "$key: $value";
+
+        curl_setopt($handle, CURLOPT_HTTPHEADER, $headersString);
+
+        $this->logSelf($logger);
         $result = curl_exec($handle);
 
         $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
@@ -310,12 +343,9 @@ class Request
             );
         }
 
-        $contentType = $resHeaders['content-type'] ?? null;
-
-        $logger->info($resStatus . ' '. ($contentType??'Unknown') .  ' - ' .strlen($result). ' bytes');
-
         $resBody = substr($result, $headerSize);
-        if (str_starts_with($contentType ?? "", 'application/json'))
+
+        if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json'))
             $resBody = json_decode($resBody, true, flags: JSON_THROW_ON_ERROR);
 
         return new Response($resBody, $resStatus, $resHeaders);

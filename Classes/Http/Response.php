@@ -311,7 +311,12 @@ class Response
                 header_remove($header);
         }
 
+
         $toDisplay = $this->content;
+
+        if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
+            $toDisplay = json_encode($toDisplay, JSON_THROW_ON_ERROR);
+
         if ($callback = $this->responseTransformer)
             $toDisplay = $callback($this->content);
 
@@ -360,9 +365,7 @@ class Response
      */
     public static function json(mixed $content, int $responseCode=self::OK): Response
     {
-        return new Response($content, $responseCode, ["Content-Type" => "application/json"], function($object){
-            return json_encode($object, JSON_THROW_ON_ERROR);
-        });
+        return new Response($content, $responseCode, ["Content-Type" => "application/json"]);
     }
 
     /**

@@ -34,7 +34,7 @@ class MySQL extends GeneratorDriver
         $string .= "->setNullable(". ($null=="YES" ? "true": "false") .")";
 
         if ($ref = $foreignKey[$field] ?? false)
-            $string .= "->references(".$this->sqlNameToPHPName($ref[0])."::class, '$ref[1]')";
+            $string .= "->references(".$this->sqlToPHPName($ref[0])."::class, '$ref[1]')";
 
         if ($key === "PRI")
             $primaryKey ??= $field;
@@ -47,7 +47,7 @@ class MySQL extends GeneratorDriver
         $db = $this->connection;
         $databaseName = $db->database;
 
-        $classBasename = $this->sqlNameToPHPName($table);
+        $classBasename = $this->sqlToPHPName($table);
 
         $fileName = "$classBasename.php";
         $fileDir = Utils::joinPath($targetApplication, "Models");
@@ -56,14 +56,15 @@ class MySQL extends GeneratorDriver
         if (!is_dir($fileDir)) mkdir($fileDir);
         $classname = Utils::pathToNamespace($fileDir);
 
-        $foreignKeysRaw = $db->query("
-        SELECT COLUMN_NAME as source_field,
-               REFERENCED_TABLE_NAME as target_table,
-               REFERENCED_COLUMN_NAME as target_field
-        FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-        WHERE TABLE_SCHEMA = {}
-              AND TABLE_NAME = {}
-              AND REFERENCED_COLUMN_NAME IS NOT NULL;
+        $foreignKeysRaw = $db->query(
+            "SELECT
+                COLUMN_NAME as source_field,
+                REFERENCED_TABLE_NAME as target_table,
+                REFERENCED_COLUMN_NAME as target_field
+            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+            WHERE TABLE_SCHEMA = {}
+            AND TABLE_NAME = {}
+            AND REFERENCED_COLUMN_NAME IS NOT NULL;
         ", [$databaseName, $table]);
 
         $foreignKeys = [];
@@ -75,7 +76,7 @@ class MySQL extends GeneratorDriver
         }
 
         $usedModels = array_unique($usedModels);
-        $usedModels = array_map(fn($e) => $this->sqlNameToPHPName($e), $usedModels);
+        $usedModels = array_map(fn($e) => $this->sqlToPHPName($e), $usedModels);
         $usedModels = array_map(fn($e) => Utils::joinPath($fileDir, $e), $usedModels);
         $usedModels = array_map(fn($e) => Utils::pathToNamespace($e), $usedModels);
         $usedModels = array_map(fn($e) => "use $e;", $usedModels);

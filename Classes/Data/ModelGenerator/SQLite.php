@@ -127,21 +127,21 @@ class SQLite extends GeneratorDriver
 
             $matches = [];
             if (preg_match('/REFERENCES (.+?)\((.+?)\)/', $sqlLine, $matches))
-                $field .= "->references(".$this->sqlNameToPHPName($matches[1])."::class, '".$matches[2]."')";
+                $field .= "->references(".$this->sqlToPHPName($matches[1])."::class, '".$matches[2]."')";
 
             return [$fieldName, $field];
         }
 
         $matches = [];
         if (preg_match('/^FOREIGN KEY \((.+?)\) REFERENCES (.+?)\((.+?)\)$/', $sqlLine, $matches))
-            $this->fieldExtras[$matches[1]] = "->references(".$this->sqlNameToPHPName($matches[2])."::class, '".$matches[3]."')";
+            $this->fieldExtras[$matches[1]] = "->references(".$this->sqlToPHPName($matches[2])."::class, '".$matches[3]."')";
 
         return null;
     }
 
     public function generate(string $table, string $targetApplication): void
     {
-        $classBasename = $this->sqlNameToPHPName($table);
+        $classBasename = $this->sqlToPHPName($table);
 
         $fileName = "$classBasename.php";
         $fileDir = Utils::joinPath($targetApplication, "Models");

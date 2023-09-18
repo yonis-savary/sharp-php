@@ -48,7 +48,7 @@ class DatabaseField
 
     public function validate(mixed $value): bool
     {
-        return match( $this->type ) {
+        return match($this->type) {
             self::DECIMAL   => is_numeric($value),
             self::FLOAT     => is_numeric($value),
             self::INTEGER   => is_numeric($value),

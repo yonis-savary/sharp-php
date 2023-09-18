@@ -8,10 +8,7 @@ trait SessionStraw
 {
     final protected static function getKey(): string
     {
-        $class = self::class;
-        $class = preg_replace("/^.+\\\\/", "", $class);
-
-        return "sharp.session-straw.$class";
+        return "sharp.session-straw." . self::class;
     }
 
     final public static function set(mixed $value): void

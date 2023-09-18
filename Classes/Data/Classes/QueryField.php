@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Data\Classes;
 
+use Exception;
 use Sharp\Classes\Data\DatabaseField;
 
 class QueryField
@@ -25,17 +26,12 @@ class QueryField
 
         switch ($this->type)
         {
-            case DatabaseField::STRING:
-                return $value;
-            case DatabaseField::INTEGER:
-                return intval($value);
-            case DatabaseField::FLOAT:
-                return floatval($value);
-            case DatabaseField::BOOLEAN:
-                $value = strtolower("$value");
-                return in_array($value, ["1", "true"]);
-            case DatabaseField::DECIMAL:
-                return $value;
+            case DatabaseField::STRING:  return $value;
+            case DatabaseField::INTEGER: return intval($value);
+            case DatabaseField::FLOAT:   return floatval($value);
+            case DatabaseField::BOOLEAN: return in_array(strtolower("$value"), ["1", "true"]);
+            case DatabaseField::DECIMAL: return $value;
+            default : throw new Exception("Unknown field type [$this->type]");
         }
     }
 }

@@ -14,7 +14,6 @@ class Database
     use Component, Configurable;
 
     protected ?PDO $connection = null;
-
     protected PDOStatement $lastStatement;
 
     public static function getDefaultConfiguration(): array
@@ -53,9 +52,9 @@ class Database
     )
     {
         $dsn = $this->getDSN();
-        $config = $this->getConfiguration();
         $this->connection = new PDO($dsn, $user, $password);
 
+        $config = $this->getConfiguration();
         if ($driver === "sqlite" && $config["enable-foreign-keys"])
             $this->query("PRAGMA foreign_keys=ON");
     }
@@ -77,7 +76,7 @@ class Database
         $host = $this->host;
         $port = $this->port;
 
-        if ($driver == 'sqlite')
+        if ($driver === 'sqlite')
         {
             if (!$dbname)
                 return 'sqlite::memory:';

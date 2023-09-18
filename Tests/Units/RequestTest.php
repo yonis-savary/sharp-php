@@ -61,6 +61,27 @@ class RequestTest extends TestCase
         return new Request("POST", "/form", ["A" => 1], ["B" => 2], $this->mockPHPUpload($multipleUploads ? 5:1));
     }
 
+    public function test___construct()
+    {
+        $req = new Request(
+            "POST",
+            "/accept",
+            ["path" => "root"],
+            ["body" => "post-data"],
+            $this->mockPHPUpload(1),
+            ["Content-Type" => "application/json"],
+            "{\"A\": 5}"
+        );
+
+        $this->assertEquals("POST", $req->getMethod());
+        $this->assertEquals("/accept", $req->getPath());
+        $this->assertEquals(["path" => "root"], $req->get());
+        $this->assertEquals(["body" => "post-data"], $req->post());
+        $this->assertEquals(["A" => 5], $req->body());
+        $this->assertCount(1, $req->getUploads());
+        $this->assertEquals(["content-type" => "application/json"], $req->getHeaders());
+    }
+
     public function test_buildFromGlobals()
     {
         $this->assertInstanceOf(
@@ -175,7 +196,7 @@ class RequestTest extends TestCase
     public function test_getHeaders()
     {
         $req = new Request("GET", "/", [], [], [], ["H1" => "V1"]);
-        $this->assertEquals(["H1" => "V1"], $req->getHeaders());
+        $this->assertEquals(["h1" => "V1"], $req->getHeaders());
     }
 
     public function test_getUploads()

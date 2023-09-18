@@ -21,12 +21,13 @@ class DatabaseQuery
     use Configurable;
 
     const INSERT = 1;
-    /** Alias of DatabaseQuery::CREATE */
     const CREATE = 1;
+
     const SELECT = 2;
-    /** Alias of DatabaseQuery::READ */
     const READ   = 2;
+
     const UPDATE = 3;
+
     const DELETE = 4;
 
     protected int $mode;
@@ -270,10 +271,10 @@ class DatabaseQuery
         $toString = fn($x)=>"$x";
 
         $essentials .= count($this->conditions) ?
-            "WHERE " . join(" AND \n", array_map($toString, $this->conditions)): "";
+            " WHERE " . join(" AND \n", array_map($toString, $this->conditions)): "";
 
         $essentials .= count($this->orders) ?
-            "ORDER BY ". join(",\n", array_map($toString, $this->orders)): '';
+            " ORDER BY ". join(",\n", array_map($toString, $this->orders)): '';
 
         $essentials .=  $this->limit ?
             " LIMIT $this->limit ". ($this->offset ? "OFFSET $this->offset" : ""): "";

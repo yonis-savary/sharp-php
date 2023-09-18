@@ -34,14 +34,15 @@ class Storage
         $this->root = $root;
 
         if (!is_dir($this->root))
-            mkdir($this->root, recursive:true);
-
-        $this->makeDirectory($root);
+        {
+            if (!mkdir($this->root, recursive:true))
+                throw new RuntimeException("Cannot create [$this->root] directory !");
+        }
     }
 
-    public function assertIsWritable(string $path=null): void
+    public function assertIsWritable(string $path="/"): void
     {
-        $path = $this->path($path ?? "/");
+        $path = $this->path($path);
         if (!is_writable($path))
             throw new RuntimeException("[$path] is not writable !");
     }

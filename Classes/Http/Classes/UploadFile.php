@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Http\Classes;
 
+use Sharp\Classes\Env\Storage;
 use Sharp\Core\Utils;
 
 /**
@@ -26,23 +27,20 @@ class UploadFile
     /** Target directory does not exists */
     const REASON_OK = 1<<0 ;
 
-    /** Target directory does not exists */
-    const REASON_INEXISTANT_DIRECTORY = 1<<1 ;
-
     /** Destination file already exists */
-    const REASON_ALREADY_EXISTING_FILE = 1<<2 ;
+    const REASON_ALREADY_EXISTING_FILE = 1<<1 ;
 
     /** The file could not be moved (`rename()` fail) */
-    const REASON_FAILED_RENAME = 1<<3 ;
+    const REASON_FAILED_RENAME = 1<<2 ;
 
     /** The new file does not have the same size as the origin */
-    const REASON_INVALID_NEW_SIZE = 1<<4 ;
+    const REASON_INVALID_NEW_SIZE = 1<<3 ;
 
     /** Target directory is not writable ! */
-    const REASON_DIRECTORY_NOT_WRITABLE = 1<<5;
+    const REASON_DIRECTORY_NOT_WRITABLE = 1<<4;
 
     /** There was an error with PHP Upload, see `getError()` for more (https://www.php.net/manual/en/features.file-upload.errors.php)*/
-    const REASON_PHP_UPLOAD_ERROR = 1<<6;
+    const REASON_PHP_UPLOAD_ERROR = 1<<5;
 
     protected string $name;
     protected string $type;
@@ -109,41 +107,35 @@ class UploadFile
     /**
      * Try to move the file to a new directory, return `true` on success or `false` on failure
      *
-     * @param string $destination Target directory
+     * @param string $destination Target directory (relative to Storage directory)
      * @param string $newName New name of the file, a name is generated if null is given
-     * @param bool $makeDirectory On true: allow to create the target directory if not existant
      * @return string|false The new file path on success, `false` on fail, see `getFailReason()` to get the reason behind a failure
      */
-    public function move(string $destination, string $newName=null, bool $makeDirectory=true): string|false
+    public function move(string $destination, string $newName=null): string|false
     {
         if ($this->isMoved())
             return false;
 
         $this->failReason = self::REASON_OK;
 
-        $dirname = dirname($destination);
         $this->newName = $newName ?? $this->makeUniqueName();
-        $this->newPath = Utils::joinPath($destination, $this->newName);
 
-        if ((!is_dir($dirname)) && $makeDirectory)
-            mkdir($dirname, recursive:true);
+        $destinationStorage = Storage::getInstance()->getNewStorage($destination);
+        $this->newPath = $destinationStorage->path($this->newName);
 
         if ($this->error !== UPLOAD_ERR_OK)
             return $this->failWithReason(self::REASON_PHP_UPLOAD_ERROR);
 
-        if (!is_dir($dirname))
-            return $this->failWithReason(self::REASON_INEXISTANT_DIRECTORY);
-
-        if (!is_writable($dirname))
+        if (!is_writable($destinationStorage->getRoot()))
             return $this->failWithReason(self::REASON_DIRECTORY_NOT_WRITABLE);
 
-        if (is_file($this->newPath))
+        if ($destinationStorage->isFile($this->newName))
             return $this->failWithReason(self::REASON_ALREADY_EXISTING_FILE);
 
         if (!rename($this->tempName, $this->newPath))
             return $this->failWithReason(self::REASON_FAILED_RENAME);
 
-        if (!is_file($this->newPath))
+        if (!$destinationStorage->isFile($this->newName))
             return $this->failWithReason(self::REASON_FAILED_RENAME);
 
         if (filesize($this->newPath) != $this->size)

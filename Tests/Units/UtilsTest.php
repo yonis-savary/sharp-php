@@ -2,6 +2,7 @@
 
 namespace Sharp\Tests\Units;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Env\Storage;
 use Sharp\Core\Autoloader;
@@ -188,5 +189,16 @@ class UtilsTest extends TestCase
         $this->assertEquals([5], Utils::toArray([5]));
         $this->assertEquals([["A" => 5]], Utils::toArray(["A"=>5]));
         $this->assertEquals([["A" => 5]], Utils::toArray([["A"=>5]]));
+    }
+
+    public function test_lowerArrayKeys()
+    {
+        $this->assertEquals(
+            ["content-type" => "application/json"],
+            Utils::lowerArrayKeys(["Content-Type" => "application/json"])
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        Utils::lowerArrayKeys(["Content-Type" => "application/json", "content-type" => "text/html"]);
     }
 }

@@ -31,7 +31,7 @@ class Logger
     public static function fromStream(mixed $stream, bool $autoclose=false): self
     {
         if (!is_resource($stream))
-            throw new InvalidArgumentException("\$stream parameter must be a stream");
+            throw new InvalidArgumentException('$stream parameter must be a stream');
 
         $logger = new self();
         $logger->replaceStream($stream, $autoclose);

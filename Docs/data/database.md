@@ -53,7 +53,8 @@ $db->hasField("ship_order", "fk_ship");
 ```json
 "database": {
     "driver": "sqlite",
-    "database": "myDatabase.db"
+    "database": "myDatabase.db",
+    "enable-foreign-keys": true
 }
 ```
 

@@ -25,10 +25,15 @@ class Autobahn
         $this->router = $router ?? Router::getInstance();
     }
 
-    protected function throwOnInvalidModel(string $model): void
+    /**
+     * @return \Sharp\Classes\Data\Model
+     */
+    protected function throwOnInvalidModel(string $model)
     {
         if (!Utils::uses($model, "Sharp\Classes\Data\Model"))
             throw new InvalidArgumentException("[$model] does not use the Model trait !");
+
+        return $model;
     }
 
     public function all(
@@ -45,9 +50,18 @@ class Autobahn
         $this->delete($model, ...$deleteMiddlewares);
     }
 
+    /**
+     * @return array[\Sharp\Classes\Data\Model,array]
+     */
+    protected function getNewRouteExtras(string $model, callable ...$middlewares)
+    {
+        return ["autobahn-model" => $model, "autobahn-middlewares" => $middlewares];
+    }
+
     protected function addRoute(string $model, $middlewares, string $callback, array $methods)
     {
-        list($model, $routeExtras) = $this->makeRequestData($model, ...$middlewares);
+        $routeExtras = $this->getNewRouteExtras($model, ...$middlewares);
+        $model = $this->throwOnInvalidModel($model);
 
         $this->router->addRoutes(
             new Route($model::getTable(), [self::class, $callback], $methods, [], $routeExtras)
@@ -74,32 +88,22 @@ class Autobahn
         $this->addRoute($model, $middlewares, "routeCallbackForDelete", ["DELETE"]);
     }
 
-    protected function makeRequestData(string $model, callable ...$middlewares)
-    {
-        $this->throwOnInvalidModel($model);
-        /** @var \Sharp\Classes\Data\Model $model */
-        $routeExtras = ["autobahn-model" => $model, "autobahn-middlewares" => $middlewares];
-
-        return [$model, $routeExtras];
-    }
-
     /**
      * @return array<[\Sharp\Classes\Data\Model,array]>
      */
     protected static function extractRequestData(Request $request)
     {
-        $model = $request->getRoute()->getExtras()["autobahn-model"] ?? null;
+        $extras = $request->getRoute()->getExtras();
 
-        $instance = self::getInstance();
-        $instance->throwOnInvalidModel($model);
+        $model = $extras["autobahn-model"] ?? null;
+        $model = self::getInstance()->throwOnInvalidModel($model);
 
-        $middlewares = $request->getRoute()->getExtras()["autobahn-middlewares"] ?? [];
+        $middlewares = $extras["autobahn-middlewares"] ?? [];
 
-        /** @var \Sharp\Classes\Data\Model $model */
         return [$model, $middlewares];
     }
 
-    public static function routeCallbackForCreate(Request $request)
+    public static function routeCallbackForCreate(Request $request): Response
     {
         list($model, $middlewares) = self::extractRequestData($request);
 
@@ -118,12 +122,12 @@ class Autobahn
         $query->fetch();
 
         $inserted = Database::getInstance()->lastInsertId();
-        $events->dispatch("autobahnCreateAfter", ["model"=>$model, "query"=>$query, "insertedId" => $inserted]);
+        $events->dispatch("autobahnCreateAfter", ["model"=>$model, "query"=>$query, "insertedId"=>$inserted]);
 
-        return Response::json(["insertedId" => $inserted], Response::CREATED);
+        return Response::json(["insertedId"=>$inserted], Response::CREATED);
     }
 
-    public static function routeCallbackForRead(Request $request)
+    public static function routeCallbackForRead(Request $request): Response
     {
         list($model, $middlewares) = self::extractRequestData($request);
 
@@ -147,16 +151,16 @@ class Autobahn
             $middleware($query);
 
         $events = Events::getInstance();
-        $events->dispatch("autobahnReadBefore", ["model"=> $model, "query"=> $query]);
+        $events->dispatch("autobahnReadBefore", ["model"=>$model, "query"=>$query]);
 
         $results = $query->fetch();
 
-        $events->dispatch("autobahnReadAfter", ["model"=> $model, "query"=> $query, "results"=> $results]);
+        $events->dispatch("autobahnReadAfter", ["model"=>$model, "query"=>$query, "results"=>$results]);
 
         return Response::json($results);
     }
 
-    public static function routeCallbackForUpdate(Request $request)
+    public static function routeCallbackForUpdate(Request $request): Response
     {
         list($model, $middlewares) = self::extractRequestData($request);
 
@@ -184,16 +188,16 @@ class Autobahn
             $middleware($query);
 
         $events = Events::getInstance();
-        $events->dispatch("autobahnUpdateBefore", ["model"=> $model, "query"=> $query]);
+        $events->dispatch("autobahnUpdateBefore", ["model"=>$model, "query"=>$query]);
 
         $query->fetch();
 
-        $events->dispatch("autobahnUpdateAfter", ["model"=> $model, "query"=> $query]);
+        $events->dispatch("autobahnUpdateAfter", ["model"=>$model, "query"=>$query]);
 
         return Response::json("DONE", Response::CREATED);
     }
 
-    public static function routeCallbackForDelete(Request $request)
+    public static function routeCallbackForDelete(Request $request): Response
     {
         list($model, $middlewares) = self::extractRequestData($request);
 

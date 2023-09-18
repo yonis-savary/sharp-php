@@ -40,11 +40,17 @@ trait Controller
         return false;
     }
 
+    /**
+     * Find an asset in the controller's application
+     */
     public static function asset(string $assetName): string|false
     {
         return self::findFile("Assets", $assetName);
     }
 
+    /**
+     * Find a view in the controller's application
+     */
     public static function view(string $viewName): string|false
     {
         if (!str_ends_with($viewName, ".php"))

@@ -14,8 +14,6 @@ class AssetServer
 {
     use Component, Configurable;
 
-    const CACHE_KEY = "sharp.asset-server.path-index";
-
     const EXTENSIONS_MIMES = [
         "js" => "application/javascript",
         "css" => "text/css"
@@ -43,9 +41,8 @@ class AssetServer
     {
         $this->getConfiguration();
 
-        $this->cacheIndex = $this->configuration["cached"] ?
-            Cache::getInstance()->getReference(self::CACHE_KEY):
-            [];
+        if ($this->configuration["cached"])
+            $this->cacheIndex = Cache::getInstance()->getReference("sharp.asset-server");
     }
 
     public function handleIfEnabled()
@@ -87,8 +84,7 @@ class AssetServer
     public function getURL(string $assetName): string
     {
         $routePath = $this->configuration["path"];
-        $assetName = urlencode($assetName);
-        return "$routePath?file=$assetName";
+        return "$routePath?file=" . urlencode($assetName);
     }
 
     public function handleRequest(Request $req, bool $returnResponse=false) : Response|false
@@ -122,8 +118,8 @@ class AssetServer
             $res->withHeaders(["Cache-Control" => "max-age=$cacheTime"]);
 
         $extension = pathinfo($path, PATHINFO_EXTENSION);
-        if (array_key_exists($extension, self::EXTENSIONS_MIMES))
-            $res->withHeaders(["Content-Type" => self::EXTENSIONS_MIMES[$extension]]);
+        if ($mime = self::EXTENSIONS_MIMES[$extension] ?? false)
+            $res->withHeaders(["Content-Type" => $mime]);
 
         return $res;
     }

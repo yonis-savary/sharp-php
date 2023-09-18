@@ -52,6 +52,31 @@ abstract class AbstractMap
         $this->storage[$key] = $value;
     }
 
+
+    /**
+     * Edit a key by transforming it
+     * @param string $key Key to edit
+     * @param callable $editFunction Map function that takes the current key value and return the new one
+     * @param mixed $default Default value if the key does not exists yet
+     */
+    final public function edit(string $key, callable $editFunction, mixed $default=null): void
+    {
+        $this->set($key, $editFunction($this->get($key, $default)));
+    }
+
+
+    /**
+     * Merge the current map with another one
+     * Given data (over)write existing data
+     */
+    final public function merge(array $array): void
+    {
+        $this->storage = array_merge(
+            $this->storage,
+            $array
+        );
+    }
+
     /**
      * Check if given keys exists all at the same time
      *
