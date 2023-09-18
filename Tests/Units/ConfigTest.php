@@ -8,7 +8,7 @@ use Sharp\Classes\Env\Storage;
 
 class ConfigTest extends TestCase
 {
-    // Most of Config feature are tested by [./AbstractStorageTest.php]
+    // Most of Config feature are tested by [./AbstractMapTest.php]
 
     public function test___construct()
     {

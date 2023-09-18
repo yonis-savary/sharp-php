@@ -3,11 +3,11 @@
 namespace Sharp\Classes\Env;
 
 use Exception;
-use Sharp\Classes\Core\AbstractStorage;
+use Sharp\Classes\Core\AbstractMap;
 use Sharp\Classes\Core\Component;
 use Sharp\Core\Utils;
 
-class Config extends AbstractStorage
+class Config extends AbstractMap
 {
     use Component;
 

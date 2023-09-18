@@ -3,10 +3,10 @@
 namespace Sharp\Classes\Env;
 
 use Exception;
-use Sharp\Classes\Core\AbstractStorage;
+use Sharp\Classes\Core\AbstractMap;
 use Sharp\Classes\Core\Component;
 
-class Session extends AbstractStorage
+class Session extends AbstractMap
 {
     use Component;
 

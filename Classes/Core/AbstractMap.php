@@ -5,10 +5,10 @@ namespace Sharp\Classes\Core;
 use Sharp\Core\Utils;
 
 /**
- * `AbstractStorage` is a way to store `key-values` data
+ * `AbstractMap` is a way to store `key-values` data
  * in a class, which got very simple methods like 'set', 'get', 'has'...
  */
-abstract class AbstractStorage
+abstract class AbstractMap
 {
     protected array $storage = [];
 

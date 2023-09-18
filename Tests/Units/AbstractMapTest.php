@@ -4,19 +4,19 @@ namespace Sharp\Tests\Units;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Sharp\Classes\Core\AbstractStorage;
+use Sharp\Classes\Core\AbstractMap;
 
-class AbstractStorageTest extends TestCase
+class AbstractMapTest extends TestCase
 {
-    protected function getDummyAbstractStorage(): AbstractStorage
+    protected function getDummyAbstractMap(): AbstractMap
     {
-        $class = new class extends AbstractStorage {};
+        $class = new class extends AbstractMap{};
         return new $class();
     }
 
     public function test_get()
     {
-        $dummy = $this->getDummyAbstractStorage();
+        $dummy = $this->getDummyAbstractMap();
 
         $this->assertEquals("A", $dummy->get("key", "A"));
 
@@ -26,7 +26,7 @@ class AbstractStorageTest extends TestCase
 
     public function test_try()
     {
-        $dummy = $this->getDummyAbstractStorage();
+        $dummy = $this->getDummyAbstractMap();
 
         $success = null;
 
@@ -47,7 +47,7 @@ class AbstractStorageTest extends TestCase
 
     public function test_set()
     {
-        $dummy = $this->getDummyAbstractStorage();
+        $dummy = $this->getDummyAbstractMap();
 
         $this->assertEquals("A", $dummy->get("key", "A"));
 
@@ -60,7 +60,7 @@ class AbstractStorageTest extends TestCase
 
     public function test_has()
     {
-        $dummy = $this->getDummyAbstractStorage();
+        $dummy = $this->getDummyAbstractMap();
 
         $this->assertFalse($dummy->has("key"));
         $dummy->set("key", "A");
@@ -69,7 +69,7 @@ class AbstractStorageTest extends TestCase
 
     public function test_unset()
     {
-        $dummy = $this->getDummyAbstractStorage();
+        $dummy = $this->getDummyAbstractMap();
 
         $dummy->set("key", "A");
         $this->assertTrue($dummy->has("key"));
@@ -82,7 +82,7 @@ class AbstractStorageTest extends TestCase
 
     public function test_toArray()
     {
-        $dummy = $this->getDummyAbstractStorage();
+        $dummy = $this->getDummyAbstractMap();
 
         $dummy->set("key", "A");
         $this->assertEquals(["A"], $dummy->toArray("key"));
