@@ -2,10 +2,12 @@
 
 namespace Sharp\Classes\Http;
 
+use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Http\Classes\UploadFile;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Core\Logger;
 use Sharp\Core\Utils;
+use Stringable;
 
 /**
  * This component purpose is to hold informations about a HTTP Request,
@@ -13,8 +15,17 @@ use Sharp\Core\Utils;
  */
 class Request
 {
+    use Configurable;
+
     protected array $slugs = [];
     protected ?Route $route = null;
+
+    public static function getDefaultConfiguration(): array
+    {
+        return [
+            "typed-parameters" => true
+        ];
+    }
 
     /**
      * @param string $method HTTP Method (GET, POST...)
@@ -44,19 +55,51 @@ class Request
     }
 
     /**
+     * This function's purpose is to fix types of GET and POST parameters
+     * when getting a `"null"`, value, we can assume it is a `null` in reality
+     * (Same for `"true"` and `"false"`)
+     */
+    protected static function parseDictionnaryValueTypes(array $dict)
+    {
+        foreach ($dict as $_ => &$value)
+        {
+            if (!($value instanceof Stringable))
+                continue;
+
+            $lower = strtolower("$value");
+            if ($lower === "null")
+                $value = null ;
+            else if ($lower === "false")
+                $value = false;
+            else if ($lower === "true")
+                $value = true;
+        }
+        return $dict;
+    }
+
+    /**
      * Build a Request object from PHP's global variables and return it
      */
-    public static function buildFromGlobals(): Request
+    public static function buildFromGlobals(bool $fixParametersTypes=true): Request
     {
         $headers = [];
         if (function_exists('getallheaders'))
             $headers = getallheaders();
 
+        $get = $_GET;
+        $post = $_POST;
+
+        if ($fixParametersTypes === true)
+        {
+            $get = self::parseDictionnaryValueTypes($get);
+            $post = self::parseDictionnaryValueTypes($post);
+        }
+
         $request = new self (
             $_SERVER['REQUEST_METHOD'] ?? php_sapi_name(),
             $_SERVER['REQUEST_URI'] ?? '',
-            $_GET,
-            $_POST,
+            $get,
+            $post,
             $_FILES,
             $headers,
             file_get_contents('php://input')
