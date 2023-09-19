@@ -336,10 +336,12 @@ class Response
      * Return a new download response
      * @param string $file File PATH
      */
-    public static function file(string $file): Response
+    public static function file(string $file, string $attachmentName=null): Response
     {
         if (!is_file($file))
             throw new InvalidArgumentException("Inexistant file [$file] !");
+
+        $attachmentName ??= basename($file);
 
         return new Response(
             null,
@@ -347,7 +349,7 @@ class Response
             [
                 "Content-Description" => "File Transfer",
                 "Content-Type" => "application/octet-stream",
-                "Content-Disposition" => 'attachment; filename="'.basename($file).'"',
+                "Content-Disposition" => "attachment; filename=$attachmentName",
                 "Expires" => "0",
                 "Cache-Control" => "must-revalidate",
                 "Pragma" => "public",
