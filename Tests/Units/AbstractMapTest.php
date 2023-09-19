@@ -10,7 +10,7 @@ class AbstractMapTest extends TestCase
 {
     protected function getDummyAbstractMap(): AbstractMap
     {
-        $class = new class extends AbstractMap{};
+        $class = new class extends AbstractMap {};
         return new $class();
     }
 
@@ -89,5 +89,45 @@ class AbstractMapTest extends TestCase
 
         $dummy->set("key", [1, 2, 3]);
         $this->assertEquals([1, 2, 3], $dummy->toArray("key"));
+    }
+
+    public function test_edit()
+    {
+        $dummy = $this->getDummyAbstractMap();
+
+        $dummy->edit("inexistant", fn($x) => $x + 5, 0);
+        $this->assertEquals(5, $dummy->get("inexistant"));
+        $dummy->edit("inexistant", fn($x) => $x + 5, 0);
+        $this->assertEquals(10, $dummy->get("inexistant"));
+
+        $dummy->set("existant", "Hello");
+        $dummy->edit("existant", fn($x) => $x . " world");
+
+        $this->assertEquals("Hello world", $dummy->get("existant"));
+    }
+
+    public function test_dump()
+    {
+        $dummy = $this->getDummyAbstractMap();
+
+        $dummy->set("A", 1);
+        $dummy->set("B", 2);
+        $dummy->set("C", 3);
+
+        $this->assertEquals(["A"=>1, "B"=>2, "C"=>3], $dummy->dump());
+    }
+
+    public function test_merge()
+    {
+        $dummy = $this->getDummyAbstractMap();
+
+        $dummy->set("A", 1);
+        $this->assertEquals(["A"=>1], $dummy->dump());
+
+        $dummy->merge(["B"=>2, "C"=>3]);
+        $this->assertEquals(["A"=>1, "B"=>2, "C"=>3], $dummy->dump());
+
+        $dummy->merge(["A"=>5]);
+        $this->assertEquals(["A"=>5, "B"=>2, "C"=>3], $dummy->dump());
     }
 }

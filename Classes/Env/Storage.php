@@ -163,7 +163,6 @@ class Storage
         return is_dir($this->path($path));
     }
 
-
     /**
      * @return `true` if given path is empty, `false` otherwise
      */
@@ -174,7 +173,6 @@ class Storage
 
         return count(scandir($this->path($path))) == 2; // Includes only "." and ".."
     }
-
 
     /**
      * @param string File to unlink (relative to the Storage root)

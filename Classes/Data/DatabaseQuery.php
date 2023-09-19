@@ -66,7 +66,7 @@ class DatabaseQuery
         $this->getConfiguration();
     }
 
-    public function set(string $field, string $value, string $table=null): self
+    public function set(string $field, mixed $value, string $table=null): self
     {
         $this->updates[] = new QuerySet($field, $value, $table);
         return $this;
@@ -204,7 +204,7 @@ class DatabaseQuery
         return $this;
     }
 
-    public function where(string $field, string $value, string $operator="=", string $table=null) : self
+    public function where(string $field, mixed $value, string $operator="=", string $table=null) : self
     {
 
         if (!$table) // Prevent Ambiguous Fields

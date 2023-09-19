@@ -3,6 +3,7 @@
 namespace Sharp\Classes\Env;
 
 use Exception;
+use RuntimeException;
 use Sharp\Classes\Core\AbstractMap;
 use Sharp\Classes\Core\Component;
 
@@ -19,7 +20,9 @@ class Session extends AbstractMap
         {
             $storage = Storage::getInstance()->getNewStorage("Sharp/Sessions");
             $storage->assertIsWritable();
-            session_start(["save_path" => $storage->getRoot()]);
+
+            if (!session_start(["save_path" => $storage->getRoot()]))
+                throw new RuntimeException("Cannot start session !");
         }
 
         return new self();

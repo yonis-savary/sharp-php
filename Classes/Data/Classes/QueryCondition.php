@@ -8,7 +8,7 @@ class QueryCondition
 {
     public function __construct(
         public string $field,
-        public string $value,
+        public mixed $value,
         public string $operator="=",
         public ?string $table=null
     ){}
@@ -16,6 +16,12 @@ class QueryCondition
     public function __toString()
     {
         $field = ($this->table ? "`$this->table`." : "") . $this->field;
+
+        if ($this->operator === "=" && $this->value === null)
+            $this->operator = "IS";
+        if ($this->operator === "<>" && $this->value === null)
+            $this->operator = "IS NOT";
+
         return Database::getInstance()->build("($field $this->operator {})", [$this->value]);
     }
 }

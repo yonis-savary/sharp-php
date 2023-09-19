@@ -38,20 +38,21 @@ class AutobahnTest extends TestCase
 
     public function test_all()
     {
+        $this->resetTestUserDataTable();
+
         list($autobahn, $router) = $this->getNewAutobahn();
         $autobahn->all(TestUserData::class);
         $this->assertCount(4, $router->getRoutes());
 
-        $this->resetTestUserDataTable();
     }
 
     public function test_create()
     {
+        $this->resetTestUserDataTable();
+
         list($autobahn, $router) = $this->getNewAutobahn();
         $autobahn->create(TestUserData::class);
         $this->assertCount(1, $router->getRoutes());
-
-        $this->resetTestUserDataTable();
 
         $router->route(
             new Request("POST", "/test_user_data", [], ["fk_user" => 1, "data" => "NEW!"])
@@ -62,12 +63,14 @@ class AutobahnTest extends TestCase
 
     public function test_read()
     {
+        $this->resetTestUserDataTable();
+
         list($autobahn, $router) = $this->getNewAutobahn();
         $autobahn->read(TestUserData::class);
         $this->assertCount(1, $router->getRoutes());
 
         $res = $router->route(new Request("GET", "/test_user_data"));
-        $this->assertCount(4, $res->getContent());
+        $this->assertCount(3, $res->getContent());
 
         $res = $router->route(new Request("GET", "/test_user_data", ["data" => "B"]));
         $this->assertCount(1, $res->getContent());

@@ -52,7 +52,6 @@ abstract class AbstractMap
         $this->storage[$key] = $value;
     }
 
-
     /**
      * Edit a key by transforming it
      * @param string $key Key to edit
@@ -61,9 +60,10 @@ abstract class AbstractMap
      */
     final public function edit(string $key, callable $editFunction, mixed $default=null): void
     {
-        $this->set($key, $editFunction($this->get($key, $default)));
+        $value = $this->get($key, $default);
+        $newValue = $editFunction($value);
+        $this->set($key, $newValue);
     }
-
 
     /**
      * Merge the current map with another one
@@ -71,10 +71,7 @@ abstract class AbstractMap
      */
     final public function merge(array $array): void
     {
-        $this->storage = array_merge(
-            $this->storage,
-            $array
-        );
+        $this->storage = array_merge($this->storage, $array);
     }
 
     /**
@@ -115,5 +112,13 @@ abstract class AbstractMap
     final public function toArray(string $key): array
     {
         return Utils::toArray($this->get($key, []));
+    }
+
+    /**
+     * Return the raw map array
+     */
+    final public function dump(): array
+    {
+        return $this->storage;
     }
 }

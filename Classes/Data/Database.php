@@ -112,7 +112,7 @@ class Database
             return $this->build($template, $str);
         }
 
-        if ($str === null)
+        if ($str === null || strtolower($str) === "null")
             return 'NULL';
 
         if ($str === true)
