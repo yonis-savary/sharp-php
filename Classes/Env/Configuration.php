@@ -7,7 +7,7 @@ use Sharp\Classes\Core\AbstractMap;
 use Sharp\Classes\Core\Component;
 use Sharp\Core\Utils;
 
-class Config extends AbstractMap
+class Configuration extends AbstractMap
 {
     use Component;
 
@@ -25,7 +25,7 @@ class Config extends AbstractMap
 
         $this->filename = $filename;
 
-        // Warning: this verification is after the previous assignement
+        // Info: this verification is after the previous assignement
         // because we can create a config from nothing then save it in a file
 
         if (!is_file($filename))

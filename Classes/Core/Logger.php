@@ -25,14 +25,11 @@ class Logger
     /**
      * Create a logger from a stream (which must be writable)
      *
-     * @param resource $stream Stream to write to
+     * @param resource $stream Output stream to write to
      * @param bool $autoclose If `true`, the Logger will close the stream on destruct
      */
     public static function fromStream(mixed $stream, bool $autoclose=false): self
     {
-        if (!is_resource($stream))
-            throw new InvalidArgumentException('$stream parameter must be a stream');
-
         $logger = new self();
         $logger->replaceStream($stream, $autoclose);
         return $logger;
@@ -49,13 +46,13 @@ class Logger
             return;
 
         $storage ??= Storage::getInstance();
-        $storage->assertIsWritable();
-
-        $this->filename = $storage->path($filename);
         $exists = $storage->isFile($filename);
 
-        if (!($this->stream = $storage->getStream($filename, "a", false)))
-            throw new RuntimeException("Could not open [".$this->filename."] file in append mode !");
+        if(!$exists)
+            $storage->assertIsWritable();
+
+        $this->filename = $storage->path($filename);
+        $this->stream = $storage->getStream($filename, "a", false);
 
         if (!$exists)
             fputcsv($this->stream, [
@@ -81,7 +78,7 @@ class Logger
     /**
      * Replace the Logger stream with another
      *
-     * @param resource $stream Stream that replace the current one
+     * @param resource $stream Output stream that replace the current one
      * @param bool $autoclose If `true`, the Logger will close the stream on destruct
      */
     public function replaceStream(mixed $stream, bool $autoclose=false): void
@@ -89,7 +86,7 @@ class Logger
         $this->closeStream();
 
         if (!is_resource($stream))
-            throw new InvalidArgumentException("[\$stream] parameter must be a resource");
+            throw new InvalidArgumentException('$stream parameter must be a resource');
 
         $this->stream = $stream;
         $this->closeStream = $autoclose;
@@ -104,12 +101,12 @@ class Logger
     }
 
     /**
-     * @return string `$content`, represented as a string
+     * @return string `$content` represented as a string
      */
     protected function toString(mixed $content): string
     {
         if (is_string($content) || is_numeric($content))
-            return "$content";
+            return strval($content);
 
         try
         {
@@ -121,6 +118,12 @@ class Logger
         }
     }
 
+    /**
+     * Directly log a line(s) into the output stream
+     *
+     * @param string $level Log level, can be a custom one
+     * @param mixed ...$content Informations/Objects to log (can be of any type)
+     */
     public function log(string $level, mixed ...$content): void
     {
         if (!$this->stream)
@@ -142,19 +145,88 @@ class Logger
         }
     }
 
-    public function debug       (mixed ...$messages): void { $this->log("debug", ...$messages); }
-    public function info        (mixed ...$messages): void { $this->log("info", ...$messages); }
-    public function notice      (mixed ...$messages): void { $this->log("notice", ...$messages); }
-    public function warning     (mixed ...$messages): void { $this->log("warning", ...$messages); }
-    public function error       (mixed ...$messages): void { $this->log("error", ...$messages); }
-    public function critical    (mixed ...$messages): void { $this->log("critical", ...$messages); }
-    public function alert       (mixed ...$messages): void { $this->log("alert", ...$messages); }
-    public function emergency   (mixed ...$messages): void { $this->log("emergency", ...$messages); }
-
+    /**
+     * Log a trowable message into the output plus its trace
+     * (Useful to debug a trace and/or errors)
+     */
     public function logThrowable(Throwable $throwable): void
     {
-        $this->error("Got an Exception/Error: ". $throwable->getMessage());
+        $this->error("Got an Throwable object: ". $throwable->getMessage());
         $this->error(sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()));
         $this->error(...explode("\n", $throwable->getTraceAsString()));
     }
+
+    /**
+     * Log a "debug" level line
+     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     */
+    public function debug(mixed ...$messages): void
+    {
+        $this->log("debug", ...$messages);
+    }
+
+    /**
+     * Log a "info" level line
+     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     */
+    public function info(mixed ...$messages): void
+    {
+        $this->log("info", ...$messages);
+    }
+
+    /**
+     * Log a "notice" level line
+     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     */
+    public function notice(mixed ...$messages): void
+    {
+        $this->log("notice", ...$messages);
+    }
+
+    /**
+     * Log a "warning" level line
+     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     */
+    public function warning(mixed ...$messages): void
+    {
+        $this->log("warning", ...$messages);
+    }
+
+    /**
+     * Log a "error" level line
+     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     */
+    public function error(mixed ...$messages): void
+    {
+        $this->log("error", ...$messages);
+    }
+
+    /**
+     * Log a "critical" level line
+     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     */
+    public function critical(mixed ...$messages): void
+    {
+        $this->log("critical", ...$messages);
+    }
+
+    /**
+     * Log a "alert" level line
+     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     */
+    public function alert(mixed ...$messages): void
+    {
+        $this->log("alert", ...$messages);
+    }
+
+    /**
+     * Log a "emergency" level line
+     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     */
+    public function emergency(mixed ...$messages): void
+    {
+        $this->log("emergency", ...$messages);
+    }
+
+
 }

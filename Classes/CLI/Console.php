@@ -28,18 +28,9 @@ class Console
      */
     public function findCommands(string $identifier): array
     {
-        $classes = [];
-
-        foreach ($this->listCommands() as $command)
-        {
-            if (in_array($identifier, [
-                $command->getName(),
-                $command->getIdentifier()
-            ]))
-                $classes[] = $command;
-        }
-
-        return $classes;
+        return array_values(array_filter($this->listCommands(),
+            fn (Command $command) => in_array($identifier, [$command->getName(), $command->getIdentifier()])
+        ));
     }
 
     public function printCommandList(): void

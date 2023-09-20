@@ -2,6 +2,9 @@
 
 namespace Sharp\Classes\Data;
 
+/**
+ * This class purpose's is to modelise a database table field
+ */
 class DatabaseField
 {
     const STRING = 0;
@@ -20,7 +23,10 @@ class DatabaseField
 
     public bool $hasDefault = true;
 
-    public function __construct(public string $name){}
+    public function __construct(public string $name)
+    {
+
+    }
 
     public function setType(int $type): self
     {

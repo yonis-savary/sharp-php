@@ -40,9 +40,7 @@ trait Component
         if (self::$instance)
             return self::$instance;
 
-        $newInstance = self::getDefaultInstance();
-        self::setInstance($newInstance);
-
+        self::setInstance(self::getDefaultInstance());
         return self::$instance;
     }
 
@@ -55,7 +53,7 @@ trait Component
     final public static function setInstance(self $newInstance)
     {
         if (Utils::uses($newInstance, "\Sharp\Classes\Core\Configurable"))
-            $newInstance->getConfiguration();
+            $newInstance->loadConfiguration();
 
         self::$instance = $newInstance;
     }

@@ -29,23 +29,23 @@ class Router
     protected ?Route $cachedRoute = null;
     protected ?Cache $cache = null;
 
+
     public function __construct(Cache $cache=null)
     {
-        $this->cache = $cache ?? Cache::getInstance();
-        $this->getConfiguration();
+        $this->loadConfiguration();
+
+        if ($this->isCached())
+            $this->cache = $cache ?? Cache::getInstance();
     }
 
     public static function getDefaultConfiguration(): array
     {
-        return [
-            "cached" => false
-        ];
+        return ["cached" => false];
     }
 
     protected function getCacheKey(Request $request): string
     {
-        $hash = md5($request->getPath());
-        return "sharp-router-index-$hash";
+        return "sharp-router-index-" . md5($request->getPath());
     }
 
     protected function putRouteToCache(Route $route, Request $request): void
@@ -57,7 +57,7 @@ class Router
         $this->cache->set($key, $route);
     }
 
-    protected function getRoutesFromCache(Request $request): bool
+    protected function getCachedRouteForRequest(Request $request): bool
     {
         $key = $this->getCacheKey($request);
         if ($this->cachedRoute = $this->cache->get($key, null))
@@ -71,9 +71,9 @@ class Router
      */
     public function loadRoutesOrCache(Request $request=null)
     {
-        if ($request && $this->configuration["cached"])
+        if ($request && $this->isCached())
         {
-            if ($this->getRoutesFromCache($request))
+            if ($this->getCachedRouteForRequest($request))
                 return;
         }
 
@@ -101,7 +101,7 @@ class Router
             if (!Utils::uses($class, "Sharp\Classes\Web\Controller"))
                 continue;
 
-            $class::declareRoutes();
+            $class::declareRoutes($this);
         }
     }
 
@@ -132,14 +132,6 @@ class Router
         $callback($this);
 
         $this->group = $original;
-    }
-
-    public function addRoutes(Route ...$routes)
-    {
-        array_push(
-            $this->routes,
-            ...$this->group($this->group, ...$routes)
-        );
     }
 
     /**
@@ -177,6 +169,14 @@ class Router
         );
     }
 
+    public function addRoutes(Route ...$routes)
+    {
+        array_push(
+            $this->routes,
+            ...$this->group($this->group, ...$routes)
+        );
+    }
+
     protected function findFirstMathingRoute(Request $req) : ?Route
     {
         foreach ($this->routes as $route)
@@ -184,7 +184,7 @@ class Router
             if (!$route->match($req))
                 continue;
 
-            if ($this->configuration["cached"])
+            if ($this->isCached())
                 $this->putRouteToCache($route, $req);
 
             return $route;

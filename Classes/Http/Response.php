@@ -311,7 +311,6 @@ class Response
                 header_remove($header);
         }
 
-
         $toDisplay = $this->content;
 
         if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))

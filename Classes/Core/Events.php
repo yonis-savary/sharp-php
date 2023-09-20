@@ -13,8 +13,8 @@ class Events
     protected array $handlers = [];
 
     /**
-     * Attach one callback or more to an event
-     * When the event is triggered, all given callbacks are called
+     * Attach callback(s) to an event
+     * When the given event is triggered, all given callbacks are called
      */
     public function on(string $event, callable ...$callbacks): void
     {

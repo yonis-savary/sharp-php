@@ -3,12 +3,12 @@
 namespace Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Storage;
 
 class ConfigTest extends TestCase
 {
-    // Most of Config feature are tested by [./AbstractMapTest.php]
+    // Most of Configuration feature are tested by [./AbstractMapTest.php]
 
     public function test___construct()
     {
@@ -19,7 +19,7 @@ class ConfigTest extends TestCase
             json_encode(["A" => 5])
         );
 
-        $config = new Config($storage->path("config-test-construct.json"));
+        $config = new Configuration($storage->path("config-test-construct.json"));
         $this->assertEquals(5, $config->get("A"));
     }
 
@@ -29,11 +29,11 @@ class ConfigTest extends TestCase
 
         $file = $storage->path("config-test.json");
 
-        $unrelated = new Config();
+        $unrelated = new Configuration();
         $unrelated->set("key", "A");
         $unrelated->save($file);
 
-        $fromFile = new Config($file);
+        $fromFile = new Configuration($file);
         $this->assertEquals("A", $fromFile->get("key"));
     }
 }

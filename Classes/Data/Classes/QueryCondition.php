@@ -19,6 +19,7 @@ class QueryCondition
 
         if ($this->operator === "=" && $this->value === null)
             $this->operator = "IS";
+
         if ($this->operator === "<>" && $this->value === null)
             $this->operator = "IS NOT";
 

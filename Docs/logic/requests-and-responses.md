@@ -117,7 +117,6 @@ You can give some parameters to this function
 to customize its behavior
 
 ```php
-
 // $logger: A Logger can be given to log debug informations
 // $timeout: If given, will given the CURL handler a max timeout
 // $userAgent: The default userAgent can be overwritten too

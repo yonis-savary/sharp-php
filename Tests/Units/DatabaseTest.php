@@ -23,20 +23,6 @@ class DatabaseTest extends TestCase
         );
     }
 
-    public function test_getDSN()
-    {
-        $this->assertIsString(
-            Database::getInstance()->getDSN()
-        );
-    }
-
-    public function test_quote()
-    {
-        $db = Database::getInstance();
-        $this->assertEquals("'5'", $db->quote(5));
-        $this->assertEquals("'5'", $db->quote('5'));
-    }
-
     public function test_lastInsertId()
     {
         $db = Database::getInstance();
@@ -57,6 +43,10 @@ class DatabaseTest extends TestCase
 
         $this->assertEquals("SELECT ('1','2','3')", $db->build("SELECT {}", [[1,2,3]]));
 
+        $injection = "'; DELETE FROM user; --";
+        $goodQuery = "SELECT ... WHERE login = '''; DELETE FROM user; --'";
+        $this->assertEquals($goodQuery, $db->build("SELECT ... WHERE login = {}", [$injection]));
+        $this->assertEquals($goodQuery, $db->build("SELECT ... WHERE login = '{}'", [$injection]));
     }
 
     public function test_query()
@@ -65,11 +55,11 @@ class DatabaseTest extends TestCase
 
         $this->assertEquals(
             [[
-                    "id" => 1,
-                    "login" => "admin",
-                    "password" => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
-                    "salt" => "dummySalt",
-                    'blocked' => false
+                "id" => 1,
+                "login" => "admin",
+                "password" => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
+                "salt" => "dummySalt",
+                'blocked' => false
             ]],
             $db->query("SELECT * FROM test_user")
         );

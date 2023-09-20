@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use Sharp\Classes\CLI\Terminal;
 use Sharp\Classes\Core\Events;
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 use Throwable;
 
 class Autoloader
@@ -119,7 +119,7 @@ class Autoloader
 
     protected static function loadApplications()
     {
-        $config = Config::getInstance();
+        $config = Configuration::getInstance();
         $applications = $config->toArray("applications", []);
 
         // The framework is loaded as an application

@@ -107,11 +107,11 @@ class UploadFile
     /**
      * Try to move the file to a new directory, return `true` on success or `false` on failure
      *
-     * @param string $destination Target directory (relative to Storage directory)
+     * @param string|Storage $destination Either a target directory name (relative to Storage directory), or a Storage object
      * @param string $newName New name of the file, a name is generated if null is given
      * @return string|false The new file path on success, `false` on fail, see `getFailReason()` to get the reason behind a failure
      */
-    public function move(string $destination, string $newName=null): string|false
+    public function move(string|Storage $destination, string $newName=null): string|false
     {
         if ($this->isMoved())
             return false;
@@ -120,7 +120,11 @@ class UploadFile
 
         $this->newName = $newName ?? $this->makeUniqueName();
 
-        $destinationStorage = Storage::getInstance()->getNewStorage($destination);
+        if (is_string($destination))
+            $destinationStorage = Storage::getInstance()->getNewStorage($destination);
+        else
+            $destinationStorage = $destination;
+
         $this->newPath = $destinationStorage->path($this->newName);
 
         if ($this->error !== UPLOAD_ERR_OK)
@@ -148,55 +152,88 @@ class UploadFile
     /**
      * @return bool Was the file successfuly moved ?
      */
-    public function isMoved(): bool { return $this->wasMoved; }
+    public function isMoved(): bool
+    {
+        return $this->wasMoved;
+    }
 
     /**
      * @return string original file basename
      */
-    public function getName(): string { return $this->name; }
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
     /**
      * @return string temp file path
      */
-    public function getTempName(): string { return $this->tempName; }
+    public function getTempName(): string
+    {
+        return $this->tempName;
+    }
 
     /**
      * @return string file MIME type
      */
-    public function getType(): string { return $this->type; }
+    public function getType(): string
+    {
+        return $this->type;
+    }
 
     /**
      * @return int File's error code (`$_FILES`, https://www.php.net/manual/en/features.file-upload.errors.php)
      */
-    public function getError(): int { return $this->error; }
+    public function getError(): int
+    {
+        return $this->error;
+    }
 
     /**
      * @return int File's size in bytes
      */
-    public function getSize(): int { return $this->size; }
+    public function getSize(): int
+    {
+        return $this->size;
+    }
 
     /**
      * @return int File's HTML input name
      */
-    public function getInputName(): string { return $this->inputName; }
+    public function getInputName(): string
+    {
+        return $this->inputName;
+    }
 
     /**
      * @return string File's extension (dotless)
      */
-    public function getExtension(): string { return $this->extension; }
+    public function getExtension(): string
+    {
+        return $this->extension;
+    }
 
     /**
      * @return ?string New File basename, `null` if not moved yet
      */
-    public function getNewName(): ?string { return $this->newName; }
+    public function getNewName(): ?string
+    {
+        return $this->newName;
+    }
 
     /**
      * @return ?string New File path, `null` if not moved yet
      */
-    public function getNewPath(): ?string { return $this->newPath; }
+    public function getNewPath(): ?string
+    {
+        return $this->newPath;
+    }
 
     /**
      * @return ?int Get the reason behind a `move()` failure, `null` if there was no error
      */
-    public function getFailReason(): ?int { return $this->failReason; }
+    public function getFailReason(): ?int
+    {
+        return $this->failReason;
+    }
 }

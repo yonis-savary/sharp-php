@@ -59,5 +59,5 @@ trait Controller
         return self::findFile("Views", $viewName);
     }
 
-    public static abstract function declareRoutes();
+    public static abstract function declareRoutes(Router $router);
 }

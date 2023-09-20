@@ -25,7 +25,7 @@ class AssetServer
     {
         return [
             "enabled" => true,
-            "path" => "/assets",
+            "url" => "/assets",
             "cached" => false,
             "middlewares" => [],
             "max-age" => false
@@ -39,9 +39,9 @@ class AssetServer
 
     public function __construct()
     {
-        $this->getConfiguration();
+        $this->loadConfiguration();
 
-        if ($this->configuration["cached"])
+        if ($this->isCached())
             $this->cacheIndex = Cache::getInstance()->getReference("sharp.asset-server");
     }
 
@@ -83,13 +83,13 @@ class AssetServer
      */
     public function getURL(string $assetName): string
     {
-        $routePath = $this->configuration["path"];
+        $routePath = $this->configuration["url"];
         return "$routePath?file=" . urlencode($assetName);
     }
 
     public function handleRequest(Request $req, bool $returnResponse=false) : Response|false
     {
-        $routePath = $this->configuration["path"];
+        $routePath = $this->configuration["url"];
         $middlewares = $this->configuration["middlewares"];
         $selfRoute = Route::get($routePath, fn($req) => $this->serve($req), $middlewares);
 

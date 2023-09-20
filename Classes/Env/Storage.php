@@ -33,11 +33,11 @@ class Storage
     {
         $this->root = $root;
 
-        if (!is_dir($this->root))
-        {
-            if (!mkdir($this->root, recursive:true))
-                throw new RuntimeException("Cannot create [$this->root] directory !");
-        }
+        if (is_dir($this->root))
+            return;
+
+        if (!mkdir($this->root, recursive:true))
+            throw new RuntimeException("Cannot create [$this->root] directory !");
     }
 
     public function assertIsWritable(string $path="/"): void
@@ -71,10 +71,11 @@ class Storage
     }
 
     /**
-     * Get an absolute path from a relative one
+     * Make a relative path from a given path part (Relative of absolute to the storage)
      *
      * @param string $path Relative path to get (relative to the Storage root)
      * @return string Absolute path from given relative path
+     * @note If an absolute path is given, it is returned directly
      */
     public function path(string $path): string
     {

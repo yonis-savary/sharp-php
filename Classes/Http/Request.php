@@ -309,7 +309,11 @@ class Request
         }
     }
 
-    protected function parseHeaders(string $headers)
+    /**
+     * Parse raw HTTP Headers (string)
+     * to an associative array of data with `HeaderName => HeaderValue`
+     */
+    protected function parseHeaders(string $headers): array
     {
         $headers = explode("\n", $headers);
         $headers = array_filter($headers, fn($line) => preg_match('/^.+:.+$/', $line));

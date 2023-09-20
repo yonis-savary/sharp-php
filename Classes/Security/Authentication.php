@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Core\Events;
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Session;
 use Sharp\Core\Utils;
 
@@ -38,16 +38,16 @@ class Authentication
         ];
     }
 
-    public function __construct(Session $session=null, Config $config=null)
+    public function __construct(Session $session=null, Configuration $config=null)
     {
         $this->session = $session ?? Session::getInstance();
 
-        $config = $this->getConfiguration();
+        $this->loadConfiguration($config);
 
-        $model         = $this->model         = $config["model"];
-        $loginField    = $this->loginField    = $config["login-field"];
-        $passwordField = $this->passwordField = $config["password-field"];
-        $saltField     = $this->saltField     = $config["salt-field"];
+        $model         = $this->model         = $this->configuration["model"];
+        $loginField    = $this->loginField    = $this->configuration["login-field"];
+        $passwordField = $this->passwordField = $this->configuration["password-field"];
+        $saltField     = $this->saltField     = $this->configuration["salt-field"];
 
         if (!class_exists($model))
             throw new InvalidArgumentException("[$model] class does not exists");

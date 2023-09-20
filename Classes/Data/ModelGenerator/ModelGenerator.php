@@ -5,7 +5,7 @@ namespace Sharp\Classes\Data\ModelGenerator;
 use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Data\Database;
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 use Sharp\Core\Utils;
 
 class ModelGenerator
@@ -16,7 +16,7 @@ class ModelGenerator
 
     public static function getDefaultInstance()
     {
-        $dbConfig = Config::getInstance()->get("database", []);
+        $dbConfig = Configuration::getInstance()->get("database", []);
 
         $driver = match($dbConfig["driver"] ?? null) {
             "mysql" => MySQL::class,

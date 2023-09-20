@@ -63,7 +63,7 @@ class DatabaseQuery
     {
         $this->targetTable = $table;
         $this->setMode($mode);
-        $this->getConfiguration();
+        $this->loadConfiguration();
     }
 
     public function set(string $field, mixed $value, string $table=null): self
@@ -92,6 +92,13 @@ class DatabaseQuery
         return $this;
     }
 
+    /**
+     * Add a field to a SELECT query
+     * @param string $table Table/Alias to select from
+     * @param string $field Column/Field name
+     * @param string $alias Alias for the selected column
+     * @param int $type How is the field parsed (DatabaseField type constant)
+     */
     public function addField(string $table, string $field, string $alias=null, int $type=DatabaseField::STRING): self
     {
         $this->fields[] = new QueryField($table, $field, $alias, $type);
@@ -181,8 +188,16 @@ class DatabaseQuery
             $this->exploreReferences($nextReferences);
     }
 
+    /**
+     * Set the limit to a non-INSERT query
+     * @param int $limit Limit to the query
+     * @param int $offset Query offset (Optionnal)
+     */
     public function limit(int $limit, int $offset=null): self
     {
+        if ($limit < 0)
+            $limit = 0;
+
         $this->limit = $limit;
         if ($offset)
             $this->offset($offset);
@@ -191,6 +206,9 @@ class DatabaseQuery
 
     public function offset(int $offset): self
     {
+        if ($offset < 0)
+            $offset = 0;
+
         $this->offset = $offset;
         return $this;
     }
@@ -198,15 +216,26 @@ class DatabaseQuery
     protected function setMode(int $mode): self
     {
         if (!in_array($mode, [self::INSERT, self::SELECT, self::UPDATE, self::DELETE]))
-            throw new InvalidArgumentException("Given mode must be a DatabaseQuery constant !");
+            throw new InvalidArgumentException("Given mode must be a DatabaseQuery type constant !");
 
         $this->mode = $mode;
         return $this;
     }
 
+    /**
+     * Add a condition to the query (conditions are joined with 'AND')
+     *
+     * For raw SQL condition, see `whereSQL()`
+     *
+     * @param string $field Field name/alias to compare
+     * @param mixed $value Value to compare to
+     * @param string $operator Comparaison operator
+     * @param string $table (Optionnal) table specification for the compared field
+     * @note A '= NULL' condition will be transformed to a `IS NULL`
+     * @note A '<> NULL' condition will be transformed to a `IS NOT NULL`
+     */
     public function where(string $field, mixed $value, string $operator="=", string $table=null) : self
     {
-
         if (!$table) // Prevent Ambiguous Fields
         {
             $compatibles = array_values(array_filter($this->fields, fn($f) => $f->field == $field));
@@ -223,6 +252,11 @@ class DatabaseQuery
         return $this;
     }
 
+    /**
+     * Add a raw SQL condition to your query
+     * @param string $condition Raw SQL Condition
+     * @param array $context Context for condition building (see `Database::build()`)
+     */
     public function whereSQL(string $condition, array $context=[]): self
     {
         $this->conditions[] = new QueryConditionRaw($condition, $context);

@@ -29,25 +29,39 @@ class Route
     protected array $middlewares = [];
 
     public static function get(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
-    { return new self($path, $callback, ["GET"], $middlewares, $extras); }
+    {
+        return new self($path, $callback, ["GET"], $middlewares, $extras);
+    }
 
     public static function post(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
-    { return new self($path, $callback, ["POST"], $middlewares, $extras); }
+    {
+        return new self($path, $callback, ["POST"], $middlewares, $extras);
+    }
 
     public static function patch(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
-    { return new self($path, $callback, ["PATCH"], $middlewares, $extras); }
+    {
+        return new self($path, $callback, ["PATCH"], $middlewares, $extras);
+    }
 
     public static function put(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
-    { return new self($path, $callback, ["PUT"], $middlewares, $extras); }
+    {
+        return new self($path, $callback, ["PUT"], $middlewares, $extras);
+    }
 
     public static function delete(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
-    { return new self($path, $callback, ["DELETE"], $middlewares, $extras); }
+    {
+        return new self($path, $callback, ["DELETE"], $middlewares, $extras);
+    }
 
     public static function view(string $path, string $template, array $middlewares=[], array $context=[], array $extras=[]): self
-    { return new self($path, [self::class, "renderViewCallback"], ["GET"], $middlewares, array_merge($extras, ["template" => $template, "context" => $context])); }
+    {
+        return new self($path, [self::class, "renderViewCallback"], ["GET"], $middlewares, array_merge($extras, ["template" => $template, "context" => $context]));
+    }
 
     public static function redirect(string $path, string $target, array $extras=[]): self
-    { return new self($path, [self::class, "redirectRequestToTarget"], [], [], array_merge($extras, ["redirection-target" => $target])); }
+    {
+        return new self($path, [self::class, "redirectRequestToTarget"], [], [], array_merge($extras, ["redirection-target" => $target]));
+    }
 
     public static function renderViewCallback(Request $request)
     {
@@ -81,24 +95,56 @@ class Route
             $this->path = "/" . $this->path;
     }
 
-    public function getPath(): string { return $this->path; }
-    public function setPath(string $path) { $this->path = $path; }
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 
-    public function getCallback(): callable { return $this->callback; }
-    public function setCallback(callable $callback) { $this->callback = $callback; }
+    public function setPath(string $path)
+    {
+        $this->path = $path;
+    }
 
-    public function getMethods(): array { return $this->methods; }
-    public function setMethods(array $methods) { $this->methods = $methods; }
+    public function getCallback(): callable
+    {
+        return $this->callback;
+    }
 
-    public function getMiddlewares(): array { return $this->middlewares; }
+    public function setCallback(callable $callback)
+    {
+        $this->callback = $callback;
+    }
+
+    public function getMethods(): array
+    {
+        return $this->methods;
+    }
+
+    public function setMethods(array $methods)
+    {
+        $this->methods = $methods;
+    }
+
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
+    }
+
     public function setMiddlewares(array $middlewares)
     {
         $this->middlewares = [];
         $this->addMiddlewares(...$middlewares);
     }
 
-    public function getExtras(): array { return $this->extras; }
-    public function setExtras(array $extras) { $this->extras = $extras;}
+    public function getExtras(): array
+    {
+        return $this->extras;
+    }
+
+    public function setExtras(array $extras)
+    {
+        $this->extras = $extras;
+    }
 
     public function addMiddlewares(string ...$middlewares)
     {

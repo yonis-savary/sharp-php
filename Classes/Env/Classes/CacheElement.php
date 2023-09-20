@@ -108,23 +108,26 @@ class CacheElement
         if (!$this->wasEdited())
             return null;
 
+        $oldFilename = $this->file;
         $filename = join("_", [$this->creationDate, $this->timeToLive, $this->key]);
 
         // If the timeToLive or creationDate has changed,
         // we delete the old file to avoid duplicate keys
-        if ($this->file && (basename($this->file) !== $filename))
-            unlink($this->file);
+        if ($oldFilename && (basename($oldFilename) !== $filename))
+            unlink($oldFilename);
 
         $serialized = serialize($this->content);
-
-        $this->baseMD5 = md5($serialized);
-        $this->file = $storage->path($filename);
-
         $storage->write($filename, $serialized);
 
-        return $storage->path($filename);
+        $this->file = $storage->path($filename);
+        $this->baseMD5 = md5_file($this->file);
+
+        return $this->file;
     }
 
+    /**
+     * Disable the element and delete the source file (if any)
+     */
     public function delete(): void
     {
         $this->content = null;

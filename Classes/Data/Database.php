@@ -54,14 +54,24 @@ class Database
         $dsn = $this->getDSN();
         $this->connection = new PDO($dsn, $user, $password);
 
+        $this->loadConfiguration();
+
         $config = $this->getConfiguration();
         if ($driver === "sqlite" && $config["enable-foreign-keys"])
             $this->query("PRAGMA foreign_keys=ON");
     }
 
-    public function getConnection(): PDO
+    /**
+     * @return ?PDO The current connection to the database (`null` if not connected)
+     */
+    public function getConnection(): ?PDO
     {
         return $this->connection;
+    }
+
+    public function getLastStatement(): PDOStatement
+    {
+        return $this->lastStatement;
     }
 
     public function isConnected(): bool
@@ -69,7 +79,7 @@ class Database
         return $this->connection !== null;
     }
 
-    public function getDSN(): string
+    protected function getDSN(): string
     {
         $driver = $this->driver;
         $dbname = $this->database;
@@ -89,14 +99,6 @@ class Database
     }
 
     /**
-     * Shortcut to `(PDO)->quote()`
-     */
-    public function quote($value): string
-    {
-        return $this->connection->quote($value);
-    }
-
-    /**
      * @return int The last inserted Id by the connection (if any, `false` otherwise)
      */
     public function lastInsertId(): int|false
@@ -112,13 +114,14 @@ class Database
             return $this->build($template, $str);
         }
 
-        if ($str === null || strtolower($str) === "null")
+        if ($str === null)
             return 'NULL';
 
         if ($str === true)
-            $str = 1;
+            return 1;
+
         if ($str === false)
-            $str = 0;
+            return 0;
 
         $str = preg_replace('/([\'\\\\])/', '$1$1', $str);
 
@@ -139,7 +142,9 @@ class Database
         $queryClone = $sql;
 
         $matchesQuoted = [];
-        // Un-escaped regex : (['"`])(?:.+?(?:\1\1|\\\1)?)+?\1
+
+        // Un-escaped quote-content regex
+        // (['"`])(?:.+?(?:\1\1|\\\1)?)+?\1
         preg_match_all('/([\'"`])(?:.*?(?:\\1\\1|\\\\\\1)?)+?\\1/', $sql, $matchesQuoted, PREG_OFFSET_CAPTURE);
 
         $quotedPositions = [];
@@ -165,30 +170,29 @@ class Database
         return $queryClone;
     }
 
+    /**
+     * Perform a query with the database
+     * @param string $query SQL Query to execute
+     * @param array $context Data for the query (values replaces placeholders `{}`)
+     * @param int $fetchMode PDO Fetch mode constant
+     */
     public function query(
         string $query,
         array $context=[],
-        int $fetchMode=PDO::FETCH_ASSOC,
-        bool $returnStr=false
-    ): array|string {
+        int $fetchMode=PDO::FETCH_ASSOC
+    ): array
+    {
         $queryWithContext = $this->build($query, $context);
 
-        if ($returnStr)
-            return $queryWithContext;
-
         $statement = $this->connection->query($queryWithContext);
-        $response = $statement->fetchAll($fetchMode);
-
         $this->lastStatement = $statement;
 
-        return $response;
+        return $statement->fetchAll($fetchMode);
     }
 
-    public function getLastStatement(): PDOStatement
-    {
-        return $this->lastStatement;
-    }
-
+    /**
+     * @return `true` if the given table exists in the database, `false` otherwise
+     */
     public function hasTable(string $table): bool
     {
         try
@@ -202,6 +206,9 @@ class Database
         }
     }
 
+    /**
+     * @return `true` if both the given table AND field exists in the database, `false` otherwise
+     */
     public function hasField(string $table, string $field): bool
     {
         try

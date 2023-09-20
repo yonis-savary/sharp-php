@@ -4,7 +4,7 @@ use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Data\ModelGenerator\ModelGenerator;
 use Sharp\Classes\Env\Cache;
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Storage;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
@@ -15,7 +15,7 @@ require_once __DIR__ . "/../bootstrap.php";
 
 This script purpose is to be an alternative to /Sharp/bootstrap.php
 
-The goal is to make a good envrionment to Test (with Database, Config...etc)
+The goal is to make a good envrionment to Test (with Database, Configuration...etc)
 ------------------------------------------------
 
 */
@@ -28,7 +28,7 @@ Autoloader::loadApplication("Sharp/Tests");
 $testStorage = new Storage(Utils::relativePath("Sharp/Tests/tmp_test_storage"));
 
 Storage::setInstance($testStorage);
-Config::setInstance(new Config(Utils::relativePath("Sharp/Tests/config.json")));
+Configuration::setInstance(new Configuration(Utils::relativePath("Sharp/Tests/config.json")));
 Cache::setInstance(new Cache($testStorage, "Cache"));
 
 $database = Database::getInstance();

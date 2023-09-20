@@ -4,7 +4,7 @@ namespace Sharp\Commands;
 
 use Sharp\Classes\CLI\Args;
 use Sharp\Classes\CLI\Command;
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 use Sharp\Core\Utils;
 
 class Test extends Command
@@ -19,7 +19,7 @@ class Test extends Command
 
     public function __invoke(Args $args)
     {
-        $toTest = Config::getInstance()->toArray("applications");
+        $toTest = Configuration::getInstance()->toArray("applications");
 
         // The framework need to be tested too
         array_unshift($toTest, "Sharp");

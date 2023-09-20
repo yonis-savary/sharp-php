@@ -1,6 +1,6 @@
 [< Back to summary](../home.md)
 
-# 📁 App Directory & Config
+# 📁 App Directory & Configuration
 
 ## Configuration
 

@@ -2,7 +2,7 @@
 
 namespace Sharp\Classes\CLI;
 
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 
 class Terminal
 {
@@ -22,13 +22,12 @@ class Terminal
      */
     public static function promptList(array $choices, string $question): mixed
     {
-        echo "$question\n";
+        print("$question\n");
         for ($i=0; $i<count($choices); $i++)
-            echo " " . ($i+1) ." - $choices[$i]\n";
-        echo "\n";
+            printf(" %s - %s\n", $i+1, $choices[$i]);
 
-        $index = intval(self::prompt("> "));
-        return $choices[$index - 1] ?? null;
+        $index = intval(self::prompt("\n> "));
+        return $choices[$index-1] ?? null;
     }
 
     /**
@@ -38,7 +37,7 @@ class Terminal
      */
     public static function chooseApplication(): string
     {
-        $applications = Config::getInstance()->toArray("applications");
+        $applications = Configuration::getInstance()->toArray("applications");
 
         if (count($applications) === 1)
             return $applications[0];

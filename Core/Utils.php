@@ -3,7 +3,7 @@
 namespace Sharp\Core;
 
 use InvalidArgumentException;
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 
 class Utils
 {
@@ -256,7 +256,7 @@ class Utils
      */
     public static function isProduction(): bool
     {
-        $env = Config::getInstance()->get("env", "debug");
+        $env = Configuration::getInstance()->get("env", "debug");
         return strtolower($env) === "production";
     }
 }

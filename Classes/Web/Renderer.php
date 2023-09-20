@@ -14,8 +14,6 @@ class Renderer
 {
     use Component, Configurable;
 
-    protected bool $cached = false;
-
     protected array $shards = [];
     protected ?Shard $current = null;
     protected array $sections = [];
@@ -23,14 +21,8 @@ class Renderer
     public static function getDefaultConfiguration() : array
     {
         return [
-            'cached' => false,
             'file_extension' => '.php'
         ];
-    }
-
-    public function __construct()
-    {
-        $this->cached = $this->getConfiguration()['cached'];
     }
 
     /**
@@ -40,7 +32,7 @@ class Renderer
      */
     public function findTemplate(string $template): string|false
     {
-        $ext = $this->configuration['file_extension'];
+        $ext = $this->getConfiguration()['file_extension'];
 
         if (!str_ends_with($template, $ext))
             $template .= $ext;

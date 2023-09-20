@@ -27,7 +27,8 @@ class Cache
 
     public static function getDefaultInstance()
     {
-        return new self(Storage::getInstance()->getNewStorage("Cache"));
+        $cacheStorage = Storage::getInstance()->getNewStorage("Cache");
+        return new self($cacheStorage);
     }
 
     public function __construct(Storage $storage)
@@ -35,17 +36,15 @@ class Cache
         $storage->assertIsWritable();
         $this->storage = $storage;
 
-        $cacheKeys = [];
         foreach ($this->storage->listFiles() as $file)
         {
             if (!($element = CacheElement::fromFile($file)))
                 continue;
 
             $key = $element->key;
-            if (in_array($key, $cacheKeys))
+            if ($this->has($key))
                 throw new RuntimeException("Duplicate key in cache directory [$key]");
 
-            $cacheKeys[] = $key;
             $this->index[$key] = $element;
         }
     }

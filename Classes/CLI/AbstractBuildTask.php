@@ -7,7 +7,7 @@ abstract class AbstractBuildTask
     /**
      * Display messages in the console only if in command line context
      */
-    public function log(...$strings): void
+    final protected function log(...$strings): void
     {
         if (php_sapi_name() === 'cli')
             echo join("\n", $strings);
@@ -19,7 +19,7 @@ abstract class AbstractBuildTask
      * @param string $directory Target directory
      * @param bool $log If `true`, this command will display the command output
      */
-    public function shellInDirectory(string $command, string $directory, bool $log=true): void
+    final protected function shellInDirectory(string $command, string $directory, bool $log=true): void
     {
         $this->executeInDirectory(function() use ($command, $log)
         {
@@ -37,7 +37,7 @@ abstract class AbstractBuildTask
      * Call your function while being in a directory
      * Then go back to the previous directory
      */
-    public function executeInDirectory(callable $function, string $directory): void
+    final protected function executeInDirectory(callable $function, string $directory): void
     {
         $originalDirectory = getcwd();
 

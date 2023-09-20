@@ -4,7 +4,7 @@
 
 This document hold some code snippets to learn the framework faster
 
-You can search (Ctrl+F) some tags like (Autoload, Config...etc)
+You can search (Ctrl+F) some tags like (Autoload, Configuration...etc)
 
 ## Setup - Creating an App
 
@@ -15,7 +15,7 @@ tags: directory, application
 
 ## Logic - Adding routes
 
-tags: routing, routes
+tags: routing, routes, routing
 
 `YourAppName/Routes/anyfile.php`
 ```php
@@ -23,6 +23,30 @@ tags: routing, routes
 Router::getInstance()->addRoutes(
     Route::get("/path", [Controller::class, "method"])
 );
+```
+
+## Logic - Creating a Controller
+
+tags: controller, routes, routing
+
+`YourAppName/Controllers/MyController.php`
+```php
+class MyController
+{
+    use Controller;
+
+    public static function declareRoutes(Router $router)
+    {
+        $router->addRoutes(
+            Route::get("/some-path", [self::class, "myMethod"])
+        );
+    }
+
+    public static function myMethod(Request $request)
+    {
+
+    }
+}
 ```
 
 ## Data - Fetching data from database

@@ -3,7 +3,7 @@
 namespace Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 use Sharp\Tests\Classes\DummyConfigurable;
 
 class ConfigurableTest extends TestCase
@@ -28,7 +28,7 @@ class ConfigurableTest extends TestCase
     {
         $configData = ["enabled" => false, "cached" => false];
 
-        $config = new Config();
+        $config = new Configuration();
         $config->set("dummy-configurable", $configData);
 
         $this->assertEquals(
@@ -43,7 +43,7 @@ class ConfigurableTest extends TestCase
 
         $this->assertFalse($instance->configurationIsLoaded());
 
-        $instance->getConfiguration();
+        $instance->loadConfiguration();
         $this->assertTrue($instance->configurationIsLoaded());
     }
 
@@ -62,11 +62,11 @@ class ConfigurableTest extends TestCase
     {
         $configData = ["enabled" => false, "cached" => false];
 
-        $config = new Config();
+        $config = new Configuration();
         $config->set("dummy-configurable", $configData);
 
         $instance = new DummyConfigurable();
-        $instance->getConfiguration($config);
+        $instance->loadConfiguration($config);
 
         $this->assertEquals(
             $configData,

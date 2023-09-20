@@ -3,19 +3,20 @@
 namespace Sharp\Classes\Build;
 
 use Sharp\Classes\CLI\AbstractBuildTask;
-use Sharp\Classes\Env\Config;
+use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Storage;
 use Sharp\Core\Utils;
 
 /**
  * This build task purpose is to install composer dependencies for every applications
  */
-class Dependencies extends AbstractBuildTask
+class InstallDependencies extends AbstractBuildTask
 {
     public function execute()
     {
         echo "Installing dependencies...\n";
-        $applications = Config::getInstance()->toArray("applications");
+
+        $applications = Configuration::getInstance()->toArray("applications");
         array_unshift($applications, "Sharp");
 
         foreach ($applications as $appName)

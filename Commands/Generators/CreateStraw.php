@@ -11,7 +11,7 @@ class CreateStraw extends Command
 {
     protected function createStraw(string $name, string $app)
     {
-        if (!preg_match("/^[A-Z][a-zA-Z]*$/", $name))
+        if (!preg_match("/^[A-Z][a-zA-Z0-9]*$/", $name))
             return print("Given straw name must be in PascalCase\n");
 
         $directory = Utils::joinPath($app, "Classes/Straws");

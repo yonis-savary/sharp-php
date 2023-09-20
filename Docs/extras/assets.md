@@ -27,14 +27,14 @@ Here is the default configuration for `AssetServer`
 ```json
 "asset-server": {
     "enabled": true,
-    "path": "/assets",
+    "url": "/assets",
     "middlewares": [],
     "max-age": false
 }
 ```
 
 - setting `enabled` to `true` make sure the component analyse any incoming request
-- `path` define with URL is used to serve assets
+- `url` define with URL is used to serve assets
 - `middlewares` is used to add security layers to your assets (example: you can make them only accessible for authenticated user)
 - setting `max-age` to an integer allow your assets to be cached by the browser (example: 3600 cache the resource for 1 hour)
 
