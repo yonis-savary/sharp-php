@@ -111,9 +111,7 @@ class Autoloader
             if (is_file($file))
                 require_once $file;
             else
-                Events::getInstance()->dispatch("autoloadFailed", [
-                    "class" => $class
-                ]);
+                Events::getInstance()->dispatch("autoloadFallback", ["class" => $class]);
         });
     }
 

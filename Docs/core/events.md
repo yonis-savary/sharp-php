@@ -40,7 +40,7 @@ $events->on("dispatchedEvent", function($event){
 });:
 
 # Dispatched when Autoloaded fail to find a class file
-$events->on("autoloadFailed", function($event){
+$events->on("autoloadFallback", function($event){
     $class= $event["class"]
 });
 
