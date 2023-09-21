@@ -110,11 +110,12 @@ class Autobahn
         $query = new DatabaseQuery($model::getTable(), DatabaseQuery::INSERT);
 
         $params = $request->all();
-        $query->setInsertField(array_keys($params));
-        $query->insertValues(array_values($params));
 
         foreach ($middlewares as $middleware)
-            $middleware($query);
+            $middleware($params);
+
+        $query->setInsertField(array_keys($params));
+        $query->insertValues(array_values($params));
 
         $events = Events::getInstance();
         $events->dispatch("autobahnCreateBefore", ["model"=>$model, "query"=>$query]);
