@@ -5,10 +5,12 @@
 Some classes/features need to be accessed globally from your application (like `Database`, `Logger`...etc)
 to resolve this, the [`Component`](../../Classes/Core/Component.php) trait was created.
 
-**This trait purpose is to be a [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that
-does not limit itself to one instance**; One main instance exists, and can be retrieved with `getInstance()`,
+To be clear: **this trait purpose is to be a [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that
+does not limit itself to one instance**;
+
+One main instance exists, and can be retrieved with `getInstance()`,
 but you can still create other instances of your classes, which can be very useful
-(exemple: you may have one main connection to your database, but create another for some specific part of your application)
+(example: you may have one main connection to your database, but create another for some specific part of your application)
 
 A Component class got those useful methods :
 ```php
@@ -33,10 +35,10 @@ final public static function removeInstance();
 
 ### Creation
 
-Let's say we want to create a `MagicOrderPrinter`, which is a class that
+We want to create a `MagicOrderPrinter`, which is a class that
 can print a PDF of an order and log informations about it
 
-First we have to define our class
+First, we need to define our class
 
 ```php
 class MagicOrderPrinter
@@ -56,7 +58,9 @@ class MagicOrderPrinter
 }
 ```
 
-Then to transform it, we only have to use the `Component` trait, and implement `getDefaultInstance`
+Then to make it a component, we need to :
+1. use the `Component` trait
+2. implement `getDefaultInstance()`
 
 ```php
 class MagicOrderPrinter

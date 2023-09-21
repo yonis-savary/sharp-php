@@ -1,19 +1,21 @@
-# 📒 Sharp-PHP Documentation
+# 📚 Sharp-PHP Documentation
 
 The goals behind Sharp are :
-1. Removing unecessary abstraction layers (Don't hide the code behind facades)
-2. Make a clean code that is intuitive for the most
-3. Have a framework that doesn't break your IDE, PHP type hint should be enough in the vast majority of situations
-4. Let you build your app as fast as possible and don't have to worry about setup
-5. Have as few dependencies as possible (So far, `composer.json` only install [PHPUnit](https://phpunit.de/))
-6. Automate tedious task (like model creation)
+1. Make a clean code that is intuitive for the most
+2. Removing unecessary abstraction layers
+3. Don't hide the code behind Facades objects
+4. Have a framework that doesn't break your IDE
+5. Let you build your app as fast as possible and don't have to worry about setup/build
+6. Have as few dependencies as possible (So far, `composer.json` only install [PHPUnit](https://phpunit.de/))
+7. Automate tedious task (like model creation)
 
-(You can browse this documentation with an IDE like Visual Studio Code with the markdown preview)
+You can browse this documentation with an IDE like Visual Studio Code with the markdown preview,
+or in GitHub directly
 
 ## Summary
 
-This documentation directory holds some hand-written docs, but every classes
-got pieces of documentation inside their respective files
+Even though this documentation should be enough to get started, don't hesitate
+to see the framework source code, it is a good way to learn about it too
 
 Core
 - 📁 [App directory & Configuration](./core/config.md)
@@ -34,8 +36,6 @@ Routing & Logic
 - ⚙️  [Controllers](./logic/controllers.md)
 - 🚦 [Middlewares](./logic/middlewares.md)
 - 📨 [Requests & Responses](./logic/requests-and-responses.md)
-<!-- [(Code) `Request`](../Classes/Http/Request.php) -->
-<!-- [(Code) `Response`](../Classes/Http/Response.php) -->
 
 Database
 - 📚 [Database and Models](./data/database.md)
@@ -44,14 +44,6 @@ Business Logic
 - 🥤 [Session Straw](./extras/session-straw.md)
 
 Extras
-- ⭐️ [Serve assets with AssetServer](./extras/assets.md)
-- 🚘 [Automatic CRUD API with Autobahn](./extras/autobahn.md)
+- ⭐️ [Serving assets](./extras/assets.md)
+- 🚘 [Automatic CRUD API](./extras/autobahn.md)
 - 🔐 [Authentication](./security/authentication.md)
-
-File/Comment documentation:
-
-## Making custom scripts that uses Sharp
-
-If you want to use Sharp in any of your PHP script, you can just
-require [`Sharp/bootstrap.php`](../bootstrap.php), it will initialize
-the framework without doing anything

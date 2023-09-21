@@ -2,13 +2,12 @@
 
 # 💻 CLI Commands
 
-Sharp got the [`do`](../../Core/Server/do) script, which can be used to execute
-commands from your Terminal
+Sharp got the [`do`](../../Core/Server/do) script, which can be used to execute commands from your command line interface
 
 ## Create a command
 
 Creating a command is very simple, all you have to do is to create a file
-in your application (Preferably in a `Commands` directory), exemple:
+in your application (Preferably in a `Commands` directory)
 
 `SuperApp/Commands/ClearCaches.php`:
 ```php

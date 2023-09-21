@@ -2,9 +2,9 @@
 
 # 📃 Logging & Shortcuts
 
-Sharp got the [Logger](../../Classes/Core/Logger.php) class that can be used to log informations inside a log file
+The [Logger](../../Classes/Core/Logger.php) class can be used to log informations inside a CSV file
 
-As this class is a component, it can be retrieved with `Logger::getInstance()` and then used to log text to `Storage/sharp.csv`
+As this class is a component, it can be retrieved with `Logger::getInstance()` and used to log infos to `Storage/sharp.csv`
 
 You can log by calling the `log()` method
 
@@ -12,7 +12,7 @@ You can log by calling the `log()` method
 $logger->log("DEBUG", "Hello there");
 ```
 
-But writting log level can be quite tedious, that is why the `Logger` class got some shortcuts:
+But writting log level can be quite tedious, that is why the `Logger` class got some shortcuts
 ```php
 $logger->debug("I'm a debug line");
 $logger->info("I'm an info line");
@@ -26,7 +26,7 @@ $logger->emergency("I'm an emergency line");
 # It can also be used to log error/traces in a more verbose way
 $logger->logThrowable(new Exception("Something went wrong"));
 
-# Note that almost everything that can be represented as a string somehow can be logged
+# Note : your can log everything that can somehow be represented as a string
 $logger->info([1,2,3]);
 $logger->info(["A"=>1, "B"=>2, "C"=>3]);
 

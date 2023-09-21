@@ -3,20 +3,20 @@
 # 🛣️ Routing
 
 Routing in Sharp is made through two classes :
-- [`Route`](../../Classes/Web/Route.php): hold informations about ONE specific route
-- [`Router`](../../Classes/Web/Router.php): hold a set of `Route` objects and is able to route a [`Request`](../../Classes/Http/Request.php) object
+- [`Route`](../../Classes/Web/Route.php): hold informations about one specific route
+- [`Router`](../../Classes/Web/Router.php): hold a set of `Route` instances and is able to route a [`Request`](../../Classes/Http/Request.php)
 
 ## Routes creation
 
-A `Route` object got those informations :
+A `Route` is made of those informations :
 - A path (URI)
-- A callback, that is executed when called
+- A callback, which is executed when the route is called
 - Some allowed HTTP Methods (optionnal) that can be used to restraint its access
 - Some [Middlewares](./105_middlewares.md) (optionnal) that can be used to control its access
 - Some "extras": additionnal informations about it that can be used by controllers/components
 
 Routes can be created through the `Route` constructor, or
-some statical methods used to define which HTTP method the route allow
+through its statical shortucts used to define which HTTP method the route allow
 
 ```php
 Route::get("/", [MyClass::class, "greets"]);
@@ -37,17 +37,18 @@ $router->addRoutes(
 ```
 
 Note: routes SHOULD always have an array callback, as direct functions cannot be put in cache,
-and therefore, cannot be optimized by the Router class
+and therefore, cannot be optimized by the `Router` class
 
 ## Routes grouping
 
-You can group routes together with the `group()` method of any router !
+You can group routes together with your router !
 Routes can be grouped by path and middlewares
 
 ```php
 $router = Router::getInstance();
 $group = ["path" => "api", "middlewares" => IsAuthenticated::class];
 
+# ---------- METHOD 1 ----------
 
 # This is the simplest way to group routes
 $router->addGroup(
@@ -55,6 +56,8 @@ $router->addGroup(
     Route::get("/user/actives", [UserController::class, "actives"]),
     Route::get("/user/blocked", [UserController::class, "blocked"])
 );
+
+# ---------- METHOD 2 ----------
 
 # Group callback is useful too !
 # Every routes declared in the callback is included in the parent group
@@ -80,6 +83,8 @@ $router->groupCallback($group, function(Router $router){
     });
 });
 
+# ---------- METHOD 3 ----------
+
 # The last method it to manually add routes that are already grouped with group()
 $router->addRoutes(
     ...$router->group(
@@ -90,11 +95,10 @@ $router->addRoutes(
 );
 ```
 
-It is advised to use one method and not mix them, that could lead to something harder to read
-like that
+It is advised to use one method and not mix them, that could lead to something quite hard to read
 
 ```php
-# Quite a bad working usage !
+# Quite a bad (but  working) usage !
 $router->addGroup(
     $group,
     Route::get(/* ... */),

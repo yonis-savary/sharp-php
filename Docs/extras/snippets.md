@@ -4,33 +4,35 @@
 
 This document hold some code snippets to learn the framework faster
 
-You can search (Ctrl+F) some tags like (Autoload, Configuration...etc)
+You can search (Ctrl+F) some tags like (autoload, configuration, routing...etc)
 
-## Setup - Creating an App
+## 🔵 Setup - Creating an App
 
 tags: directory, application
 
 1. Create `YourAppName` directory (or `[AnySubDir/...]/YouAppName`)
 2. Add relative path to `YourAppName` directory to `applications` in `sharp.json`
 
-## Logic - Adding routes
+## 🔵 Logic - Adding routes
 
 tags: routing, routes, routing
 
-`YourAppName/Routes/anyfile.php`
 ```php
-# helpers method: addRoutes()
+# YourAppName/Routes/anyfile.php
 Router::getInstance()->addRoutes(
     Route::get("/path", [Controller::class, "method"])
 );
+
+# Helper global function
+addRoutes(/*...*/);
 ```
 
-## Logic - Creating a Controller
+## 🔵 Logic - Creating a Controller
 
 tags: controller, routes, routing
 
-`YourAppName/Controllers/MyController.php`
 ```php
+# YourAppName/Controllers/MyController.php
 class MyController
 {
     use Controller;
@@ -49,28 +51,32 @@ class MyController
 }
 ```
 
-## Data - Fetching data from database
+## 🔵 Data - Fetching data from database
 
 tags: data, database, query
 
 ```php
-# helpers method: query()
 Database::getInstance()->query(
     "SELECT * FROM user WHERE login = {}",
     ['admin']
 );
+
+# Global helper function
+query(/*...*/);
 ```
 
-## Web - Render a view
+## 🔵 Web - Render a view
 
-tag: view, template, html, render
+tags: view, template, html, render
 
 ```php
-# helpers method: render()
 Renderer::getInstance()->render(
     "directory/viewname",
     ["name" => "Paul"]
-)
+);
+
+# Global query function
+render(/*...*/);
 ```
 `viewname.php`:
 ```php

@@ -2,7 +2,7 @@
 
 # 📨 Requests and Responses
 
-[Request](../../Classes/Http/Request.php) and [Response](../../Classes/Http/Response.php) classes are basics data structure to interact with input/output, both of them are made of getters/setters with a few additionnal features
+[`Request`](../../Classes/Http/Request.php) and [`Response`](../../Classes/Http/Response.php) classes are basics data structure to interact with input/output, both of them are made of getters/setters with a few additionnal features
 
 ## Basic Requests Usage
 
@@ -69,7 +69,7 @@ $response = Response::file("/path/to/my/file.txt");
 // Generate a Response that redirect the Client
 $response = Response::redirect("/another/url");
 
-// Try to make a Response of whatever is given to it
+// Try to make a JSON Response of whatever is given to it
 $response = Response::adapt($anyObject);
 
 // Manually create a Response
@@ -86,7 +86,9 @@ new Response(
 // Get raw content object
 $content = $response->getContent();
 
-$response->logSelf();
+// Log the response code and content type to any Logger
+// The global instance is used by default
+$response->logSelf($logger);
 
 // Add/Overwrite headers into the Response
 $response->withHeaders(["Content-Type" => "text/html"]);
@@ -126,7 +128,7 @@ $request->fetch(
     int $timeout=null,
     string $userAgent='...',
     bool $supportRedirection=true
-)
+);
 ```
 
 [< Back to summary](../home.md)

@@ -2,8 +2,7 @@
 
 # 🪝 Events
 
-Sharp got the [`Events`](../../Classes/Core/Events.php) class, which allows you
-to add event listeners
+Sharp got the [`Events`](../../Classes/Core/Events.php) class, which allows you to add event listeners/hooks
 
 ```php
 $events = Event::getInstance();
@@ -103,7 +102,6 @@ $events->on("autobahnDeleteAfter", function($event){
 $events->on("authenticatedUser", function($event){
     $user = $event["user"];
 })
-
 ```
 
 [< Back to summary](../home.md)

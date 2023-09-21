@@ -4,7 +4,7 @@
 
 The [`Cache`](../../Classes/Env/Cache.php)
 class can save [serialized](https://www.php.net/manual/en/language.oop5.serialization.php)
-object for you in any [Storage](./storage.md) object
+objects in any [`Storage`](./storage.md)
 
 ```php
 $cache = Cache::getInstance();
@@ -27,7 +27,7 @@ $exists = $cache->has("my-key");
 $cache->delete("key-to-delete");
 ```
 
-## Working with reference (Advanced)
+## Advanced - Working with references
 
 Let's say you have a component that need to cache some data to work faster
 

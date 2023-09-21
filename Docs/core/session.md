@@ -35,4 +35,6 @@ session("myKey"); // Alias to Session::getInstance()->get()
 sessionSet("myKey", $myValue); // Alias to Session::getInstance()->set()
 ```
 
+Note: `Session` class is bound to `$_SESSION` by reference, which mean that you can edit `$_SESSION` and still get your data with the `Session` component
+
 [< Back to summary](../home.md)

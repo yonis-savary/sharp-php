@@ -2,13 +2,13 @@
 
 # ⚙️ Controllers
 
-The main purpose of controllers is to hold your code logic (and therefore your routes callbacks)
+The main purpose of controllers is to hold your code logic (and therefore, your routes callbacks)
 
 ## Plain Controllers
 
-TO create a controller, You can simply create a class with its methods and then declare its routes in a separate file
+To create a controller, You can simply create a class with its methods and then declare its routes in a separate file
 
-`App/Controllers/MyController.php`:
+`YourApp/Controllers/MyController.php`:
 ```php
 class MyController
 {
@@ -19,27 +19,25 @@ class MyController
 }
 ```
 
-`App/Routes/web.php` :
+`YourApp/Routes/web.php` :
 ```php
 Router::getInstance()->addRoutes(
     Route::get("/", [MyControllers::class, "greets"])
 );
 ```
 
-## Extended Controllers
+## Controller trait
 
-If you want to group your logic and routes declaration, you can make your class
-use the `Controller` trait, which has the `declareRoutes()` method that is called
-when the routes of your app are loaded
+If you want to group your logic and routes declarations, you can make your class use the `Controller` trait, which has the `declareRoutes()` method that is called when your application's routes are loaded
 
 ```php
 class MyController
 {
     use Controller;
 
-    public static function declareRoutes()
+    public static function declareRoutes(Router $router)
     {
-        Router::getInstance()->addRoutes(
+        $router->addRoutes(
             Route::get("/", [self::class, "greets"])
         );
     }

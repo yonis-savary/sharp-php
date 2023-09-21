@@ -84,7 +84,48 @@ DELETE FROM user WHERE login = 'mike'
 DELETE FROM user WHERE `login` IN ('mike', 'bob')
 ```
 
-By default, dangerous queries with no parameters are blocked, but you can enable them by
-setting `autobahn.prevent-dangerous-delete` to `false`
+Note: dangerous queries with no parameters are blocked
+
+
+## Additional Properties
+
+### Grouping
+
+`Autobahn` use the `addRoute` method of `Router`, which mean that you can group Autobahn routes !
+
+```php
+Router::getInstance()->groupCallback([
+    "path" => "api"
+], function($router){
+    $autobahn = Autobahn::getInstance();
+    $autobahn->all(User::class);
+});
+```
+
+### Autobahn Middlewares
+
+Every Autobahn callback can take some middlewares to protect your queries
+
+For Read, Update and Delete callback, the `DatabaseQuery` that is about to be executed is given to your middleware, which mean that your can edit it
+
+```php
+$autobahn->read(User::class, function(DatabaseQuery &$query){
+    $query->where("fk_user", UserId::get());
+});
+```
+
+With this middleware, we make sure the user can only read its own profile data
+
+For Insert callback, your middleware can take data that are about to be inserted
+
+```php
+$autobahn->read(UserData::class, function(array &$data){
+    $data["fk_user"] = UserId::get();
+});
+```
+
+With this middleware, we make sure that the user can only insert data about its own profile
+
+
 
 [< Back to summary](../home.md)

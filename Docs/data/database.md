@@ -30,8 +30,6 @@ $query = $db->build("SELECT id FROM ship WHERE name = {}", ["PHP Bounty"]);
 
 # Used to directly fetch rows
 $results = $db->query("SELECT id FROM ship WHERE name = {}", ["Above the code"]);
-
-# Arrays can also be given
 $results = $db->query("SELECT id FROM ship WHERE name IN {}", [["Above the code", "PHP Bounty"]]);
 
 $id = $db->lastInsertId();
@@ -43,12 +41,13 @@ $id = $db->lastInsertId();
 $db = Database::getInstance();
 
 $db->hasTable("ship_order");
+
 $db->hasField("ship_order", "fk_ship");
 ```
 
 ### Working with SQLite !
 
-`Database` also support SQLite configurations ! Here is an example of configuration
+`Database` also support SQLite connections ! Here is an example of configuration
 
 ```json
 "database": {
@@ -62,8 +61,7 @@ This config will create a `Storage/myDatabase.db` file with your data inside
 
 ## Interacting with models
 
-Sharp philosophy on models is that: your application don't have to dictate how your database
-schema should look like, it is your application that must adapt itself to your structure
+Sharp philosophy on models is: your application don't have to dictate how your database schema should look like, it is your application that must adapt itself to your structure
 
 Models in Sharp are very simple; A model is a class that use the
 [`Sharp\Classes\Data\Model`](../../Classes/Data/Model.php) trait
@@ -80,7 +78,8 @@ php do fetch-models
 ```
 
 This will create models classes in `YourApp/Models`
-(Note: SQL adapters transforms `snake_case` names to `PascalCase`)
+
+Note: SQL adapters transforms `snake_case` names to `PascalCase`
 
 ### Interaction
 
@@ -99,7 +98,7 @@ Here is how we can interact with the model
 ```php
 User::getTable(); // Return "user"
 User::getPrimaryKey(); // Return "id"
-User::getFields(); // Return an array of DatabaseField object
+User::getFields(); // Return an array as `FieldName => DatabaseField` object
 User::getFieldNames(); // Return ["id", "login", "password", "salt"]
 User::getInsertables(); // Return ["login", "password", "salt"]
 
@@ -119,7 +118,7 @@ User::update()->set("fk_type", 2)->where("fk_type", 5)->first();
 User::delete()->whereSQL("fk_type IN (1, 12, 52, 4)")->order("id", "DESC")->fetch();
 ```
 
-### Select queries format
+### Select query return format
 
 Select queries are specials, they explore your models relations to select every possible fields
 
@@ -147,5 +146,20 @@ points to `PersonPhone` through `fk_phone`, our response format will be
     }
 ]
 ```
+
+### Bottleneck model exploration
+
+Using this prototype
+```php
+select(bool $recursive=true, array $foreignKeyIgnores=[]);
+```
+
+We can control how `DatabaseQuery` explore our "model tree"
+
+By setting `$recursive` to `false`, we only fetch our model data, and don't explore more
+
+Putting relations in `$foreignKeysIgnores` as `table&foreign_key[&foreign_key]` :
+- To ignore the phone key, we can put `user&fk_person&fk_phone`
+- Putting `user&fk_person` will also ignore every model that depends on it (`user&fk_person&fk_phone` in this case)
 
 [< Back to summary](../home.md)

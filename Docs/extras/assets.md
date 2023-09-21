@@ -58,7 +58,7 @@ But writting this is quite annoying and not very readable.
 
 To address this, the [`helper-web.php`](../../Helpers/helpers-web.php) got three useful functions
 
-```html
+```php
 <!-- Put the script and stylesheet with it URL -->
 <?= script("shipping.js") ?>
 <?= style("shipping.css") ?>
@@ -72,7 +72,7 @@ To address this, the [`helper-web.php`](../../Helpers/helpers-web.php) got three
 
 ```
 
-### Be precise with your path
+### Be precise with your paths
 
 In our previous example, two of our assets got the same basename:
 - `assets/js/contact/creation.js`

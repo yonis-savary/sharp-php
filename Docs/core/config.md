@@ -5,14 +5,13 @@
 ## Configuration
 
 Your application(s) configuration is stored inside `sharp.json`,
-which contains every components/framework configuration
+which contains your components/framework configuration
 
 ## Application Directory
 
 Sharp's Autoloader has a support for multiple applications at the same time
 
 One application is made of these directories:
-
 - Assets
 - Classes
 - Controllers
@@ -23,9 +22,9 @@ One application is made of these directories:
 - Helpers
 - Views
 
-**Note: every directories are optionnal**
+**Note: every one of those directories is optionnal**
 
-**Files in `Helpers` and `Others` are directly included with `require_once`**
+Files in `Helpers` and `Others` are directly included with `require_once`
 
 ### Loading an application
 
@@ -53,7 +52,22 @@ This allow you to extends your application and disable any part/module of it jus
 
 ## Namespaces
 
-Every namespace is set by its relative path, example: for `./App/Controllers/Provider/Order.php`, the classname shall be `App\Controllers\Provider` otherwise, the autoloader won't recognize it
+Every namespace is set by its relative path, for
+
+```App/Controllers/Provider/Order.php```
+
+the namespace shall be
+
+```App\Controllers\Provider```
+
+and the classname `Order`, otherwise, the autoloader won't recognize it
+
+
+## Making custom scripts that uses Sharp
+
+If you want to use Sharp in any of your PHP script, you can just
+require [`Sharp/bootstrap.php`](../bootstrap.php), it will initialize
+the framework
 
 ## Additionnal properties
 
