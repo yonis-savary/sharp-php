@@ -1,4 +1,4 @@
-# 🧊 Sharp-PHP
+# 🧊 sharp-php
 
 ⚠️ This project is still under development
 
@@ -18,7 +18,7 @@ cd MyProject
 
 git init
 # Clone this repository inside `Sharp` directory
-git submodule add https://github.com/YonisSavary/Sharp-PHP.git Sharp
+git submodule add https://github.com/yonis-savary/sharp-php.git Sharp
 
 # Copy Public directory and "do" script
 cp -r Sharp/Core/Server/* .
