@@ -81,10 +81,11 @@ trait Model
     /**
      * Start a DatabaseQuery to select rows from the model's table
      */
-    public static function select(): DatabaseQuery
+    public static function select(bool $recursive=true, array $foreignKeyIgnores=[]): DatabaseQuery
     {
         $query = new DatabaseQuery(self::getTable(), DatabaseQuery::SELECT);
-        $query->exploreModel(self::class);
+        $query->exploreModel(self::class, $recursive, $foreignKeyIgnores
+    );
         return $query;
     }
 
