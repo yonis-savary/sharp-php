@@ -21,10 +21,6 @@ function cacheSet         (string $key, mixed $value, int $timeToLive=3600*24): 
 
 function sharpDebugMeasure(callable $callback, string $label="Measurement"): void;
 
-function addRoutes        (Route ...$routes): void;
-function createGroup      (string|array $urlPrefix, string|array $middlewares): array;
-function groupRoutes      (array $group, callable $routeDeclaration): void;
-
 function buildQuery       (string $query, array $context=[]): string;
 function query            (string $query, array $context=[]): array;
 
@@ -78,6 +74,14 @@ function template(string $templateName, array $context=[]);
 function section (string $sectionName): ?string;
 function start   (string $sectionName): void;
 function stop    (): void;
+```
+
+### [`helpers-routing.php`](../../Helpers/helpers-routing.php)
+```php
+function addRoutes    (Route ...$routes): void
+function addGroup     (array $group, Route ...$routes): void
+function groupCallback(array $group, callable $routeDeclaration): void
+function createGroup  (string|array $urlPrefix, string|array $middlewares): array
 ```
 
 [< Back to summary](../home.md)

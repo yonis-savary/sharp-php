@@ -13,8 +13,6 @@ use Sharp\Classes\Data\Database;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Session;
-use Sharp\Classes\Web\Route;
-use Sharp\Classes\Web\Router;
 
 /**
  * Shortcut to `Session::getInstance()->get()`
@@ -84,31 +82,6 @@ function sharpDebugMeasure(callable $callback, string $label="Measurement"): voi
 
     debug($infoString);
     echo "$infoString\n";
-}
-
-/**
- * Shortcut to `Router::getInstance()->addRoutes()`
- */
-function addRoutes(Route ...$routes): void
-{
-    Router::getInstance()->addRoutes(...$routes);
-}
-
-/**
- * Shortcut to `Router::getInstance()->createGroup()`
- */
-function createGroup(string|array $urlPrefix, string|array $middlewares): array
-{
-    return Router::getInstance()->createGroup($urlPrefix, $middlewares);
-}
-
-/**
- * Shortcut to `Router::getInstance()->groupRoutes()`
- */
-function groupRoutes(array $group, callable $routeDeclaration): void
-{
-    $router = Router::getInstance();
-    $router->groupCallback($group, $routeDeclaration);
 }
 
 /**
