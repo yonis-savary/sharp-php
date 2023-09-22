@@ -167,9 +167,9 @@ class ModelTest extends TestCase
         $this->assertEquals($nextId, $inserted);
     }
 
-    public function test_fromId()
+    public function test_findId()
     {
-        $this->assertIsArray(TestUser::fromId(1));
-        $this->assertNull(TestUser::fromId(1309809));
+        $this->assertIsArray(TestUser::findId(1));
+        $this->assertNull(TestUser::findId(1309809));
     }
 }

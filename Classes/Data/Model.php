@@ -148,7 +148,7 @@ trait Model
      * @param int $id Id to select
      * @return ?array Matching row or `null` otherwise
      */
-    public static function fromId(mixed $id): ?array
+    public static function findId(mixed $id): ?array
     {
         return self::select()->where(self::getPrimaryKey(), $id)->first();
     }
