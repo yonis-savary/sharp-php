@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Web;
 
+use Exception;
 use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
@@ -58,7 +59,8 @@ class Renderer
 
     public function render(string $templateName, array $context=[]): Response
     {
-        $path = $this->findTemplate($templateName);
+        if (!($path = $this->findTemplate($templateName)))
+            throw new Exception("[$templateName] view not found !");
 
         $newShard = new Shard($path, $context, $this->current);
         $currentIndex = array_push($this->shards, $newShard)-1;

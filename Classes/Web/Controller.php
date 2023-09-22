@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Web;
 
+use Sharp\Classes\Core\Logger;
 use Sharp\Core\Utils;
 
 /**
@@ -12,52 +13,19 @@ use Sharp\Core\Utils;
  */
 trait Controller
 {
-    public static function getAppPath(): string
-    {
-        return Utils::relativePath(
-            Utils::classnameToPath(preg_replace("/Controllers\\\\.+/", "", self::class))
-        );
-    }
-
     public static function relativePath(string $path): string
     {
-        return Utils::joinPath(self::getAppPath(), $path);
+        $controllerPath = preg_replace("/[^\/]+$/", "", Utils::classnameToPath(self::class));
+        $file = Utils::relativePath(Utils::joinPath($controllerPath, $path));
+
+        if (is_file($file))
+            Logger::getInstance()->warning("[$file] file does not exists !");
+
+        return $file;
     }
 
-    protected static function findFile(string $directory, string $filename): string|false
+    public static function declareRoutes(Router $router)
     {
-        $assetsDir = self::relativePath($directory);
 
-        if (!is_dir($assetsDir))
-            return false;
-
-        foreach (Utils::exploreDirectory($assetsDir, Utils::ONLY_FILES) as $file)
-        {
-            if (str_ends_with($file, $filename))
-                return $file;
-        }
-
-        return false;
     }
-
-    /**
-     * Find an asset in the controller's application
-     */
-    public static function asset(string $assetName): string|false
-    {
-        return self::findFile("Assets", $assetName);
-    }
-
-    /**
-     * Find a view in the controller's application
-     */
-    public static function view(string $viewName): string|false
-    {
-        if (!str_ends_with($viewName, ".php"))
-            $viewName .= ".php";
-
-        return self::findFile("Views", $viewName);
-    }
-
-    public static abstract function declareRoutes(Router $router);
 }

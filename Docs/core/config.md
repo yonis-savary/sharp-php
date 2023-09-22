@@ -17,6 +17,7 @@ One application is made of these directories:
 - Controllers
 - Commands
 - Components
+- Features
 - Others
 - Routes
 - Helpers
@@ -71,7 +72,7 @@ the framework
 
 ## Additionnal properties
 
-- `Autoloader::getListFiles(Autoloader::AUTOLOAD)` can retrieve files in `Commands`, `Controllers`, `Classes`, `Components`, `Models`
+- `Autoloader::getListFiles(Autoloader::AUTOLOAD)` can retrieve files in `Commands`, `Controllers`, `Classes`, `Components`, `Features`, `Models`
 - `Autoloader::getListFiles(Autoloader::ASSETS)` can retrieve files in `Assets`
 - `Autoloader::getListFiles(Autoloader::VIEWS)` can retrieve files in `Views`
 - `Autoloader::getListFiles(Autoloader::ROUTES)` can retrieve files in `Routes`

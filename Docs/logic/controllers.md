@@ -39,6 +39,7 @@ class MyController
     {
         $router->addRoutes(
             Route::get("/", [self::class, "greets"])
+            Route::view("/about", self::relativePath("about.php"))
         );
     }
 
@@ -50,7 +51,5 @@ class MyController
 ```
 
 This structure allows you to organize your code by feature or domain
-
-<!-- @todo Write docs for Controller->view()|asset() -->
 
 [< Back to summary](../home.md)

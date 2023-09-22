@@ -36,6 +36,7 @@ class Autoloader
         "Controllers" => self::AUTOLOAD,
         "Components"  => self::AUTOLOAD,
         "Classes"     => self::AUTOLOAD,
+        "Features"    => self::AUTOLOAD,
         "Models"      => self::AUTOLOAD,
         "Routes"      => self::ROUTES,
         "Views"       => self::VIEWS,
