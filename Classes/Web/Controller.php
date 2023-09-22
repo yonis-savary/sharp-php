@@ -13,17 +13,6 @@ use Sharp\Core\Utils;
  */
 trait Controller
 {
-    public static function relativePath(string $path): string
-    {
-        $controllerPath = preg_replace("/[^\/]+$/", "", Utils::classnameToPath(self::class));
-        $file = Utils::relativePath(Utils::joinPath($controllerPath, $path));
-
-        if (is_file($file))
-            Logger::getInstance()->warning("[$file] file does not exists !");
-
-        return $file;
-    }
-
     public static function declareRoutes(Router $router)
     {
 

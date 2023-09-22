@@ -259,4 +259,14 @@ class Utils
         $env = Configuration::getInstance()->get("env", "debug");
         return strtolower($env) === "production";
     }
+
+
+    /**
+     * Check if an application is present in "application" in "sharp.json"
+     */
+    public static function isApplicationEnabled(string $application): bool
+    {
+        $enabled = Configuration::getInstance()->toArray("applications");
+        return in_array($application, $enabled);
+    }
 }

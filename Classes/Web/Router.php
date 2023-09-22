@@ -91,7 +91,7 @@ class Router
     {
         foreach (Autoloader::getListFiles(Autoloader::AUTOLOAD) as $file)
         {
-            if (!(str_contains($file, "Controllers") || str_contains($file, "Features")))
+            if (!str_contains($file, "Controllers"))
                 continue;
 
             $class = Utils::pathToNamespace($file);
