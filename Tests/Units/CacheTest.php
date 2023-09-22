@@ -97,13 +97,16 @@ class CacheTest extends TestCase
 
         $element = new CacheElement("my-key");
         $element->setContent("Hello", 1);
-
         $filename = $element->save($storage);
 
         $this->assertIsString($filename);
-
         $this->assertInstanceOf(CacheElement::class, CacheElement::fromFile($filename));
-        sleep(1);
+
+
+        $expiredElement = new CacheElement("my-key", 1, time()-1);
+        $expiredElement->setContent("Hello");
+        $filename = $expiredElement->save($storage);
+
         $this->assertNull(CacheElement::fromFile($filename));
     }
 
