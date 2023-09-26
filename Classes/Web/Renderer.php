@@ -21,9 +21,7 @@ class Renderer
 
     public static function getDefaultConfiguration() : array
     {
-        return [
-            'file_extension' => '.php'
-        ];
+        return ['file_extension' => '.php'];
     }
 
     /**

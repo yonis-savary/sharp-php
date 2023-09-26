@@ -3,6 +3,7 @@
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Data\ModelGenerator\ModelGenerator;
+use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Storage;
@@ -34,9 +35,12 @@ Cache::setInstance(new Cache($testStorage, "Cache"));
 $database = Database::getInstance();
 
 $schema = file_get_contents( __DIR__."/schema.sql");
-$schema = explode(";", $schema);
-$schema = array_map("trim", $schema);
-$schema = array_filter($schema);
+
+$schema = ObjectArray::fromExplode(";", $schema)
+->map(trim(...))
+->filter()
+->collect();
+
 foreach ($schema as $line)
     $database->query($line);
 

@@ -16,12 +16,12 @@ set_exception_handler(function(Throwable $exception){
             "\n",
             "_____________________________________________",
             "Got an exception/error, please read your logs",
-            "(".$exception->getMessage().")",
-            "\n"
+            "(".$exception->getMessage()." at ".$exception->getFile().":".$exception->getLine().")"
         ]));
 
-    $res = new Response("Internal Server Error", 500, ["Content-Type" => "text/plain"]);
-    $res->display();
+    (new Response("Internal Server Error", 500, ["Content-Type" => "text/plain"]))
+    ->display();
+
     die;
 });
 

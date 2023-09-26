@@ -6,6 +6,7 @@ use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Http\Classes\UploadFile;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Core\Logger;
+use Sharp\Classes\Data\ObjectArray;
 use Sharp\Core\Utils;
 use Stringable;
 
@@ -315,16 +316,12 @@ class Request
      */
     protected function parseHeaders(string $headers): array
     {
-        $headers = explode("\n", $headers);
-        $headers = array_filter($headers, fn($line) => preg_match('/^.+:.+$/', $line));
-        $headers = array_map(fn($line) => preg_replace("/\r$/", '', $line), $headers);
-        $headers = array_map(fn($line) => explode(':', $line, 2), $headers);
-
-        $assocHeaders = array_combine(
-            array_map(fn($e) => strtolower(trim($e[0] ?? null)), $headers),
-            array_map(fn($e) => trim($e[1] ?? null), $headers)
-        );
-        return $assocHeaders;
+        return ObjectArray::fromExplode("\n", $headers)
+        ->filter(fn($line) => preg_match('/^.+:.+$/', $line))
+        ->combine(function($line){
+            $line = preg_replace("/\r$/", '', $line);
+            return explode(':', $line, 2);
+        });
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Sharp\Classes\Data\ModelGenerator;
 
 use Sharp\Classes\Data\Database;
+use Sharp\Classes\Data\ObjectArray;
 
 abstract class GeneratorDriver
 {
@@ -18,10 +19,10 @@ abstract class GeneratorDriver
      */
     protected function sqlToPHPName(string $name): string
     {
-        $parts = explode("_", $name);
-        $parts = array_filter($parts);
-        $parts = array_map("ucfirst", $parts);
-        return join("", $parts);
+        return ObjectArray::fromExplode("_", $name)
+        ->filter()
+        ->map("ucfirst")
+        ->join();
     }
 
     /**

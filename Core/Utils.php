@@ -3,6 +3,7 @@
 namespace Sharp\Core;
 
 use InvalidArgumentException;
+use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Configuration;
 
 class Utils
@@ -163,10 +164,11 @@ class Utils
      */
     public static function listFiles(string $directory): array
     {
-        $allFiles = array_slice(scandir($directory), 2);
-        $allFiles = array_map(fn($x) => Utils::joinPath($directory, $x), $allFiles);
-        $onlyFiles = array_filter($allFiles, "is_file");
-        return array_values($onlyFiles);
+        return ObjectArray::fromArray(scandir($directory))
+        ->slice(2)
+        ->map(fn($file) => Utils::joinPath($directory, $file))
+        ->filter(is_file(...))
+        ->collect();
     }
 
     /**
@@ -175,10 +177,11 @@ class Utils
      */
     public static function listDirectories(string $directory): array
     {
-        $allFiles = array_slice(scandir($directory), 2);
-        $allFiles = array_map(fn($x) => Utils::joinPath($directory, $x), $allFiles);
-        $onlyDirectories = array_filter($allFiles, "is_dir");
-        return array_values($onlyDirectories);
+        return ObjectArray::fromArray(scandir($directory))
+        ->slice(2)
+        ->map(fn($file) => Utils::joinPath($directory, $file))
+        ->filter(is_dir(...))
+        ->collect();
     }
 
     /*

@@ -4,6 +4,7 @@ namespace Sharp\Classes\Data\ModelGenerator;
 
 use Sharp\Classes\CLI\Terminal;
 use Sharp\Classes\Data\DatabaseField;
+use Sharp\Classes\Data\ObjectArray;
 use Sharp\Core\Utils;
 
 class SQLite extends GeneratorDriver
@@ -94,13 +95,17 @@ class SQLite extends GeneratorDriver
             }
         }
         $lines[]= $currentLine;
-        $lines = array_map('trim', $lines);
 
-        return array_values(array_filter(array_map(fn($l) => $this->lineToField($l), $lines)));
+        return ObjectArray::fromArray($lines)
+        ->map(fn($line) => $this->lineToField($line))
+        ->filter()
+        ->collect();
     }
 
     public function lineToField(string $sqlLine): ?array
     {
+        $sqlLine = trim($sqlLine);
+
         $field = "";
 
         $matches = [];

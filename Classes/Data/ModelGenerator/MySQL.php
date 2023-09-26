@@ -4,6 +4,7 @@ namespace Sharp\Classes\Data\ModelGenerator;
 
 use Sharp\Classes\CLI\Terminal;
 use Sharp\Classes\Data\DatabaseField;
+use Sharp\Classes\Data\ObjectArray;
 use Sharp\Core\Utils;
 
 class MySQL extends GeneratorDriver
@@ -75,15 +76,17 @@ class MySQL extends GeneratorDriver
             $usedModels[] = $row["target_table"];
         }
 
-        $usedModels = array_unique($usedModels);
-        $usedModels = array_map(fn($e) => $this->sqlToPHPName($e), $usedModels);
-        $usedModels = array_map(fn($e) => Utils::joinPath($fileDir, $e), $usedModels);
-        $usedModels = array_map(fn($e) => Utils::pathToNamespace($e), $usedModels);
-        $usedModels = array_map(fn($e) => "use $e;", $usedModels);
+        $usedModels = ObjectArray::fromArray($usedModels)
+        ->map(function($model) use ($fileDir) {
+            $model = $this->sqlToPHPName($model);
+            $model = Utils::joinPath($fileDir, $model);
+            $model = Utils::pathToNamespace($model);
+            return "use $model;";
+        })->collect();
 
         $primaryKey = null;
 
-        $descriptionRaw = $db->query("DESCRIBE `$table`");
+        $descriptionRaw =  $db->query("DESCRIBE `$table`");
         $description = array_map(function($e) use ($foreignKeys, &$primaryKey) {
             return $this->getFieldDescription($e, $foreignKeys, $primaryKey);
         }, $descriptionRaw);

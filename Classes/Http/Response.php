@@ -4,6 +4,7 @@ namespace Sharp\Classes\Http;
 
 use InvalidArgumentException;
 use Sharp\Classes\Core\Logger;
+use Sharp\Classes\Data\ObjectArray;
 
 /**
  * Credit to [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) for the Status descriptions
@@ -250,10 +251,12 @@ class Response
             $this->headers[$name] = $value;
         }
 
-        $addedHeaders = array_keys($headers);
-        $addedHeaders = array_map(fn($x) => $this->headerName($x), $addedHeaders);
-
-        $this->headersToRemove = array_diff($this->headersToRemove, $addedHeaders);
+        $this->headersToRemove = array_diff(
+            $this->headersToRemove,
+            ObjectArray::fromArray(array_keys($headers))
+            ->map($this->headerName(...))
+            ->collect()
+        );
 
         return $this;
     }

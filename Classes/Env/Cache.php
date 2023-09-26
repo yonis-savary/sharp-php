@@ -51,7 +51,7 @@ class Cache
 
     public function __destruct()
     {
-        foreach (array_values($this->index) as $object)
+        foreach ($this->index as $key => $object)
             $object->save($this->storage);
     }
 

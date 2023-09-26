@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use Sharp\Classes\CLI\Terminal;
 use Sharp\Classes\Core\Events;
+use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Configuration;
 use Throwable;
 
@@ -192,11 +193,11 @@ class Autoloader
         if ((!$forceReload) && self::$classesListCache)
             return self::$classesListCache;
 
-        $classes = self::getListFiles(self::AUTOLOAD);
-        $classes = array_map(fn($x) => Utils::pathToNamespace($x), $classes);
-        $classes = array_filter($classes, "class_exists");
+        self::$classesListCache = ObjectArray::fromArray(self::getListFiles(self::AUTOLOAD))
+        ->map(fn($x) => Utils::pathToNamespace($x))
+        ->filter(class_exists(...))
+        ->collect();
 
-        self::$classesListCache = array_values($classes);
         return self::$classesListCache;
     }
 
@@ -207,7 +208,9 @@ class Autoloader
      */
     public static function filterClasses(callable $filter): array
     {
-        return array_values(array_filter(self::getClassesList(), $filter));
+        return ObjectArray::fromArray(self::getClassesList())
+        ->filter($filter)
+        ->collect();
     }
 
     /**
