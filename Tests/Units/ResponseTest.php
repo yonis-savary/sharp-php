@@ -87,6 +87,15 @@ class ResponseTest extends TestCase
         $this->assertEquals($actualHeaders, $response->getHeaders());
     }
 
+    public function test_getResponseCode()
+    {
+        $response = new Response(null, 500);
+        $this->assertEquals(500, $response->getResponseCode());
+
+        $response = new Response(null, 200);
+        $this->assertEquals(200, $response->getResponseCode());
+    }
+
     public function test_getHeader()
     {
         $response = new Response(null, 200, [

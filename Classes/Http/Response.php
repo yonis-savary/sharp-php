@@ -231,6 +231,14 @@ class Response
     }
 
     /**
+     * @return int HTTP Response code
+     */
+    public function getResponseCode(): int
+    {
+        return $this->responseCode;
+    }
+
+    /**
      * @return string Transformed header name to lower case
      * @example NULL `headerName("Content-Type") // returns "content-type"`
      */
@@ -306,10 +314,13 @@ class Response
         if ($sendHeaders)
         {
             http_response_code($this->responseCode);
+
             foreach ($this->headers as $name => $value)
                 header("$name: $value");
 
+            // @todo Make this an option (configurable)
             $this->removeHeaders(["x-powered-by"]);
+
             foreach ($this->headersToRemove as $header)
                 header_remove($header);
         }
