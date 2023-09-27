@@ -143,9 +143,8 @@ class Database
 
         $matchesQuoted = [];
 
-        // Un-escaped quote-content regex
-        // (['"`])(?:.+?(?:\1\1|\\\1)?)+?\1
-        preg_match_all('/([\'"`])(?:.*?(?:\\1\\1|\\\\\\1)?)+?\\1/', $sql, $matchesQuoted, PREG_OFFSET_CAPTURE);
+        // This regex capture quoted content
+        preg_match_all('/([\'"`])(?:.*?(?:\1\1|\\\1)?)+?\1/', $sql, $matchesQuoted, PREG_OFFSET_CAPTURE);
 
         $quotedPositions = [];
         foreach ($matchesQuoted[0] as $m)

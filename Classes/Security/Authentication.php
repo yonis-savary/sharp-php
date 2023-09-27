@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Session;
 use Sharp\Core\Utils;
@@ -136,12 +137,28 @@ class Authentication
     }
 
     /**
+     * Return a new instance of the Authentication model with pre-filled values
+     *
+     * @param string $login Value for the login field
+     * @param string $password Value for the password field
+     * @param string $salt Value for the salt field (If the salt field is configured and value not provided, a random 32 characters HEX string is generated)
+     * @param string $algo `password_hash` algorithm to use
+     * @param array $options array option for `password_hash`
      * @return \Sharp\Classes\Data\Model
      */
-    public function createUser(string $login, string $password, string $salt=null, string $algo=null, array $options=null)
+    public function createUser(
+        string $login,
+        string $password,
+        string $salt=null,
+        string $algo=PASSWORD_BCRYPT,
+        array $options=["cost" => 8]
+    )
     {
-        $algo ??= PASSWORD_BCRYPT;
-        $options ??= ["cost" => 8];
+        if ((!$salt) && $this->saltField)
+            $salt = bin2hex(random_bytes(16));
+
+        if ($salt && (!$this->saltField))
+            Logger::getInstance()->warning("[salt] parameter used, no salt field configured");
 
         $model = $this->model;
 

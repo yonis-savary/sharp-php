@@ -23,9 +23,7 @@ class Request
 
     public static function getDefaultConfiguration(): array
     {
-        return [
-            "typed-parameters" => true
-        ];
+        return ["typed-parameters" => true];
     }
 
     /**
@@ -304,10 +302,10 @@ class Request
     public function unset(array|string $keys): void
     {
         foreach (Utils::toArray($keys) as $k)
-        {
-            unset($this->post[$k]);
-            unset($this->get[$k]);
-        }
+            unset(
+                $this->post[$k],
+                $this->get[$k]
+            );
     }
 
     /**
@@ -317,7 +315,7 @@ class Request
     protected function parseHeaders(string $headers): array
     {
         return ObjectArray::fromExplode("\n", $headers)
-        ->filter(fn($line) => preg_match('/^.+:.+$/', $line))
+        ->filter(fn($line) => str_contains($line, ":"))
         ->combine(function($line){
             $line = preg_replace("/\r$/", '', $line);
             return explode(':', $line, 2);

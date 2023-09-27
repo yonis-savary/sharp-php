@@ -16,16 +16,16 @@ class Autoloader
     const AUTOLOAD = "autoload";
 
     /** Files in this list are considered as Views/Templates */
-    const VIEWS    = "views";
+    const VIEWS = "views";
 
     /** Files in this list are not PHP file but resources like JS, CSS... */
-    const ASSETS   = "assets";
+    const ASSETS = "assets";
 
     /** Files in this list are directly required by the autoloader */
-    const REQUIRE  = "require";
+    const REQUIRE = "require";
 
     /** Files in this list are not directly required by the autoloader but can be by other classes (like `Router`) */
-    const ROUTES   = "routes";
+    const ROUTES = "routes";
 
     /**
      * This constant old the differents purpose of
@@ -124,8 +124,8 @@ class Autoloader
         // The framework is loaded as an application
         array_unshift($applications, "Sharp");
 
-        foreach ($applications as $application)
-            self::loadApplication($application, false);
+        foreach ($applications as $app)
+            self::loadApplication($app, false);
 
         foreach (self::getListFiles(self::REQUIRE) as $file)
             require_once $file;
@@ -149,7 +149,7 @@ class Autoloader
             if (!$purpose = self::DIRECTORIES_PURPOSE[$basename] ?? false)
                 continue;
 
-            if ($requireHelpers && $purpose===self::REQUIRE)
+            if ($purpose===self::REQUIRE && $requireHelpers)
             {
                 foreach (Utils::exploreDirectory($directory, Utils::ONLY_FILES) as $toRequire)
                     require_once $toRequire;
@@ -173,8 +173,8 @@ class Autoloader
 
     public static function getListFiles(string $name): array
     {
-        if ($result = self::$listsCache[$name] ?? false)
-            return $result;
+        if ($cachedResult = self::$listsCache[$name] ?? false)
+            return $cachedResult;
 
         $results = [];
 
@@ -275,9 +275,9 @@ class Autoloader
         "<?php
 
         return [".join(",", [
-                $toString(self::$lists),
-                $toString(self::$listsCache),
-                $toString(self::$classesListCache),
+            $toString(self::$lists),
+            $toString(self::$listsCache),
+            $toString(self::$classesListCache),
         ])."];", 2));
     }
 }

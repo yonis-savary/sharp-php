@@ -2,9 +2,6 @@
 
 namespace Sharp\Classes\Web;
 
-use Sharp\Classes\Core\Logger;
-use Sharp\Core\Utils;
-
 /**
  * Using this trait allows you to use those methods in your class
  *  - self::asset() : Find an asset inside controller's app Asset directory

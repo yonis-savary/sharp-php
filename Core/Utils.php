@@ -26,8 +26,8 @@ class Utils
         if (is_string($objectOrClass) && !class_exists($objectOrClass))
             return false;
 
-        $traits = class_uses($objectOrClass);
-        return $traits ? in_array($trait, array_keys($traits)): false;
+        $traits = array_keys(class_uses($objectOrClass));
+        return $traits ? in_array($trait, $traits): false;
     }
 
     /**
@@ -211,6 +211,7 @@ class Utils
     {
         if (!count($array))
             return false;
+
         return !array_is_list($array);
     }
 
@@ -243,10 +244,12 @@ class Utils
 
         foreach ($array as $key => $value)
         {
-            if (array_key_exists($key, $newArray))
+            $newKey = strtolower($key);
+
+            if (array_key_exists($newKey, $newArray))
                 throw new InvalidArgumentException("Duplicate key [$key]");
 
-            $newArray[strtolower($key)] = $value;
+            $newArray[$newKey] = $value;
         }
         return $newArray;
     }

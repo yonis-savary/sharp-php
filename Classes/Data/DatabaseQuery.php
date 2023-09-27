@@ -86,7 +86,7 @@ class DatabaseQuery
         if (count($values) !== count($this->insertFields))
             throw new Exception(sprintf("Cannot insert %s values, %s expected", [count($values), count($this->insertFields)]));
 
-        $template = "(". join(",", array_fill(0, count($values), "{}")) .")";
+        $template = "(". str_repeat("{},", count($values)-1)."{})";
         $template = Database::getInstance()->build($template, $values);
         $this->insertValues[] = $template;
         return $this;
@@ -238,9 +238,9 @@ class DatabaseQuery
     {
         if (!$table) // Prevent Ambiguous Fields
         {
-            $compatibles = array_values(array_filter($this->fields, fn($f) => $f->field == $field));
-            if (count($compatibles) > 1)
-                $table = $compatibles[0]->table;
+            $fieldsObject = ObjectArray::fromArray($this->fields);
+            if ($compatible = $fieldsObject->find(fn($f) => $f->field == $field))
+                $table = $compatible->table;
         }
 
         $this->conditions[] = new QueryCondition(

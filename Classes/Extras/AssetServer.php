@@ -83,8 +83,9 @@ class AssetServer
      */
     public function getURL(string $assetName): string
     {
+        $assetName = urlencode($assetName);
         $routePath = $this->configuration["url"];
-        return "$routePath?file=" . urlencode($assetName);
+        return "$routePath?file=$assetName";
     }
 
     public function handleRequest(Request $req, bool $returnResponse=false) : Response|false

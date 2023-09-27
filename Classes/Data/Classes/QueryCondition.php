@@ -17,11 +17,21 @@ class QueryCondition
     {
         $field = ($this->table ? "`$this->table`." : "") . $this->field;
 
-        if ($this->operator === "=" && $this->value === null)
-            $this->operator = "IS";
+        if (is_array($this->value))
+        {
+            if ($this->operator === "=")
+                $this->operator = "IN";
+            if ($this->operator === "<>")
+                $this->operator = "NOT IN";
+        }
 
-        if ($this->operator === "<>" && $this->value === null)
-            $this->operator = "IS NOT";
+        if ($this->value === null)
+        {
+            if ($this->operator === "=")
+                $this->operator = "IS";
+            if ($this->operator === "<>")
+                $this->operator = "IS NOT";
+        }
 
         return Database::getInstance()->build("($field $this->operator {})", [$this->value]);
     }

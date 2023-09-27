@@ -65,17 +65,18 @@ class Route
 
     public static function renderViewCallback(Request $request)
     {
-        $route = $request->getRoute();
-        $template = $route->getExtras()["template"];
-        $context = $route->getExtras()["context"] ?? [];
+        $extras = $request->getRoute()->getExtras();
 
-        return Renderer::getInstance()->render($template, $context);
+        return Renderer::getInstance()->render(
+            $extras["template"],
+            $extras["context"] ?? [],
+        );
     }
 
     public static function redirectRequestToTarget(Request $request)
     {
-        $route = $request->getRoute();
-        return Response::redirect($route->getExtras()["redirection-target"]);
+        $extras = $request->getRoute()->getExtras();
+        return Response::redirect($extras["redirection-target"]);
     }
 
     public function __construct(
@@ -89,7 +90,7 @@ class Route
         $this->methods = $methods ?? [];
         $this->extras = $extras ?? [];
         $this->callback = $callback;
-        $this->addMiddlewares(...$middlewares);
+        $this->setMiddlewares($middlewares);
 
         if (!str_starts_with($this->path, "/"))
             $this->path = "/" . $this->path;
@@ -163,17 +164,20 @@ class Route
 
         foreach ($parts as &$part)
         {
-            if (!preg_match("/\{(?:(.+?):)?(.+?)\}/",  $part, $match))
-            {
-                $part = preg_quote($part);
+            if (!preg_match("/^\{.+\}$/", $part))
                 continue;
+
+            $part = substr($part, 1, strlen($part)-2);
+
+            $name = $part;
+            $expression = "[^\\\\]+";
+
+            if (str_contains($part, ":"))
+            {
+                list($type, $name) = explode(":", $part, 2);
+                $expression = self::SLUG_FORMATS[$type] ?? $type;
             }
 
-            $expression = "[^\\\\]+";
-            if ($type = $match[1] ?? false)
-                $expression = self::SLUG_FORMATS[$type] ?? $expression;
-
-            $name = $match[2];
             $regexMap[] = $name;
             $part = "($expression)";
         }
