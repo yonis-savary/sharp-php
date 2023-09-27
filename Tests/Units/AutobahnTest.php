@@ -24,6 +24,7 @@ class AutobahnTest extends TestCase
         $db = Database::getInstance();
         $db->query("DELETE FROM test_user_data;");
         $db->query("INSERT INTO test_user_data (id, fk_user, data) VALUES (1, 1, 'A'), (2, 1, 'B'), (3, 1, 'C');");
+        $db->query("UPDATE sqlite_sequence SET seq = 3 WHERE name = 'test_user_data'");
 
         $this->assertTableCount(3);
     }
@@ -42,7 +43,7 @@ class AutobahnTest extends TestCase
 
         list($autobahn, $router) = $this->getNewAutobahn();
         $autobahn->all(TestUserData::class);
-        $this->assertCount(4, $router->getRoutes());
+        $this->assertCount(5, $router->getRoutes());
 
     }
 
@@ -52,14 +53,50 @@ class AutobahnTest extends TestCase
 
         list($autobahn, $router) = $this->getNewAutobahn();
         $autobahn->create(TestUserData::class);
-        $this->assertCount(1, $router->getRoutes());
+        $this->assertCount(2, $router->getRoutes());
 
-        $router->route(
+        $nextId = Database::getInstance()->query("SELECT MAX(id)+1 as next FROM test_user_data")[0]["next"];
+
+        $response = $router->route(
             new Request("POST", "/test_user_data", [], ["fk_user" => 1, "data" => "NEW!"])
         );
 
+        $this->assertEquals($nextId, $response->getContent()["insertedId"]);
+
         $this->assertTableCount(4);
     }
+
+    public function test_multipleCreate()
+    {
+        $this->resetTestUserDataTable();
+
+        list($autobahn, $router) = $this->getNewAutobahn();
+        $autobahn->create(TestUserData::class);
+        $this->assertCount(2, $router->getRoutes());
+
+        $response = $router->route(
+            new Request("POST", "/test_user_data/create-multiples", body: [
+                ["fk_user" => 1, "data" => "NEW A !"],
+                ["fk_user" => 1, "data" => "NEW B !"],
+                ["fk_user" => 1, "data" => "NEW C !"],
+            ])
+        );
+
+        $insertedIds = $response->getContent()["insertedId"];
+
+        $this->assertEquals([4,5,6], $insertedIds);
+
+
+        $response = $router->route(
+            new Request("POST", "/test_user_data/create-multiples", body: [
+                ["fk_user" => 1, "data" => "NEW A !"],
+                ["data" => "NEW B !"],
+            ])
+        );
+
+        $this->assertEquals(500, $response->getResponseCode());
+    }
+
 
     public function test_read()
     {
