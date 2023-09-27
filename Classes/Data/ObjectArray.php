@@ -33,6 +33,46 @@ class ObjectArray
     }
 
     /**
+     * Append values to the data
+     * @note This method edit the array in place
+     */
+    public function push(mixed ...$objects): self
+    {
+        array_push($this->data, ...$objects);
+        return $this;
+    }
+
+    /**
+     * Remove the last value of the array
+     * @note This method edit the array in place
+     */
+    public function pop(): self
+    {
+        array_pop($this->data);
+        return $this;
+    }
+
+    /**
+     * Remove the first element of the array
+     * @note This method edit the array in place
+     */
+    public function shift(): self
+    {
+        array_shift($this->data);
+        return $this;
+    }
+
+    /**
+     * Prepend new values to the array
+     * @note This method edit the array in place
+     */
+    public function unshift(mixed ...$objects): self
+    {
+        array_unshift($this->data, ...$objects);
+        return $this;
+    }
+
+    /**
      * Execute a function for every array's items
      *
      * @param callable $callback Callback to execute
@@ -111,6 +151,30 @@ class ObjectArray
     public function join(string $glue=""): string
     {
         return join($glue, $this->data);
+    }
+
+    /**
+     * @return int Size of contained data
+     */
+    public function length(): int
+    {
+        return count($this->data);
+    }
+
+    /**
+     * Return the first element that respect a callback
+     *
+     * @param callable $filter Filter is a callback, each element is given to it, must return a boolean
+     * @return mixed|null Return found object or null if not found
+     */
+    public function find(callable $filter): mixed
+    {
+        foreach ($this->data as $element)
+        {
+            if ($filter($element) === true)
+                return $element;
+        }
+        return null;
     }
 
     /**
