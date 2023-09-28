@@ -48,6 +48,6 @@ class Configuration extends AbstractMap
         if (!$path)
             throw new Exception("Couldn't save a config without file name !");
 
-        file_put_contents($path, json_encode($this->storage, JSON_THROW_ON_ERROR));
+        file_put_contents($path, json_encode($this->storage, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
     }
 }
