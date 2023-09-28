@@ -253,17 +253,16 @@ class Response
      */
     public function withHeaders(array $headers): Response
     {
+        $addedHeaders = [];
         foreach ($headers as $name => $value)
         {
-            $name = $this->headerName($name);
+            $name = $addedHeaders[] = $this->headerName($name);
             $this->headers[$name] = $value;
         }
 
         $this->headersToRemove = array_diff(
             $this->headersToRemove,
-            ObjectArray::fromArray(array_keys($headers))
-            ->map($this->headerName(...))
-            ->collect()
+            $addedHeaders
         );
 
         return $this;

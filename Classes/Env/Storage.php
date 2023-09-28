@@ -5,6 +5,7 @@ namespace Sharp\Classes\Env;
 use Exception;
 use RuntimeException;
 use Sharp\Classes\Core\Component;
+use Sharp\Classes\Data\ObjectArray;
 use Sharp\Core\Utils;
 
 class Storage
@@ -49,9 +50,9 @@ class Storage
 
     public function __destruct()
     {
-        $toClose = array_filter($this->openedStreams);
-        foreach ($toClose as $stream)
-            fclose($stream);
+        ObjectArray::fromArray($this->openedStreams)
+        ->filter()
+        ->foreach(fn($stream) => fclose($stream));
     }
 
     /**

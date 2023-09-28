@@ -15,15 +15,18 @@ class Configuration extends AbstractMap
 
     public static function getDefaultInstance()
     {
-        return new self(Utils::relativePath("sharp.json"));
+        return new self("sharp.json");
     }
 
+    /**
+     * @param string $filename `null` if the config is only an object, a relative path if it must be saved
+     */
     public function __construct(string $filename=null)
     {
         if (!$filename)
             return;
 
-        $this->filename = $filename;
+        $filename = $this->filename = Utils::relativePath($filename);
 
         // Info: this verification is after the previous assignement
         // because we can create a config from nothing then save it in a file

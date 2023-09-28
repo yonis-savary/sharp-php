@@ -148,6 +148,13 @@ class AutobahnTest extends TestCase
         $this->assertArrayHasKey("data", $data);
         $this->assertArrayHasKey("data", $data["data"]);
         $this->assertArrayNotHasKey("fk_user", $data);
+
+        $res = $router->route(new Request("GET", "/test_user_data", ["_join" => false]));
+        $this->assertCount(3, $res->getContent());
+        $data = $res->getContent()[0];
+        $this->assertArrayHasKey("data", $data);
+        $this->assertArrayHasKey("data", $data["data"]);
+        $this->assertArrayNotHasKey("fk_user", $data);
     }
 
     public function test_update()

@@ -3,6 +3,7 @@
 namespace Sharp\Classes\Core;
 
 use Sharp\Classes\Core\Component;
+use Sharp\Classes\Data\ObjectArray;
 
 class Events
 {
@@ -30,10 +31,8 @@ class Events
      */
     public function dispatch(string $event, mixed ...$args): void
     {
-        $results = array_map(
-            fn($handler) => $handler(...$args),
-            $this->handlers[$event] ?? []
-        );
+        $results = ObjectArray::fromArray($this->handlers[$event] ?? [])
+        ->map(fn($handler) => $handler(...$args));
 
         if ($event === self::SELF_EVENT)
             return;

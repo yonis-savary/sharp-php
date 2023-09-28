@@ -75,7 +75,13 @@ class Autobahn
         $driver = $this->configuration["driver"];
 
         $this->router->addRoutes(
-            new Route($model::getTable() . $suffix, [$driver, $callback], $methods, [], $routeExtras)
+            new Route(
+                $model::getTable() . $suffix,
+                [$driver, $callback],
+                $methods,
+                [],
+                $routeExtras
+            )
         );
     }
 

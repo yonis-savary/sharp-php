@@ -88,10 +88,11 @@ class Authentication
         if (!password_verify($password, $hash))
             return $this->failAttempt();
 
-        $session = $this->session;
-        $session->set(self::IS_LOGGED, true);
-        $session->set(self::USER_DATA, $user);
-        $session->set(self::ATTEMPTS_NUMBER, 0);
+        $this->session->merge([
+            self::IS_LOGGED => true,
+            self::USER_DATA => $user,
+            self::ATTEMPTS_NUMBER => 0,
+        ]);
         $this->refreshExpireTime();
 
         Events::getInstance()->dispatch("authenticatedUser", ["user" => $user]);
@@ -102,7 +103,7 @@ class Authentication
     protected function failAttempt(): bool
     {
         $this->logout();
-        $this->session->edit(self::ATTEMPTS_NUMBER, fn($x) => $x+1, 0);
+        $this->session->edit(self::ATTEMPTS_NUMBER, fn($x=0) => $x+1);
 
         return false;
     }
@@ -115,15 +116,15 @@ class Authentication
 
     public function logout(): void
     {
-        $this->session->merge([
-            self::IS_LOGGED => false,
-            self::USER_DATA => null,
-        ]);
+        $this->session->unset(
+            self::IS_LOGGED,
+            self::USER_DATA
+        );
     }
 
     public function isLogged(): bool
     {
-        return boolval($this->session->get(self::IS_LOGGED));
+        return boolval($this->session->get(self::IS_LOGGED, false));
     }
 
     public function attemptNumber(): int

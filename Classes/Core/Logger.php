@@ -31,6 +31,7 @@ class Logger
     {
         $logger = new self();
         $logger->replaceStream($stream, $autoclose);
+
         return $logger;
     }
 
@@ -47,20 +48,22 @@ class Logger
         $storage ??= Storage::getInstance();
         $exists = $storage->isFile($filename);
 
-        if(!$exists)
+        if (!$exists)
             $storage->assertIsWritable();
 
         $this->filename = $storage->path($filename);
         $this->stream = $storage->getStream($filename, "a", false);
 
-        if (!$exists)
-            fputcsv($this->stream, [
-                "DateTime",
-                "IP",
-                "Method",
-                "Level",
-                "Message"
-            ], "\t");
+        if ($exists)
+            return;
+
+        fputcsv($this->stream, [
+            "DateTime",
+            "IP",
+            "Method",
+            "Level",
+            "Message"
+        ], "\t");
     }
 
     public function __destruct()

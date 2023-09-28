@@ -35,7 +35,7 @@ class Router
         $this->loadConfiguration();
 
         if ($this->isCached())
-            $this->cache = $cache ?? Cache::getInstance();
+            $this->cache = $cache ?? Cache::getInstance()->getSubCache("router");
     }
 
     public static function getDefaultConfiguration(): array

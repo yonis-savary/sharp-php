@@ -129,4 +129,12 @@ class Cache
         $this->index[$key]->delete();
         unset($this->index[$key]);
     }
+
+    /**
+     * Get a new Cache instance from a subdirectory created by the parent Cache
+     */
+    public function getSubCache(string $name): self
+    {
+        return new self($this->storage->getNewStorage($name));
+    }
 }

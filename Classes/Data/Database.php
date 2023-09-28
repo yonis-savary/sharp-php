@@ -7,6 +7,7 @@ use PDOException;
 use PDOStatement;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
+use Sharp\Classes\Core\Events;
 use Sharp\Classes\Env\Storage;
 
 class Database
@@ -24,8 +25,7 @@ class Database
             "host" => "localhost",
             "port" => 3306,
             "user" => "root",
-            "password" => null,
-            "enable-foreign-keys" => true
+            "password" => null
         ];
     }
 
@@ -51,14 +51,19 @@ class Database
         protected ?string $password
     )
     {
+        $this->loadConfiguration();
+
         $dsn = $this->getDSN();
         $this->connection = new PDO($dsn, $user, $password);
 
-        $this->loadConfiguration();
-
-        $config = $this->getConfiguration();
-        if ($driver === "sqlite" && $config["enable-foreign-keys"])
-            $this->query("PRAGMA foreign_keys=ON");
+        Events::getInstance()->dispatch("connectedDatabase", [
+            "driver" => $driver,
+            "database" => $database,
+            "host" => $host,
+            "port" => $port,
+            "user" => $user,
+            "connection" => &$this->connection,
+        ]);
     }
 
     /**
@@ -175,11 +180,7 @@ class Database
      * @param array $context Data for the query (values replaces placeholders `{}`)
      * @param int $fetchMode PDO Fetch mode constant
      */
-    public function query(
-        string $query,
-        array $context=[],
-        int $fetchMode=PDO::FETCH_ASSOC
-    ): array
+    public function query(string $query, array $context=[], int $fetchMode=PDO::FETCH_ASSOC): array
     {
         $queryWithContext = $this->build($query, $context);
 

@@ -3,7 +3,6 @@
 namespace Sharp\Classes\Http\Classes;
 
 use Sharp\Classes\Env\Storage;
-use Sharp\Core\Utils;
 
 /**
  * Class to modelize Upload Files, methods that are the most useful are

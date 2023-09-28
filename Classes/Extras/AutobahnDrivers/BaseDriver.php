@@ -33,23 +33,23 @@ class BaseDriver implements DriverInterface
     {
         list($model, $middlewares) = self::extractRequestData($request);
 
-        $query = new DatabaseQuery($model::getTable(), DatabaseQuery::INSERT);
-
         $params = $request->all();
-
         foreach ($middlewares as $middleware)
             $middleware($params);
 
-        $query->setInsertField(array_keys($params));
-        $query->insertValues(array_values($params));
+        $fields = array_keys($params);
+        $values = array_values($params);
 
         $events = Events::getInstance();
-        $events->dispatch("autobahnCreateBefore", ["model"=>$model, "query"=>$query]);
+        $events->dispatch("autobahnCreateBefore", ["model"=>$model, "fields" => $fields, "values" => &$values]);
 
+        $query = new DatabaseQuery($model::getTable(), DatabaseQuery::INSERT);
+        $query->setInsertField($fields);
+        $query->insertValues($values);
         $query->fetch();
-
         $inserted = Database::getInstance()->lastInsertId();
-        $events->dispatch("autobahnCreateAfter", ["model"=>$model, "query"=>$query, "insertedId"=>$inserted]);
+
+        $events->dispatch("autobahnCreateAfter", ["model"=>$model, "fields" => $fields, "values" => &$values, "query"=>&$query, "insertedId"=>$inserted]);
 
         return Response::json(["insertedId"=>$inserted], Response::CREATED);
     }
@@ -86,9 +86,7 @@ class BaseDriver implements DriverInterface
 
         $query->fetch();
         $lastInsert = Database::getInstance()->lastInsertId();
-
         $insertedIdList = range($lastInsert-$data->length()+1, $lastInsert);
-
 
         $events->dispatch("autobahnMultipleCreateAfter", ["model"=>$model, "query"=>&$query, "insertedId" => $insertedIdList]);
 
@@ -99,21 +97,15 @@ class BaseDriver implements DriverInterface
     {
         list($model, $middlewares) = self::extractRequestData($request);
 
-        $query = new DatabaseQuery($model::getTable(), DatabaseQuery::SELECT);
-
-        $doJoin = ($request->params("_join") ?? "true") === "true";
+        $doJoin = ($request->params("_join") ?? true) == true;
         $ignores = Utils::toArray($request->params("_ignores") ?? []);
-
         $request->unset(["_ignores", "_join"]);
+
+        $query = new DatabaseQuery($model::getTable(), DatabaseQuery::SELECT);
         $query->exploreModel($model, $doJoin, $ignores);
 
         foreach ($request->all() as $key => $value)
-        {
-            if (is_array($value))
-                $query->whereSQL("`$key` IN {}", [$value]);
-            else
-                $query->where($key, $value);
-        }
+            $query->where($key, $value);
 
         foreach ($middlewares as $middleware)
             $middleware($query);
@@ -154,11 +146,11 @@ class BaseDriver implements DriverInterface
             $middleware($query);
 
         $events = Events::getInstance();
-        $events->dispatch("autobahnUpdateBefore", ["model"=>$model, "query"=>&$query]);
+        $events->dispatch("autobahnUpdateBefore", ["model"=>$model, "primaryKey"=>$primaryKeyValue, "query"=>&$query]);
 
         $query->fetch();
 
-        $events->dispatch("autobahnUpdateAfter", ["model"=>$model, "query"=>&$query]);
+        $events->dispatch("autobahnUpdateAfter", ["model"=>$model, "primaryKey"=>$primaryKeyValue, "query"=>&$query]);
 
         return Response::json("DONE", Response::CREATED);
     }

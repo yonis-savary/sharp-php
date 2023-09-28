@@ -157,7 +157,7 @@ class Route
         array_push($this->middlewares, ...$middlewares);
     }
 
-    protected function matchPathRegexp(Request $request): string
+    protected function matchPathRegex(Request $request): string
     {
         $regexMap = [];
         $parts = explode("/", $this->path);
@@ -212,7 +212,7 @@ class Route
         if (!str_contains($routePath, "{"))
             return $routePath === $requestPath;
 
-        return $this->matchPathRegexp($request);
+        return $this->matchPathRegex($request);
     }
 
     public function __invoke(Request $request): mixed

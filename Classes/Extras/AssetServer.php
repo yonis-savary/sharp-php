@@ -24,11 +24,11 @@ class AssetServer
     public static function getDefaultConfiguration(): array
     {
         return [
-            "enabled" => true,
-            "url" => "/assets",
-            "cached" => false,
+            "enabled"     => true,
+            "cached"      => false,
+            "url"         => "/assets",
             "middlewares" => [],
-            "max-age" => false
+            "max-age"     => false
         ];
     }
 
@@ -70,9 +70,7 @@ class AssetServer
             if (!str_ends_with($file, $assetName))
                 continue;
 
-            $this->cacheIndex[$assetName] = $file;
-
-            return $file;
+            return $this->cacheIndex[$assetName] = $file;
         }
         return false;
     }

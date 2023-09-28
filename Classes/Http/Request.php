@@ -333,17 +333,15 @@ class Request
     public function fetch(
         Logger $logger=null,
         int $timeout=null,
-        string $userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0',
+        ?string $userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0',
         bool $supportRedirection=true
     ): Response
     {
         $logger ??= new Logger(null);
 
-        $handle = curl_init(
-            $this->getPath().
-            http_build_query($this->get(), "?", ";")
-        );
+        $url = $this->getPath(). http_build_query($this->get(), "?", ";");
 
+        $handle = curl_init($url);
         curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $this->getMethod());
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($handle, CURLOPT_HEADER, true);
@@ -356,7 +354,8 @@ class Request
             curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
 
         $headers = $this->getHeaders();
-        $headers['user-agent'] = $userAgent;
+        if ($userAgent)
+            $headers['user-agent'] = $userAgent;
 
         $headersString = [];
         foreach ($headers as $key => &$value)
@@ -374,9 +373,9 @@ class Request
         $resHeaders = substr($result, 0, $headerSize);
         $resHeaders = $this->parseHeaders($resHeaders);
 
-        if ($supportRedirection && $redirection = $resHeaders['location'] ?? null)
+        if ($supportRedirection && $nextURL = $resHeaders['location'] ?? null)
         {
-            $request = new self("GET", $redirection);
+            $request = new self("GET", $nextURL);
             return $request->fetch(
                 $logger,
                 $timeout,
