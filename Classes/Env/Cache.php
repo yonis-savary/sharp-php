@@ -56,6 +56,22 @@ class Cache
     }
 
     /**
+     * Get the Cache directory Storage object
+     */
+    public function getStorage(): Storage
+    {
+        return $this->storage;
+    }
+
+    /**
+     * @return array<string> Return existing keys in the cache
+     */
+    public function getKeys(): array
+    {
+        return array_keys($this->index);
+    }
+
+    /**
      * @param string $key Key to check the existance of
      * @return bool Is the key present in the cache
      */
