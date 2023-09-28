@@ -28,6 +28,11 @@ class Route
     /** @var array<MiddlewareInterface> $middlewares */
     protected array $middlewares = [];
 
+    public static function any(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
+    {
+        return new self($path, $callback, [], $middlewares, $extras);
+    }
+
     public static function get(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
     {
         return new self($path, $callback, ["GET"], $middlewares, $extras);
