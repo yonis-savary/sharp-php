@@ -28,14 +28,13 @@ class Router
 
     protected ?Route $cachedRoute = null;
     protected ?Cache $cache = null;
+    protected bool $loadedRoutes = false;
 
 
     public function __construct(Cache $cache=null)
     {
         $this->loadConfiguration();
-
-        if ($this->isCached())
-            $this->cache = $cache ?? Cache::getInstance()->getSubCache("router");
+        $this->cache = $cache ?? Cache::getInstance()->getSubCache("router");
     }
 
     public static function getDefaultConfiguration(): array
@@ -45,7 +44,7 @@ class Router
 
     protected function getCacheKey(Request $request): string
     {
-        return "sharp-router-index-" . md5($request->getPath());
+        return "sharp-router-index-" . md5($request->getMethod() . $request->getPath());
     }
 
     protected function putRouteToCache(Route $route, Request $request): void
@@ -57,26 +56,25 @@ class Router
         $this->cache->set($key, $route);
     }
 
-    protected function getCachedRouteForRequest(Request $request): bool
+    protected function getCachedRouteForRequest(Request $request): ?Route
     {
         $key = $this->getCacheKey($request);
-        if ($this->cachedRoute = $this->cache->get($key, null))
-            return true;
+        if ($cachedRoute = $this->cache->get($key, null))
+            return $cachedRoute;
 
-        return false;
+        return null;
     }
 
     /**
      * Try to load routes from the cache, on failure, load routes from files/controllers
+     * @param bool $force Set to `true` to force the reload of routes
      */
-    public function loadRoutesOrCache(Request $request=null)
+    public function loadRoutes(bool $force=false)
     {
-        if ($request && $this->isCached())
-        {
-            if ($this->getCachedRouteForRequest($request))
-                return;
-        }
+        if ($this->loadedRoutes && (!$force))
+            return;
 
+        $this->loadedRoutes = true;
         $this->loadAutoloaderFiles();
         $this->loadControllersRoutes();
     }
@@ -135,7 +133,7 @@ class Router
     }
 
     /**
-     *
+     * Apply a given group to given routes
      */
     public function group(array $group, Route ...$routes): array
     {
@@ -179,6 +177,7 @@ class Router
 
     protected function findFirstMathingRoute(Request $req) : ?Route
     {
+        $this->loadRoutes();
         foreach ($this->routes as $route)
         {
             if (!$route->match($req))
@@ -194,7 +193,7 @@ class Router
 
     public function route(Request $request): Response
     {
-        $route = $this->cachedRoute ?? $this->findFirstMathingRoute($request);
+        $route = $this->getCachedRouteForRequest($request) ?? $this->findFirstMathingRoute($request);
 
         if (!$route)
             return new Response("Page not found", 404, ["Content-Type" => "text/plain"]);

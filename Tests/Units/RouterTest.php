@@ -3,6 +3,8 @@
 namespace Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
+use Sharp\Classes\Env\Cache;
+use Sharp\Classes\Env\Storage;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
@@ -104,5 +106,45 @@ class RouterTest extends TestCase
      * public function test_addRoutes() {}
      * This method is implicitly tested by the others tests of this class
      */
+
+
+    public static function sampleCallbackA()
+    {
+        return Response::json("A");
+    }
+
+    public static function sampleCallbackB()
+    {
+        return Response::json("B");
+    }
+
+
+    /**
+     * Test if the Router cache correctly routes that have the same path but
+     * support differents methods
+     */
+    public function test_issue_cached_same_path_different_methods()
+    {
+        $cache = new Cache(Storage::getInstance()->getNewStorage("test_router_issue_1"));
+
+        $router = new Router($cache);
+        $router->setConfiguration(["cached" => true]);
+
+        $this->assertTrue($router->isCached());
+
+        $router->addRoutes(
+            Route::get("/", [self::class, "sampleCallbackA"]),
+            Route::post("/", [self::class, "sampleCallbackB"])
+        );
+
+        $res = $router->route( new Request("GET", "/") );
+        $this->assertEquals("A", $res->getContent());
+        $this->assertCount(1, $cache->getKeys());
+
+        $res = $router->route( new Request("POST", "/") );
+        $this->assertEquals("B", $res->getContent());
+        $this->assertCount(2, $cache->getKeys());
+
+    }
 
 }
