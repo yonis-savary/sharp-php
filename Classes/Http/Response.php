@@ -4,7 +4,6 @@ namespace Sharp\Classes\Http;
 
 use InvalidArgumentException;
 use Sharp\Classes\Core\Logger;
-use Sharp\Classes\Data\ObjectArray;
 
 /**
  * Credit to [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) for the Status descriptions

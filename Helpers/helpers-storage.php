@@ -3,16 +3,16 @@
 use Sharp\Classes\Env\Storage;
 
 /**
- * Shortcut to `Storage::getInstance()->getNewStorage()`
+ * Shortcut to `Storage::getInstance()->getSubStorage()`
  *
  * Get a new `Storage` object from a relative path
  *
  * @param string $path Relative path to get the Storage of (relative to your main Storage directory)
  * @return Storage New storage with the $path as root
  */
-function storeGetNewStorage(string $path): Storage
+function storegetSubStorage(string $path): Storage
 {
-    return Storage::getInstance()->getNewStorage($path);
+    return Storage::getInstance()->getSubStorage($path);
 }
 
 /**

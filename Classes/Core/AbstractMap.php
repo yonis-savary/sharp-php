@@ -97,10 +97,7 @@ abstract class AbstractMap
     final public function unset(string ...$keys): void
     {
         foreach ($keys as $key)
-        {
-            if (array_key_exists($key, $this->storage))
-                unset($this->storage[$key]);
-        }
+            unset($this->storage[$key]);
     }
 
     /**

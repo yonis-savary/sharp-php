@@ -142,8 +142,6 @@ class Logger
 
             if ($this->stream)
                 fputcsv($this->stream, $line, "\t");
-            else
-                echo "Error while shutting down : $line \n";
         }
     }
 
@@ -229,6 +227,4 @@ class Logger
     {
         $this->log("emergency", ...$messages);
     }
-
-
 }

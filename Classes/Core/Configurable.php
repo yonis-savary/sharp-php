@@ -12,7 +12,7 @@ use Sharp\Classes\Env\Configuration;
  */
 trait Configurable
 {
-    protected array $configuration;
+    protected array $configuration = [];
     protected bool $configurationIsLoaded = false;
 
     /**
@@ -76,7 +76,8 @@ trait Configurable
     final public function setConfiguration(array $newConfiguration): void
     {
         $this->configuration = array_merge(
-            $this->configuration ?? self::getDefaultConfiguration(),
+            self::getDefaultConfiguration(),
+            $this->configuration,
             $newConfiguration
         );
         $this->configurationIsLoaded = true;

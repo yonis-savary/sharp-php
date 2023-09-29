@@ -44,7 +44,7 @@ function emergency(mixed ...$messages): void;
 ```php
 function storePath            (string $path): string;
 
-function storeGetNewStorage   (string $path): Storage;
+function storegetSubStorage   (string $path): Storage;
 function storeGetStream       (string $path, string $mode="r", bool $autoclose=true): mixed;
 
 function storeWrite           (string $path, string $content, int $flags=0): void;

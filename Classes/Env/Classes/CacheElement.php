@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Env\Classes;
 
+use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Env\Storage;
 
 /**
@@ -47,7 +48,10 @@ class CacheElement
         $creationDate = intval($creationDate);
         $timeToLive = intval($timeToLive);
 
-        if ($timeToLive != 0 && ($creationDate + $timeToLive <= time()))
+        if ($timeToLive == Cache::PERMANENT)
+            return new self($key, $timeToLive, $creationDate, $path);
+
+        if ($creationDate + $timeToLive <= time())
         {
             unlink($path);
             return null;
@@ -57,7 +61,7 @@ class CacheElement
     }
 
     /**
-     * Return the cache element content (unserialized object)
+     * @return mixed Cache element's content (unserialized object)
      */
     public function getContent(): mixed
     {
@@ -81,7 +85,9 @@ class CacheElement
      */
     public function &getReference(): mixed
     {
-        $this->getContent();
+        if (!$this->content)
+            $this->getContent();
+
         return $this->content;
     }
 

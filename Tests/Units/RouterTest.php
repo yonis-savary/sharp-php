@@ -125,7 +125,7 @@ class RouterTest extends TestCase
      */
     public function test_issue_cached_same_path_different_methods()
     {
-        $cache = new Cache(Storage::getInstance()->getNewStorage("test_router_issue_1"));
+        $cache = new Cache(Storage::getInstance()->getSubStorage("test_router_issue_1"));
 
         $router = new Router($cache);
         $router->setConfiguration(["cached" => true]);

@@ -78,6 +78,9 @@ class AbstractMapTest extends TestCase
         $dummy->unset("key");
         $this->assertFalse($dummy->has("key"));
         $this->assertEquals("B", $dummy->get("key", "B"));
+
+        $dummy->unset("inexistant-key");
+        $this->assertFalse($dummy->has("inexistant-key"));
     }
 
     public function test_toArray()

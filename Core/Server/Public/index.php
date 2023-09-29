@@ -9,7 +9,6 @@ $request = Request::buildFromGlobals();
 $request->logSelf();
 
 $router = Router::getInstance();
-$router->loadRoutesOrCache($request);
 
 $response = $router->route($request);
 $response->logSelf();

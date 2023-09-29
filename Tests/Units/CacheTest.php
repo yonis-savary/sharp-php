@@ -13,7 +13,7 @@ class CacheTest extends TestCase
     protected function getDummyCache(): Cache
     {
         $storage = Storage::getInstance();
-        return new Cache($storage->getNewStorage(uniqid("cache-test")));
+        return new Cache($storage->getSubStorage(uniqid("cache-test")));
     }
 
     protected function getDummyArray(): array

@@ -120,7 +120,7 @@ class UploadFile
         $this->newName = $newName ?? $this->makeUniqueName();
 
         if (is_string($destination))
-            $destinationStorage = Storage::getInstance()->getNewStorage($destination);
+            $destinationStorage = Storage::getInstance()->getSubStorage($destination);
         else
             $destinationStorage = $destination;
 

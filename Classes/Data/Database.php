@@ -130,9 +130,7 @@ class Database
 
         $str = preg_replace('/([\'\\\\])/', '$1$1', $str);
 
-        return ($quote) ?
-            "'$str'":
-            $str;
+        return $quote ? "'$str'": $str;
     }
 
     /**

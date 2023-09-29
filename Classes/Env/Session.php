@@ -18,7 +18,7 @@ class Session extends AbstractMap
 
         if (session_status() === PHP_SESSION_NONE)
         {
-            $storage = Storage::getInstance()->getNewStorage("Sharp/Sessions");
+            $storage = Storage::getInstance()->getSubStorage("Sharp/Sessions");
             $storage->assertIsWritable();
 
             if (!session_start(["save_path" => $storage->getRoot()]))

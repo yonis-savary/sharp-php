@@ -66,7 +66,7 @@ class Storage
     /**
      * @return static Get a new Storage object from a subdirectory
      */
-    public function getNewStorage(string $path): self
+    public function getSubStorage(string $path): self
     {
         return new self($this->path($path));
     }

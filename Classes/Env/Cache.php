@@ -27,7 +27,7 @@ class Cache
 
     public static function getDefaultInstance()
     {
-        $cacheStorage = Storage::getInstance()->getNewStorage("Cache");
+        $cacheStorage = Storage::getInstance()->getSubStorage("Cache");
         return new self($cacheStorage);
     }
 
@@ -151,6 +151,6 @@ class Cache
      */
     public function getSubCache(string $name): self
     {
-        return new self($this->storage->getNewStorage($name));
+        return new self($this->storage->getSubStorage($name));
     }
 }

@@ -302,15 +302,14 @@ class DatabaseQuery
             Logger::getInstance()->logThrowable(new Exception("DatabaseQuery: setting an offset without a limit does not have any effect on the query"));
 
         $essentials = "";
-        $toString = fn($x)=>"$x";
 
         $essentials .= count($this->conditions) ?
-            " WHERE " . join(" AND \n", array_map($toString, $this->conditions)): "";
+            " WHERE " . join(" AND \n", $this->conditions): "";
 
         $essentials .= count($this->orders) ?
-            " ORDER BY ". join(",\n", array_map($toString, $this->orders)): '';
+            " ORDER BY ". join(",\n", $this->orders): '';
 
-        $essentials .=  $this->limit ?
+        $essentials .= $this->limit ?
             " LIMIT $this->limit ". ($this->offset ? "OFFSET $this->offset" : ""): "";
 
         return $essentials;
@@ -331,9 +330,9 @@ class DatabaseQuery
     {
         return join(" ", [
             "SELECT",
-            join(",\n", array_map(fn($x) => "$x", $this->fields)),
+            join(",\n", $this->fields),
             "FROM `$this->targetTable`\n",
-            join("\n", array_map(fn($x) => "$x", $this->joins)),
+            join("\n", $this->joins),
 
             $this->buildEssentials()
         ]);
@@ -344,7 +343,7 @@ class DatabaseQuery
         return join(" ", [
             "UPDATE `$this->targetTable`",
             count($this->updates) ?
-                "SET ". join(",\n", array_map(fn($x) => "$x", $this->updates)):
+                "SET ". join(",\n", $this->updates):
                 "",
 
             $this->buildEssentials()
@@ -375,7 +374,7 @@ class DatabaseQuery
         }
     }
 
-    public function first(): array|null
+    public function first(): ?array
     {
         $res = $this->limit(1, 0)->fetch();
         return $res[0] ?? null;

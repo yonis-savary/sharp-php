@@ -44,7 +44,7 @@ $storage->listDirectories();
 $storage->assertIsWritable();
 
 // Get a new Storage object from a subdirectory
-$storage->getNewStorage("MySubDir");
+$storage->getSubStorage("MySubDir");
 // Get a resource/stream object
 $storage->getStream("MyDirectory/output.txt", "a");
 ```

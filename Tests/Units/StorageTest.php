@@ -24,7 +24,7 @@ final class StorageTest extends TestCase
 
     private function getSampleStorage(bool $generateTree=false): Storage
     {
-        $storage = Storage::getInstance()->getNewStorage(uniqid("storage-test"));
+        $storage = Storage::getInstance()->getSubStorage(uniqid("storage-test"));
 
         if ($generateTree)
         {
@@ -38,7 +38,7 @@ final class StorageTest extends TestCase
     public function test_getRoot()
     {
         $id = uniqid("storage-test");
-        $sample = Storage::getInstance()->getNewStorage($id);
+        $sample = Storage::getInstance()->getSubStorage($id);
 
         $this->assertEquals(
             Storage::getInstance()->path($id),
@@ -46,11 +46,11 @@ final class StorageTest extends TestCase
         );
     }
 
-    public function test_getNewStorage()
+    public function test_getSubStorage()
     {
         $this->assertInstanceOf(
             Storage::class,
-            Storage::getInstance()->getNewStorage(uniqid("storage-test"))
+            Storage::getInstance()->getSubStorage(uniqid("storage-test"))
         );
     }
 

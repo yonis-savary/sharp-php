@@ -92,7 +92,7 @@ class UtilsTest extends TestCase
 
     public function getDummyStorage()
     {
-        $storage = Storage::getInstance()->getNewStorage(uniqid());
+        $storage = Storage::getInstance()->getSubStorage(uniqid());
         foreach ([
             "a.txt",
             "b.txt",

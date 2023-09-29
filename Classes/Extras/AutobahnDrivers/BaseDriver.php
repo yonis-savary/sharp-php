@@ -15,9 +15,10 @@ use Sharp\Core\Utils;
 class BaseDriver implements DriverInterface
 {
     /**
-     * @return array<[\Sharp\Classes\Data\Model,array]>
+     * Extract model name and middlewares from a route extras
+     * @return array[\Sharp\Classes\Data\Model,array]
      */
-    protected static function extractRequestData(Request $request)
+    protected static function extractRouteData(Request $request)
     {
         $extras = $request->getRoute()->getExtras();
 
@@ -31,7 +32,7 @@ class BaseDriver implements DriverInterface
 
     public static function createCallback(Request $request): Response
     {
-        list($model, $middlewares) = self::extractRequestData($request);
+        list($model, $middlewares) = self::extractRouteData($request);
 
         $params = $request->all();
         foreach ($middlewares as $middleware)
@@ -56,7 +57,7 @@ class BaseDriver implements DriverInterface
 
     public static function multipleCreateCallback(Request $request): Response
     {
-        list($model, $middlewares) = self::extractRequestData($request);
+        list($model, $middlewares) = self::extractRouteData($request);
 
         $data = $request->body();
 
@@ -95,7 +96,7 @@ class BaseDriver implements DriverInterface
 
     public static function readCallback(Request $request): Response
     {
-        list($model, $middlewares) = self::extractRequestData($request);
+        list($model, $middlewares) = self::extractRouteData($request);
 
         $doJoin = ($request->params("_join") ?? true) == true;
         $ignores = Utils::toArray($request->params("_ignores") ?? []);
@@ -124,7 +125,7 @@ class BaseDriver implements DriverInterface
 
     public static function updateCallback(Request $request): Response
     {
-        list($model, $middlewares) = self::extractRequestData($request);
+        list($model, $middlewares) = self::extractRouteData($request);
 
         if (!($primaryKey = $model::getPrimaryKey()))
             throw new Exception("Cannot update a model without a primary key");
@@ -158,7 +159,7 @@ class BaseDriver implements DriverInterface
 
     public static function deleteCallback(Request $request): Response
     {
-        list($model, $middlewares) = self::extractRequestData($request);
+        list($model, $middlewares) = self::extractRouteData($request);
 
         $query = new DatabaseQuery($model::getTable(), DatabaseQuery::DELETE);
 

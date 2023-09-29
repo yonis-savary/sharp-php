@@ -75,7 +75,10 @@ trait Model
      */
     public static function insert(): DatabaseQuery
     {
-        return (new DatabaseQuery(self::getTable(), DatabaseQuery::INSERT))->setInsertField(self::getFieldNames());
+        $query = new DatabaseQuery(self::getTable(), DatabaseQuery::INSERT);
+        $query->setInsertField(self::getFieldNames());
+
+        return $query;
     }
 
     /**
@@ -84,8 +87,8 @@ trait Model
     public static function select(bool $recursive=true, array $foreignKeyIgnores=[]): DatabaseQuery
     {
         $query = new DatabaseQuery(self::getTable(), DatabaseQuery::SELECT);
-        $query->exploreModel(self::class, $recursive, $foreignKeyIgnores
-    );
+        $query->exploreModel(self::class, $recursive, $foreignKeyIgnores);
+
         return $query;
     }
 
@@ -166,8 +169,9 @@ trait Model
 
     public function __get(string $prop): mixed
     {
-        if (array_key_exists($prop, $this->data))
-            return $this->data[$prop];
-        throw new InvalidArgumentException("Unknown propety [$prop]");
+        if (!array_key_exists($prop, $this->data))
+            throw new InvalidArgumentException("Unknown propety [$prop]");
+
+        return $this->data[$prop];
     }
 }

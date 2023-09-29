@@ -3,6 +3,7 @@
 namespace Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
+use Sharp\Classes\Core\Events;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Extras\Autobahn;
@@ -49,6 +50,11 @@ class AutobahnTest extends TestCase
 
     public function test_create()
     {
+        $dispatchedBeforeEvent = false;
+        $dispatchedAfterEvent = false;
+        Events::getInstance()->on("autobahnCreateBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        Events::getInstance()->on("autobahnCreateAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+
         $this->resetTestUserDataTable();
 
         list($autobahn, $router) = $this->getNewAutobahn();
@@ -64,10 +70,18 @@ class AutobahnTest extends TestCase
         $this->assertEquals($nextId, $response->getContent()["insertedId"]);
 
         $this->assertTableCount(4);
+
+        $this->assertTrue($dispatchedBeforeEvent);
+        $this->assertTrue($dispatchedAfterEvent);
     }
 
     public function test_multipleCreate()
     {
+        $dispatchedBeforeEvent = false;
+        $dispatchedAfterEvent = false;
+        Events::getInstance()->on("autobahnMultipleCreateBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        Events::getInstance()->on("autobahnMultipleCreateAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+
         $this->resetTestUserDataTable();
 
         list($autobahn, $router) = $this->getNewAutobahn();
@@ -95,11 +109,19 @@ class AutobahnTest extends TestCase
         );
 
         $this->assertEquals(500, $response->getResponseCode());
+
+        $this->assertTrue($dispatchedBeforeEvent);
+        $this->assertTrue($dispatchedAfterEvent);
     }
 
 
     public function test_read()
     {
+        $dispatchedBeforeEvent = false;
+        $dispatchedAfterEvent = false;
+        Events::getInstance()->on("autobahnReadBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        Events::getInstance()->on("autobahnReadAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+
         $this->resetTestUserDataTable();
 
         list($autobahn, $router) = $this->getNewAutobahn();
@@ -155,10 +177,18 @@ class AutobahnTest extends TestCase
         $this->assertArrayHasKey("data", $data);
         $this->assertArrayHasKey("data", $data["data"]);
         $this->assertArrayNotHasKey("fk_user", $data);
+
+        $this->assertTrue($dispatchedBeforeEvent);
+        $this->assertTrue($dispatchedAfterEvent);
     }
 
     public function test_update()
     {
+        $dispatchedBeforeEvent = false;
+        $dispatchedAfterEvent = false;
+        Events::getInstance()->on("autobahnUpdateBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        Events::getInstance()->on("autobahnUpdateAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+
         $this->resetTestUserDataTable();
 
         list($autobahn, $router) = $this->getNewAutobahn();
@@ -178,10 +208,18 @@ class AutobahnTest extends TestCase
         $router->route(new Request("PUT", "/test_user_data", ["id" => [1,2], "data" => "Z"]));
         $this->assertEquals("Z", $db->query("SELECT data FROM test_user_data WHERE id = 1")[0]["data"]);
         $this->assertEquals("Z", $db->query("SELECT data FROM test_user_data WHERE id = 2")[0]["data"]);
+
+        $this->assertTrue($dispatchedBeforeEvent);
+        $this->assertTrue($dispatchedAfterEvent);
     }
 
     public function test_delete()
     {
+        $dispatchedBeforeEvent = false;
+        $dispatchedAfterEvent = false;
+        Events::getInstance()->on("autobahnDeleteBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        Events::getInstance()->on("autobahnDeleteAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+
         $this->resetTestUserDataTable();
 
         list($autobahn, $router) = $this->getNewAutobahn();
@@ -190,6 +228,9 @@ class AutobahnTest extends TestCase
 
         $router->route(new Request("DELETE", "/test_user_data", ["id" => 1]));
         $this->assertTableCount(2);
+
+        $this->assertTrue($dispatchedBeforeEvent);
+        $this->assertTrue($dispatchedAfterEvent);
 
         # Dangerous query prevention
         $router->route(new Request("DELETE", "/test_user_data"));
