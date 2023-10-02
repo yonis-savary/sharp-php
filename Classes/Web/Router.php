@@ -60,7 +60,11 @@ class Router
     {
         $key = $this->getCacheKey($request);
         if ($cachedRoute = $this->cache->get($key, null))
+        {
+            // useful to register slug values for cached routes
+            $cachedRoute->match($request);
             return $cachedRoute;
+        }
 
         return null;
     }
@@ -125,7 +129,10 @@ class Router
         $original = $this->group;
 
         foreach ($group as $key => $value)
-            $this->group[$key] = array_merge($this->group[$key] ?? [], Utils::toArray($value));
+        {
+            $value = is_array($value) ? $value: [$value];
+            $this->group[$key] = array_merge($this->group[$key] ?? [], $value);
+        }
 
         $callback($this);
 
@@ -149,6 +156,9 @@ class Router
                 $prefix = "/" . join("/", $groupPrefix);
                 $route->setPath(str_replace("//", "/", $prefix . $route->getPath()));
             }
+
+            if ($extras = $group["extras"] ?? false)
+                $route->setExtras(array_merge($route->getExtras(), $extras));
 
             if ($middlewares = $group["middlewares"] ?? false)
             {
