@@ -101,7 +101,17 @@ $events->on("autobahnDeleteAfter", function($event){
 
 $events->on("authenticatedUser", function($event){
     $user = $event["user"];
-})
+});
+
+$events->on("routeNotFound", function($event){
+    $request = $event["request"];
+    $response = $event["response"];
+});
+
+$events->on("internalServerError", function($event){
+    $request = $event["request"];
+    $response = $event["response"];
+});
 ```
 
 [< Back to summary](../home.md)

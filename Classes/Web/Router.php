@@ -4,6 +4,7 @@ namespace Sharp\Classes\Web;
 
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
+use Sharp\Classes\Core\Events;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
@@ -206,7 +207,11 @@ class Router
         $route = $this->getCachedRouteForRequest($request) ?? $this->findFirstMathingRoute($request);
 
         if (!$route)
-            return new Response("Page not found", 404, ["Content-Type" => "text/plain"]);
+        {
+            $response = new Response("Page not found", 404, ["Content-Type" => "text/plain"]);
+            Events::getInstance()->dispatch("routeNotFound", ["request" => &$request, "response" => &$response]);
+            return $response;
+        }
 
         try
         {
@@ -215,7 +220,10 @@ class Router
         catch (Throwable $err)
         {
             Logger::getInstance()->logThrowable($err);
-            return new Response("Internal server error", 500, ["Content-Type" => "text/plain"]);
+
+            $response = new Response("Internal server error - ". $err->getMessage(), 500, ["Content-Type" => "text/plain"]);
+            Events::getInstance()->dispatch("internalServerError", ["request" => &$request, "response" => &$response]);
+            return $response;
         }
     }
 
