@@ -88,16 +88,25 @@ class Authentication
         if (!password_verify($password, $hash))
             return $this->failAttempt();
 
+        $this->login($user);
+
+        return true;
+    }
+
+    /**
+     * Directly login a user and set its data
+     * @param array $userData Data of the user, can be retrieved with `getUser()`
+     */
+    public function login(array $userData): void
+    {
         $this->session->merge([
             self::IS_LOGGED => true,
-            self::USER_DATA => $user,
+            self::USER_DATA => $userData,
             self::ATTEMPTS_NUMBER => 0,
         ]);
         $this->refreshExpireTime();
 
-        Events::getInstance()->dispatch("authenticatedUser", ["user" => $user]);
-
-        return true;
+        Events::getInstance()->dispatch("authenticatedUser", ["user" => $userData]);
     }
 
     protected function failAttempt(): bool
