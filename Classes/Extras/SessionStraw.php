@@ -6,6 +6,11 @@ use Sharp\Classes\Env\Session;
 
 trait SessionStraw
 {
+    public static function getDefaultValue(): mixed
+    {
+        return false;
+    }
+
     final protected static function getKey(): string
     {
         return "sharp.session-straw." . self::class;
@@ -18,7 +23,7 @@ trait SessionStraw
 
     final public static function get(): mixed
     {
-        return Session::getInstance()->try(self::getKey());
+        return Session::getInstance()->get(self::getKey(), self::getDefaultValue());
     }
 
     final public static function unset(): void
