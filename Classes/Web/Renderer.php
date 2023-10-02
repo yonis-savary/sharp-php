@@ -83,8 +83,14 @@ class Renderer
             $content = $this->render($parent[0], $parent[1])->getContent();
 
         array_pop($this->shards);
+
         $lastIndex = count($this->shards)-1;
-        $current = &$this->shards[$lastIndex] ?? null;
+        $current = null;
+
+        if ($lastIndex >= 0)
+            $current = &$this->shards[$lastIndex];
+
+        $this->current = $current;
 
         return Response::html($content);
     }
