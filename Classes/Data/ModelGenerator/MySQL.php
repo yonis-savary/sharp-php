@@ -40,7 +40,7 @@ class MySQL extends GeneratorDriver
         if ($key === "PRI")
             $primaryKey ??= $field;
 
-        return "'$field' => $string";
+        return $string;
     }
 
     public function generate(string $table, string $targetApplication): void
@@ -82,7 +82,9 @@ class MySQL extends GeneratorDriver
             $model = Utils::joinPath($fileDir, $model);
             $model = Utils::pathToNamespace($model);
             return "use $model;";
-        })->collect();
+        })
+        ->filter(fn($x) => !str_contains($x, "$classname\\$classBasename"))
+        ->unique()->collect();
 
         $primaryKey = null;
 
