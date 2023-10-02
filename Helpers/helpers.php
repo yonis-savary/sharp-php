@@ -71,17 +71,19 @@ function cacheSet(string $key, mixed $value, int $timeToLive=3600*24): void
  *
  * @param callable $callback Function to measure (execution time)
  * @param string $label You can give the measurement a name
+ * @return mixed Return the callback return value
  */
-function sharpDebugMeasure(callable $callback, string $label="Measurement"): void
+function sharpDebugMeasure(callable $callback, string $label="Measurement"): mixed
 {
     $start = hrtime(1000);
-    $callback();
+    $returnValue = $callback();
     $delta = (hrtime(1000) - $start) / 1000;
 
     $infoString = "$label : $delta µs (". $delta/1000 ."ms)";
 
     debug($infoString);
-    echo "$infoString\n";
+
+    return $returnValue;
 }
 
 /**
@@ -108,6 +110,12 @@ function buildQuery(string $query, array $context=[]): string
 function query(string $query, array $context=[]): array
 {
     return Database::getInstance()->query($query, $context);
+}
+
+
+function lastInsertId(): int|false
+{
+    return Database::getInstance()->lastInsertId();
 }
 
 /**
