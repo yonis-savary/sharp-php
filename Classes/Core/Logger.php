@@ -151,7 +151,7 @@ class Logger
      */
     public function logThrowable(Throwable $throwable): void
     {
-        $this->error("Got an Throwable object: ". $throwable->getMessage());
+        $this->error("Got an [". $throwable::class ."] Throwable: ". $throwable->getMessage());
         $this->error(sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()));
         $this->error(...explode("\n", $throwable->getTraceAsString()));
     }
