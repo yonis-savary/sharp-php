@@ -84,7 +84,7 @@ class DatabaseQuery
             throw new Exception("Cannot insert values until insert fields are defined");
 
         if (count($values) !== count($this->insertFields))
-            throw new Exception(sprintf("Cannot insert %s values, %s expected", [count($values), count($this->insertFields)]));
+            throw new Exception(sprintf("Cannot insert %s values, %s expected", count($values), count($this->insertFields)));
 
         $template = "(". str_repeat("{},", count($values)-1)."{})";
         $template = Database::getInstance()->build($template, $values);
