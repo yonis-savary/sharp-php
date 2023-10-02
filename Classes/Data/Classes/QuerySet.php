@@ -8,7 +8,7 @@ class QuerySet
 {
     public function __construct(
         public string $field,
-        public string $value,
+        public mixed $value,
         public ?string $table=null
     ) { }
 
