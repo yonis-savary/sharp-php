@@ -47,6 +47,11 @@ class DatabaseTest extends TestCase
         $goodQuery = "SELECT ... WHERE login = '''; DELETE FROM user; --'";
         $this->assertEquals($goodQuery, $db->build("SELECT ... WHERE login = {}", [$injection]));
         $this->assertEquals($goodQuery, $db->build("SELECT ... WHERE login = '{}'", [$injection]));
+
+        $this->assertEquals("SELECT 1", $db->build("SELECT {}", [true]));
+        $this->assertEquals("SELECT 0", $db->build("SELECT {}", [false]));
+        $this->assertEquals("SELECT '1'", $db->build("SELECT '{}'", [true]));
+        $this->assertEquals("SELECT '0'", $db->build("SELECT '{}'", [false]));
     }
 
     public function test_query()

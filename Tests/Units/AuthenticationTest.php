@@ -57,6 +57,8 @@ class AuthenticationTest extends TestCase
 
         $authentication->attempt("admin", "admin");
         $this->assertEquals("admin", $eventVar);
+
+        Events::removeInstance();
     }
 
 
@@ -88,6 +90,18 @@ class AuthenticationTest extends TestCase
         $authentication->attempt("root", "pleaseUseAGoodPassword");
         $authentication->attempt("root", "pleaseUseAGoodPassword");
         $this->assertEquals(3, $authentication->attemptNumber());
+    }
+
+    public function test_login()
+    {
+        $authentication = new Authentication();
+
+        $this->assertFalse($authentication->isLogged());
+
+        $authentication->login(["A" => 5]);
+        $this->assertTrue($authentication->isLogged());
+
+        $this->assertEquals(["A" => 5], $authentication->getUser());
     }
 
     public function test_getTestUser()
