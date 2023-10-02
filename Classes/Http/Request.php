@@ -51,6 +51,9 @@ class Request
 
         if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
             $this->body = json_decode($this->body, true, JSON_THROW_ON_ERROR);
+
+        if ($this->body === "")
+            $this->body = null;
     }
 
     /**
@@ -62,10 +65,11 @@ class Request
     {
         foreach ($dict as $_ => &$value)
         {
-            if (!($value instanceof Stringable))
+            if (!($value instanceof Stringable || is_string($value)))
                 continue;
 
             $lower = strtolower("$value");
+
             if ($lower === "null")
                 $value = null ;
             else if ($lower === "false")
