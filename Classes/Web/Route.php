@@ -74,14 +74,19 @@ class Route
 
         return Renderer::getInstance()->render(
             $extras["template"],
-            $extras["context"] ?? [],
+            [
+                ...($extras["context"] ?? []),
+                "request" => $request
+            ]
         );
     }
 
     public static function redirectRequestToTarget(Request $request)
     {
         $extras = $request->getRoute()->getExtras();
-        return Response::redirect($extras["redirection-target"]);
+        return Response::redirect(
+            $extras["redirection-target"]
+        );
     }
 
     public function __construct(
@@ -195,7 +200,7 @@ class Route
         $namedSlugs = [];
         array_shift($slugs);
         for ($i=0; $i<count($slugs); $i++)
-            $namedSlugs[$regexMap[$i]] = $slugs[$i];
+            $namedSlugs[$regexMap[$i]] = urldecode($slugs[$i]);
 
         $request->setSlugs($namedSlugs);
         return true;
