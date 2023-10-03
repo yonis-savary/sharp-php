@@ -180,7 +180,7 @@ class Route
             $part = substr($part, 1, strlen($part)-2);
 
             $name = $part;
-            $expression = "[^\\\\]+";
+            $expression = "[^\\/]+";
 
             if (str_contains($part, ":"))
             {

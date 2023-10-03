@@ -147,4 +147,28 @@ class RouterTest extends TestCase
 
     }
 
+
+
+
+    public function test_issue_same_path_with_suffix()
+    {
+
+        $router = new Router();
+
+        $dummy = 0;
+
+        $router->addRoutes(
+            Route::get("/{id}", function($_, int $id) use (&$dummy) { $dummy = $id; }),
+            Route::get("/{id}/suffix", fn() => null  /* Do nothing !*/)
+        );
+
+        $router->route(new Request("GET", "/5"));
+        $this->assertEquals(5, $dummy);
+
+        $router->route(new Request("GET", "/10"));
+        $this->assertEquals(10, $dummy);
+
+        $router->route(new Request("GET", "/9999/suffix"));
+        $this->assertEquals(10, $dummy);
+    }
 }
