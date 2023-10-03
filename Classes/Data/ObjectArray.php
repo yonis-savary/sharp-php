@@ -193,4 +193,14 @@ class ObjectArray
         }
         return $newData;
     }
+
+    /**
+     * Reverse elements order (apply array_reverse on data)
+     *
+     * @note Return a NEW ObjectArray object with edited data
+     */
+    public function reverse(): self
+    {
+        return new self(array_reverse($this->data));
+    }
 }
