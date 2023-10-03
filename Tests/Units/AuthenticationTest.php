@@ -12,6 +12,7 @@ class AuthenticationTest extends TestCase
     public function test_attempt()
     {
         $authentication = new Authentication();
+        $authentication->logout();
 
         // Good creds
         $this->assertTrue($authentication->attempt("admin", "admin"));
@@ -34,6 +35,7 @@ class AuthenticationTest extends TestCase
     public function test_logout()
     {
         $authentication = new Authentication();
+        $authentication->logout();
 
         $authentication->attempt("admin", "admin");
         $this->assertTrue($authentication->isLogged());
@@ -46,6 +48,7 @@ class AuthenticationTest extends TestCase
     {
         $events = Events::getInstance();
         $authentication = new Authentication();
+        $authentication->logout();
 
         $eventVar = null;
         $events->on("authenticatedUser", function($event) use (&$eventVar) {
@@ -65,6 +68,7 @@ class AuthenticationTest extends TestCase
     public function test_isLogged()
     {
         $authentication = new Authentication();
+        $authentication->logout();
 
         $authentication->attempt("admin", "admin");
         $this->assertTrue($authentication->isLogged());
@@ -82,6 +86,7 @@ class AuthenticationTest extends TestCase
     public function test_attemptNumber()
     {
         $authentication = new Authentication();
+        $authentication->logout();
 
         $authentication->attempt("admin", "admin");
         $this->assertEquals(0, $authentication->attemptNumber());
@@ -95,6 +100,7 @@ class AuthenticationTest extends TestCase
     public function test_login()
     {
         $authentication = new Authentication();
+        $authentication->logout();
 
         $this->assertFalse($authentication->isLogged());
 
