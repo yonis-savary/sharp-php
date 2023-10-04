@@ -10,7 +10,6 @@ class ObjectArray
     public function __construct(protected array $data=[])
     {}
 
-
     /**
      * Alias to the constructor
      */
@@ -114,7 +113,7 @@ class ObjectArray
      */
     public function unique(): self
     {
-        return new self(array_unique($this->data));
+        return new self(array_values(array_unique($this->data)));
     }
 
     /**
@@ -124,7 +123,7 @@ class ObjectArray
      */
     public function diff(array $valuesToRemove): self
     {
-        return new self(array_diff($this->data, $valuesToRemove));
+        return new self(array_values(array_diff($this->data, $valuesToRemove)));
     }
 
     /**
@@ -202,5 +201,31 @@ class ObjectArray
     public function reverse(): self
     {
         return new self(array_reverse($this->data));
+    }
+
+    /**
+     * @return `true` if any of the array's values respect a given condition
+     */
+    public function any(callable $condition): bool
+    {
+        foreach ($this->data as $value)
+        {
+            if ($condition($value) === true)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return `true` if ALL of the array's values respect a given condition
+     */
+    public function all(callable $condition): bool
+    {
+        foreach ($this->data as $value)
+        {
+            if ($condition($value) !== true)
+                return false;
+        }
+        return true;
     }
 }
