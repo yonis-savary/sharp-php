@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Http;
 
+use RuntimeException;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Http\Classes\UploadFile;
 use Sharp\Classes\Web\Route;
@@ -262,11 +263,25 @@ class Request
     }
 
     /**
+     * @param string $name If specified, only uploads with the given form/input name are returned
      * @return array<UploadFile>
      */
-    public function getUploads(): array
+    public function getUploads(string $name=null): array
     {
-        return $this->uploads;
+        $uploads = new ObjectArray($this->uploads);
+
+        if ($name)
+            $uploads = $uploads->filter(fn(UploadFile $file) => $file->getInputName() === $name);
+
+        return $uploads->collect();
+    }
+
+    /**
+     * Test-purpose method
+     */
+    public function setUploads(UploadFile ...$files): void
+    {
+        $this->uploads = $files;
     }
 
     public function setSlugs(array $slugs): void
@@ -343,7 +358,7 @@ class Request
     {
         $logger ??= new Logger(null);
 
-        $url = $this->getPath(). http_build_query($this->get(), "?", ";");
+        $url = trim($this->getPath(). http_build_query($this->get(), "?", ";"));
 
         $handle = curl_init($url);
         curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $this->getMethod());
@@ -368,7 +383,8 @@ class Request
         curl_setopt($handle, CURLOPT_HTTPHEADER, $headersString);
 
         $this->logSelf($logger);
-        $result = curl_exec($handle);
+        if (!($result = curl_exec($handle)))
+            throw new RuntimeException(sprintf("Curl error %s: %s", curl_errno($handle), curl_error($handle)));
 
         $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
         $resStatus = curl_getinfo($handle, CURLINFO_HTTP_CODE);
@@ -376,8 +392,9 @@ class Request
 
         $resHeaders = substr($result, 0, $headerSize);
         $resHeaders = $this->parseHeaders($resHeaders);
+        $resHeaders = Utils::lowerArrayKeys($resHeaders);
 
-        if ($supportRedirection && $nextURL = $resHeaders['location'] ?? null)
+        if ($supportRedirection && $nextURL = ($resHeaders['location'] ?? null))
         {
             $request = new self("GET", $nextURL);
             return $request->fetch(

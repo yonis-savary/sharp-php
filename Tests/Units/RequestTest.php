@@ -10,7 +10,7 @@ use Sharp\Classes\Env\Storage;
 
 class RequestTest extends TestCase
 {
-    protected function mockPHPUpload(int $n=1): array
+    protected function mockPHPUpload(int $n=1, string $inputName="uploads"): array
     {
         $storage = Storage::getInstance();
         $files = [];
@@ -32,14 +32,14 @@ class RequestTest extends TestCase
 
         if ($n > 1)
         {
-            $uploads = ["uploads" => [
+            $uploads = [$inputName => [
                 "name"     => [],
                 "type"     => [],
                 "tmp_name" => [],
                 "error"    => [],
                 "size"     => []
             ]];
-            foreach ($uploads["uploads"] as $key => &$value)
+            foreach ($uploads[$inputName] as $key => &$value)
                 $value = array_map(fn($x) => $x[$key], $files);
 
             return $uploads;
@@ -47,7 +47,7 @@ class RequestTest extends TestCase
         else
         {
             // Single upload
-            return ["uploads" => $files[0]];
+            return [$inputName => $files[0]];
         }
     }
 
@@ -210,6 +210,18 @@ class RequestTest extends TestCase
         $this->assertCount(1, $req->getUploads());
         foreach ($req->getUploads() as $upload)
             $this->assertInstanceOf(UploadFile::class, $upload);
+
+        $req = $this->samplePostRequest();
+        $req->setUploads(
+            new UploadFile(UploadFileTest::getDummyPHPUpload(), "documents"),
+            new UploadFile(UploadFileTest::getDummyPHPUpload(), "documents"),
+            new UploadFile(UploadFileTest::getDummyPHPUpload(), "documents"),
+            new UploadFile(UploadFileTest::getDummyPHPUpload(), "pictures"),
+            new UploadFile(UploadFileTest::getDummyPHPUpload(), "pictures"),
+        );
+
+        $this->assertCount(2, $req->getUploads("pictures"));
+        $this->assertCount(3, $req->getUploads("documents"));
     }
 
     public function test_setSlugs()
