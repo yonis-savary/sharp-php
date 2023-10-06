@@ -143,7 +143,7 @@ in this example, we shall use the group feature
 
 `MagicShip/Routes/web.php`:
 ```php
-Router::getInstance()->groupAndAdd(
+Router::getInstance()->addGroup(
     ["middlewares" => AuthMiddleware::class],
     Route::view("/", "home")
 );
