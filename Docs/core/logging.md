@@ -29,15 +29,9 @@ $logger->logThrowable(new Exception("Something went wrong"));
 # Note : your can log everything that can somehow be represented as a string
 $logger->info([1,2,3]);
 $logger->info(["A"=>1, "B"=>2, "C"=>3]);
-
-// Display logs to stdout
-$logger = Logger::fromStream(fopen("php://output", "w"));
-$logger->info("Hello output !");
 ```
 
-Yet, calling `Logger::getInstance()` or store it inside a variable can be tedious too !
-(Especially if you're debugging your application),
-to address this, some shortcuts where made in [Helpers/helpers-log.php](../../Helpers/helpers-log.php)
+Yet, calling `Logger::getInstance()` or store it inside a variable can be tedious too ! (Especially if you're debugging your application), to address this, some shortcuts where made in [Helpers/helpers-log.php](../../Helpers/helpers-log.php)
 
 ```php
 # Log every line with Logger::getInstance()

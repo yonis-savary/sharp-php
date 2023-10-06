@@ -3,8 +3,7 @@
 # 🔥 Cache
 
 The [`Cache`](../../Classes/Env/Cache.php)
-class can save [serialized](https://www.php.net/manual/en/language.oop5.serialization.php)
-objects in any [`Storage`](./storage.md)
+class can save [serialized](https://www.php.net/manual/en/language.oop5.serialization.php) objects in any [`Storage`](./storage.md)
 
 ```php
 $cache = Cache::getInstance();
@@ -62,6 +61,6 @@ public function setData(mixed $data)
 ```
 
 This is the same as the first solution, the element will be saved on destruct and
-can always be retrieved with `Cache->get`
+can always be retrieved with `Cache->get()`
 
 [< Back to summary](../home.md)

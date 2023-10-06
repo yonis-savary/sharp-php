@@ -4,7 +4,7 @@
 
 Sharp got some helpers files that are included when the framework is loaded.
 
-Those files contains shortcuts to basic framework operation (like adding a route, logging informations...etc)
+Those files contains shortcuts to basic framework operation (like adding a route, logging informations... etc.)
 
 ## Files
 
@@ -78,10 +78,10 @@ function stop    (): void;
 
 ### [`helpers-routing.php`](../../Helpers/helpers-routing.php)
 ```php
-function addRoutes    (Route ...$routes): void
-function addGroup     (array $group, Route ...$routes): void
-function groupCallback(array $group, callable $routeDeclaration): void
-function createGroup  (string|array $urlPrefix, string|array $middlewares): array
+function addRoutes    (Route ...$routes): void;
+function addGroup     (array $group, Route ...$routes): void;
+function groupCallback(array $group, callable $routeDeclaration): void;
+function createGroup  (string|array $urlPrefix, string|array $middlewares): array;
 ```
 
 [< Back to summary](../home.md)

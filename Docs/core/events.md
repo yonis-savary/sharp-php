@@ -34,13 +34,13 @@ $events->on("calledCommand", function($event){
 # `results` are the callbacks return values
 $events->on("dispatchedEvent", function($event){
     $event = $event["event"];
-    $args  = $event["args"];
-    $results  = $event["results"];
+    $args = $event["args"];
+    $results = $event["results"];
 });:
 
 # Dispatched when Autoloaded fail to find a class file
 $events->on("autoloadFallback", function($event){
-    $class= $event["class"]
+    $class = $event["class"]
 });
 
 # Dispatched when both the framework and applications are loaded

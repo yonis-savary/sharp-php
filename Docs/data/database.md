@@ -17,8 +17,8 @@ Before using your database, you have to configure its connection
 }
 ```
 
-Note: the default database config is `driver=mysql, host=localhost, port=3306, user=root`, so you only have to
-configure `database` and `password` if working on a local MySQL database
+> [!NOTE]
+> The default database config is `driver=mysql, host=localhost, port=3306, user=root`, so you only have to configure `database` and `password` if working on a local MySQL database
 
 Then, your database usage is done through three main methods
 
@@ -26,11 +26,13 @@ Then, your database usage is done through three main methods
 $db = Database::getInstance();
 
 # Used to build a query string
-$query = $db->build("SELECT id FROM ship WHERE name = {}", ["PHP Bounty"]);
+$query = $db->build(
+    "INSERT INTO ship (name) VALUES ({})",
+    ["PHP Bounty"]
+);
 
 # Used to directly fetch rows
-$results = $db->query("SELECT id FROM ship WHERE name = {}", ["Above the code"]);
-$results = $db->query("SELECT id FROM ship WHERE name IN {}", [["Above the code", "PHP Bounty"]]);
+$results = $db->query($query);
 
 $id = $db->lastInsertId();
 ```
@@ -43,6 +45,12 @@ $db = Database::getInstance();
 $db->hasTable("ship_order");
 
 $db->hasField("ship_order", "fk_ship");
+
+# build() binding can take arrays of data
+$results = $db->query(
+    "SELECT id FROM ship WHERE name IN {}",
+    [["Above the code", "PHP Bounty"]]
+);
 ```
 
 ### Working with SQLite !
@@ -70,8 +78,7 @@ The goal of sharp is to avoid writting manually any model, they can be generated
 
 ### Generating models
 
-To generate your models, you first have to configure your database connection, when it's done,
-launch this in your terminal
+To generate your models, you first have to configure your database connection, when it's done, launch this in your terminal
 
 ```bash
 php do fetch-models
@@ -79,7 +86,8 @@ php do fetch-models
 
 This will create models classes in `YourApp/Models`
 
-Note: SQL adapters transforms `snake_case` names to `PascalCase`
+> [!NOTE]
+> SQL adapters transforms `snake_case` names to `PascalCase`
 
 ### Interaction
 
@@ -109,39 +117,55 @@ User::delete(); // Return a DatabaseQuery object ready to delete from user table
 
 # Some examples
 
-$users = User::select()->where("fk_country", 14)->whereSQL("creation_date > DATESUB(NOW(), INTERVAL 3 MONTH)")->limit(5)->fetch();
+$users = User::select()
+->where("fk_country", 14)
+->whereSQL("creation_date > DATESUB(NOW(), INTERVAL 3 MONTH)")
+->limit(5)->fetch();
 
-$someUser = User::select()->where("id", 168)->first();
+$someUser = User::select()
+->where("id", 168)
+->first();
 
-User::update()->set("fk_type", 2)->where("fk_type", 5)->first();
+User::update()
+->set("fk_type", 2)
+->where("fk_type", 5)
+->first();
 
-User::delete()->whereSQL("fk_type IN (1, 12, 52, 4)")->order("id", "DESC")->fetch();
+User::delete()
+->whereSQL("fk_type IN (1, 12, 52, 4)")
+->order("id", "DESC")
+->fetch();
 ```
 
 ### Select query return format
 
 Select queries are specials, they explore your models relations to select every possible fields
 
-Let's say you have a `User` model, which points to the `Person` model through `fk_person`, which
-points to `PersonPhone` through `fk_phone`, our response format will be
+Let's say you have a `User` model, which points to the `Person` model through `fk_person`, which points to `PersonPhone` through `fk_phone`, our response format will be
 
 ```json
 [
-    "data": {
-        "id": "...",
-        "login": "...",
-        "password": "...",
-        "...": "..."
-    },
-    "fk_person": {
-        "data": {
-            "firstname": "bob",
-            "lastname": "robertson",
+    {
+        "data":
+        {
+            "id": "...",
+            "login": "...",
+            "password": "...",
             "...": "..."
         },
-        "fk_phone": {
-            "number": "0123456789",
-            "...": "..."
+        "fk_person":
+        {
+            "data":
+            {
+                "firstname": "bob",
+                "lastname": "robertson",
+                "...": "..."
+            },
+            "fk_phone":
+            {
+                "number": "0123456789",
+                "...": "..."
+            }
         }
     }
 ]
@@ -159,7 +183,7 @@ We can control how `DatabaseQuery` explore our "model tree"
 By setting `$recursive` to `false`, we only fetch our model data, and don't explore more
 
 Putting relations in `$foreignKeysIgnores` as `table&foreign_key[&foreign_key]` :
-- To ignore the phone key, we can put `user&fk_person&fk_phone`
-- Putting `user&fk_person` will also ignore every model that depends on it (`user&fk_person&fk_phone` in this case)
+- To ignore the phone key, we can put `"user&fk_person&fk_phone"`
+- Putting `"user&fk_person"` will also ignore every model that depends on it (`"user&fk_person&fk_phone"` in this case)
 
 [< Back to summary](../home.md)

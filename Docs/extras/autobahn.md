@@ -31,31 +31,31 @@ to create four routes for the `User`, which points to the `user` table, and got 
 - login
 - password
 
-Every created route has the `/user` route, but their methods differs
+Every created route has the `/user` route, but their HTTP methods differs
 
 **(json body behind any route represent the request's body)**
 
 ### 🟢 CREATE - create a user with given fields
 
-`POST /user {login: 'bob', password: 'mike'}` will give
+`POST /user {login: 'bob', password: 'mike'}` will execute
 ```sql
 INSERT INTO user (login, password) VALUES ('bob', 'mike');
 ```
 
 ### 🔵 READ - read a user with given fields as SQL condition
 
-`GET /user {login: 'bob', id: 2}` will give
+`GET /user {login: 'bob', id: 2}` will execute
 ```sql
 SELECT ... FROM user WHERE login = 'bob' AND id = 2
 ```
 
-`GET /user {login: 'bob', id: [2,3]}` will give
+`GET /user {login: 'bob', id: [2,3]}` will execute
 ```sql
 SELECT ... FROM user WHERE login = 'bob' AND `id` IN ('2','3')
 ```
 
 Note:
-- You can put `_join` (`true|false`) in your request to dis/enable model foreign keys exploration
+- You can put `_join` (`true|false`) in your request to (dis/en)able model foreign keys exploration
 - You can also set `_ignores` (`string|array`) to ignores some foreign keys in the model foreign keys exploration
 (example: `ignores = ['user&fk_type']` will ignore any foreign key that pass through the `fk_type` field of the `user` table)
 - The returned data format is described in the [`Database & Model documentation`](../data/database.md))
@@ -64,28 +64,27 @@ Note:
 
 In our example, not giving `id` in the request will return an error
 
-`PUT /user {id: 5, login: 'mike'}` or `PATCH /user {id: 5, login: 'mike'}` will give
+`PUT|PATCH /user {id: 5, login: 'mike'}` will execute
 ```sql
 UPDATE user SET login = 'dale' WHERE id = 5
 ```
-`PUT /user {id: [5, 76], login: 'mike'}` or `PATCH /user {id: [5, 76], login: 'mike'}` will give
+`PUT|PATCH /user {id: [5, 76], login: 'mike'}` will execute
 ```sql
 UPDATE user SET login = 'dale' WHERE id IN ('5', '76')
 ```
 
 ### 🔴 DELETE - delete multiples users with body as filters
 
-`DELETE /user {login: 'mike'}` will give
+`DELETE /user {login: 'mike'}` will execute
 ```sql
 DELETE FROM user WHERE login = 'mike'
 ```
-`DELETE /user {login: ['mike', 'bob']}` will give
+`DELETE /user {login: ['mike', 'bob']}` will execute
 ```sql
 DELETE FROM user WHERE `login` IN ('mike', 'bob')
 ```
 
 Note: dangerous queries with no parameters are blocked
-
 
 ## Additional Properties
 
@@ -94,11 +93,15 @@ Note: dangerous queries with no parameters are blocked
 `Autobahn` use the `addRoute` method of `Router`, which mean that you can group Autobahn routes !
 
 ```php
+$autobahn->all(User::class);
+// Routes are "/user"
+
 Router::getInstance()->groupCallback([
     "path" => "api"
 ], function($router){
     $autobahn = Autobahn::getInstance();
     $autobahn->all(User::class);
+    // Routes are "/api/user"
 });
 ```
 
@@ -126,6 +129,23 @@ $autobahn->read(UserData::class, function(array &$data){
 
 With this middleware, we make sure that the user can only insert data about its own profile
 
+### 🟩 CREATE MULTIPLE route
+
+An additionnal route is created by Autobahn, it is a "create-multiple" route that can be used to insert multiple rows at once in your model table
+
+```
+POST /user/create-multiples
+[
+    {login: 'andy', password: 'lucy'},
+    {login: 'lucy', password: 'andy'},
+    {login: 'dale', password: 'coffee'}
+]
+```
+
+will execute
+```sql
+INSERT INTO user (login, password) VALUES ('andy', 'lucy'), ('lucy', 'andy'), ('dale', 'coffee');
+```
 
 
 [< Back to summary](../home.md)

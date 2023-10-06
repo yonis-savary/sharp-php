@@ -4,8 +4,7 @@
 
 The `AssetServer` component is here to help you serve your assets (CSS/JS/IMG...etc.)
 
-This component was made to make the application directory cleaner by putting assets in
-a `Assets` directory and not `Public`
+This component was made to make the application directory cleaner by putting assets in a `Assets` directory and not `Public`
 
 ## TL;DR
 
@@ -47,14 +46,21 @@ Let's imagine your `assets` directory got those files
 - `assets/js/contact/creation.js`
 - `assets/js/product/creation.js`
 
-Getting resources url is pretty straightforward, you can use `AssetsServer::getInstance()->getURL($x)`.
+Getting resources url is pretty straightforward, you can use
+
+```AssetsServer::getInstance()->getURL($x)```
 
 To get your assets, put this in your view
 ```php
-<link rel="stylesheet" href="<?= AssetsServer::getInstance()->getURL($x) ?>">
-<script src="<?= AssetsServer::getInstance()->getURL('shipping.js') ?>"></script>
+<link
+    rel="stylesheet"
+    href="<?= AssetsServer::getInstance()->getURL($x) ?>"
+>
+<script
+    src="<?= AssetsServer::getInstance()->getURL('shipping.js') ?>"
+></script>
 ```
-But writting this is quite annoying and not very readable.
+But writting this is quite long and not very readable.
 
 To address this, the [`helper-web.php`](../../Helpers/helpers-web.php) got three useful functions
 

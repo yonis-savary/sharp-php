@@ -2,7 +2,7 @@
 
 # 💻 CLI Commands
 
-Sharp got the [`do`](../../Core/Server/do) script, which can be used to execute commands from your command line interface
+Sharp got the [`do`](../../Core/Server/do) script, which can be used to execute commands from your terminal
 
 ## Create a command
 
@@ -33,10 +33,9 @@ php do super-app@clear-caches
 ```
 And voilà !
 
-Note:
-- you may have noticed, the PascalCase name was transformed into a snake-case name, this
-  was made to improve readability
-- you can also implements the `getHelp()` method which should display a help menu/documentation
+> [!NOTE]
+> - you may have noticed, the classname was transformed into a snake-case equivalent, this is automatically made by the class
+> - you can also implements the `getHelp()` method which should display a help menu/documentation when calling `php do help`
 
 ## Using Args object
 

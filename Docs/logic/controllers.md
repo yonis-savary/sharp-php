@@ -50,6 +50,6 @@ class MyController
 }
 ```
 
-This structure allows you to organize your code by feature or domain
+This structure allows you to organize your code by feature or business domain
 
 [< Back to summary](../home.md)

@@ -2,7 +2,7 @@
 
 # 🧩 Sharp components
 
-Some classes/features need to be accessed globally from your application (like `Database`, `Logger`...etc)
+Some classes/features need to be accessed globally from your application (like `Configuration`, `Logger`...etc)
 to resolve this, the [`Component`](../../Classes/Core/Component.php) trait was created.
 
 To be clear: **this trait purpose is to be a [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that
@@ -12,7 +12,7 @@ One main instance exists, and can be retrieved with `getInstance()`,
 but you can still create other instances of your classes, which can be very useful
 (example: you may have one main connection to your database, but create another for some specific part of your application)
 
-A Component class got those useful methods :
+A Component class got those methods :
 ```php
 /* Can be modified, gives a default instance of your class when getInstance is called the first time */
 public static function getDefaultInstance();
@@ -84,7 +84,9 @@ a global instance will be created, and shall log informations to `magic-printer.
 MagicOrderPrinter::getInstance()->printOrder(204987);
 
 # Create another instance for specific situations
-$debugPrinter = new MagicOrderPrinter(new Logger("magic-printer-debug.csv"));
+$debugPrinter = new MagicOrderPrinter(
+    new Logger("magic-printer-debug.csv")
+);
 $debugPrinter->printOrder(209409);
 ```
 

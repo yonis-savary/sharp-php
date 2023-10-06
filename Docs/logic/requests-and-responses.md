@@ -27,7 +27,7 @@ $ALL  = $request->all(); // Get POST + GET merged data
 
 // Params read parameters from both POST and GET sources
 $params = $request->params(["username", "password"]); // Get an associative array
-$params = $request->params(["password"); // Get a value or null if inexistant
+$params = $request->params("password"); // Get a value or null if inexistant
 
 // $request->paramsFromGet(); Same as params but only takes values from GET
 // $request->paramsFromPost(); Same as params but only takes values from POST

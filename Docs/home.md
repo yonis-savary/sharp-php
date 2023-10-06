@@ -1,12 +1,12 @@
 # 📚 Sharp-PHP Documentation
 
 The goals behind Sharp are :
-1. Make a clean code that is intuitive for the most
-2. Removing unecessary abstraction layers
+1. Make a clean code that is intuitive
+2. Remove unecessary abstraction layers
 3. Don't hide the code behind Facades objects
-4. Have a framework that doesn't break your IDE
-5. Let you build your app as fast as possible and don't have to worry about setup/build
-6. Have as few dependencies as possible (So far, `composer.json` only install [PHPUnit](https://phpunit.de/))
+4. Make a Framework that doesn't break your IDE
+5. Let you code apps quickly without worrying about setup/build
+6. Have as few dependencies as possible (So far, only [PHPUnit](https://phpunit.de/) is required)
 7. Automate tedious task (like model creation)
 
 You can browse this documentation with an IDE like Visual Studio Code with the markdown preview,
@@ -14,11 +14,10 @@ or in GitHub directly
 
 ## Summary
 
-Even though this documentation should be enough to get started, don't hesitate
-to see the framework source code, it is a good way to learn about it too
+Even though this documentation should be enough to get started, don't hesitate to checkout the framework source code, it is a good way to learn about it too
 
 Core
-- 📁 [App directory & Configuration](./core/config.md)
+- 📦 [App directory & Configuration](./core/config.md)
 - 🧩 [Understanding Sharp components](./core/components.md)
 - 💻 [CLI command](./core/commands.md)
 - 📃 [Logging](./core/logging.md)
@@ -27,9 +26,10 @@ Core
 - 💬 [Q/A & Snippets](./extras/snippets.md)
 
 Core (Advanced):
-- [📦 Storage](./env/storage.md)
+- [📁 Storage](./env/storage.md)
 - [🔥 Cache](./env/cache.md)
 - [🪝 Events](./core/events.md)
+- [🚃 ObjectArray class](./core/object-array.md)
 
 Routing & Logic
 - 🛣️ [Routing](./logic/routing.md)
