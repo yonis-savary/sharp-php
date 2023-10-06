@@ -238,7 +238,7 @@ class Utils
     /**
      * Given an associative array, this function return a lowercase-keys version of the same array
      */
-    public static function lowerArrayKeys(array $array): array
+    public static function lowerArrayKeys(array $array, bool $throwOnlDuplicate=true): array
     {
         $newArray = [];
 
@@ -246,7 +246,7 @@ class Utils
         {
             $newKey = strtolower($key);
 
-            if (array_key_exists($newKey, $newArray))
+            if (array_key_exists($newKey, $newArray) && $throwOnlDuplicate)
                 throw new InvalidArgumentException("Duplicate key [$key]");
 
             $newArray[$newKey] = $value;
