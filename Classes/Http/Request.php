@@ -392,7 +392,7 @@ class Request
 
         $resHeaders = substr($result, 0, $headerSize);
         $resHeaders = $this->parseHeaders($resHeaders);
-        $resHeaders = Utils::lowerArrayKeys($resHeaders);
+        $resHeaders = Utils::lowerArrayKeys($resHeaders, false);
 
         if ($supportRedirection && $nextURL = ($resHeaders['location'] ?? null))
         {
