@@ -25,8 +25,8 @@ class ObjectArrayTest extends TestCase
     public function test_push()
     {
         $arr = new ObjectArray();
-        $arr->push("A");
-        $arr->push("B", "C");
+        $arr = $arr->push("A");
+        $arr = $arr->push("B", "C");
 
         $this->assertEquals(["A", "B", "C"], $arr->collect());
     }
@@ -36,11 +36,11 @@ class ObjectArrayTest extends TestCase
         $arr = new ObjectArray([1,2,3]);
 
         $this->assertEquals([1,2,3], $arr->collect());
-        $arr->pop();
+        $arr = $arr->pop();
         $this->assertEquals([1,2], $arr->collect());
-        $arr->pop();
+        $arr = $arr->pop();
         $this->assertEquals([1], $arr->collect());
-        $arr->pop();
+        $arr = $arr->pop();
         $this->assertEquals([], $arr->collect());
     }
 
@@ -49,11 +49,11 @@ class ObjectArrayTest extends TestCase
         $arr = new ObjectArray([1,2,3]);
 
         $this->assertEquals([1,2,3], $arr->collect());
-        $arr->shift();
+        $arr = $arr->shift();
         $this->assertEquals([2,3], $arr->collect());
-        $arr->shift();
+        $arr = $arr->shift();
         $this->assertEquals([3], $arr->collect());
-        $arr->shift();
+        $arr = $arr->shift();
         $this->assertEquals([], $arr->collect());
     }
 
@@ -61,11 +61,11 @@ class ObjectArrayTest extends TestCase
     {
         $arr = new ObjectArray();
 
-        $arr->unshift(3);
+        $arr = $arr->unshift(3);
         $this->assertEquals([3], $arr->collect());
-        $arr->unshift(2);
+        $arr = $arr->unshift(2);
         $this->assertEquals([2,3], $arr->collect());
-        $arr->unshift(1);
+        $arr = $arr->unshift(1);
         $this->assertEquals([1,2,3], $arr->collect());
     }
 
@@ -188,6 +188,17 @@ class ObjectArrayTest extends TestCase
 
         $this->assertEquals([1,2,3], $arr->collect());
         $this->assertEquals([3,2,1], $copy->collect());
+    }
+
+    public function test_reduce()
+    {
+        $myArray = new ObjectArray(range(0, 10));
+
+        $this->assertEquals(
+            30,
+            $myArray->filter(fn($x) => $x%2==0)
+            ->reduce(fn($acc, $cur) => $acc + $cur, 0)
+        );
     }
 
     public function test_any()

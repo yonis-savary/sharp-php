@@ -4,11 +4,20 @@ namespace Sharp\Classes\Data;
 
 class ObjectArray
 {
+    protected array $transformers = [];
+
     /**
      * @param array $data Initial data for the array
      */
     public function __construct(protected array $data=[])
     {}
+
+    public function __clone()
+    {
+        $instance = new self($this->data);
+        $instance->transformers = $this->transformers;
+        return $instance;
+    }
 
     /**
      * Alias to the constructor
@@ -32,50 +41,51 @@ class ObjectArray
     }
 
     /**
+     * Return a copy of the ObjectArray instance
+     */
+    protected function withTransformers(callable $callback=null, bool $takeResultAsData=false): self
+    {
+        $clone = clone $this;
+        $clone->transformers[] = [$callback, $takeResultAsData];
+        return $clone;
+    }
+
+    /**
      * Append values to the data
-     * @note This method edit the array in place
      */
     public function push(mixed ...$objects): self
     {
-        array_push($this->data, ...$objects);
-        return $this;
+        return $this->withTransformers(fn(&$arr) => array_push($arr, ...$objects));
     }
 
     /**
      * Remove the last value of the array
-     * @note This method edit the array in place
      */
     public function pop(): self
     {
-        array_pop($this->data);
-        return $this;
+        return $this->withTransformers(array_pop(...));
     }
 
     /**
      * Remove the first element of the array
-     * @note This method edit the array in place
      */
     public function shift(): self
     {
-        array_shift($this->data);
-        return $this;
+        return $this->withTransformers(array_shift(...));
     }
 
     /**
      * Prepend new values to the array
-     * @note This method edit the array in place
      */
     public function unshift(mixed ...$objects): self
     {
-        array_unshift($this->data, ...$objects);
-        return $this;
+        return $this->withTransformers(fn(&$arr) => array_unshift($arr, ...$objects));
     }
 
     /**
      * Execute a function for every array's items
      *
      * @param callable $callback Callback to execute
-     * @note Return the ObjectArray object
      */
     public function forEach(callable $callback): self
     {
@@ -87,43 +97,38 @@ class ObjectArray
      * `array_map` equivalent for ObjectArray instance
      *
      * @param callable $callback Callback to execute
-     * @note Return a NEW ObjectArray object with edited data
      */
     public function map(callable $callback): self
     {
-        return new self(array_map($callback, $this->data));
+        return $this->withTransformers(fn($arr) => array_map($callback, $arr), true);
     }
 
     /**
      * `array_filter` equivalent for ObjectArray instance
      *
      * @param callable $callback Callback to execute
-     * @note Return a NEW ObjectArray object with edited data
      */
     public function filter(callable $callback=null): self
     {
-        return new self(array_values(array_filter($this->data, $callback)));
+        return $this->withTransformers(fn($arr) => array_values(array_filter($arr, $callback)), true);
     }
 
     /**
      * `array_unique` equivalent for ObjectArray instance
      *
      * @param callable $callback Callback to execute
-     * @note Return a NEW ObjectArray object with edited data
      */
     public function unique(): self
     {
-        return new self(array_values(array_unique($this->data)));
+        return $this->withTransformers(fn($arr) => array_values(array_unique($arr)), true);
     }
 
     /**
      * Remove values from the instance's data
-     *
-     * @note Return a NEW ObjectArray object with edited data
      */
     public function diff(array $valuesToRemove): self
     {
-        return new self(array_values(array_diff($this->data, $valuesToRemove)));
+        return $this->withTransformers(fn(&$arr) => array_values(array_diff($this->data, $valuesToRemove)), true);
     }
 
     /**
@@ -133,7 +138,17 @@ class ObjectArray
      */
     public function slice(int $offset, int $size=null): self
     {
-        return new self(array_slice($this->data, $offset, $size));
+        return $this->withTransformers(fn($arr) => array_slice($arr, $offset, $size), true);
+    }
+
+    /**
+     * Reverse elements order (apply array_reverse on data)
+     *
+     * @note Return a NEW ObjectArray object with edited data
+     */
+    public function reverse(): self
+    {
+        return $this->withTransformers(array_reverse(...), true);
     }
 
     /**
@@ -141,7 +156,17 @@ class ObjectArray
      */
     public function collect(): array
     {
-        return $this->data;
+        $data = $this->data;
+
+        foreach ($this->transformers as [$callback, $takeResultAsData])
+        {
+            if ($takeResultAsData)
+                $data = $callback($data);
+            else
+                $callback($data);
+        }
+
+        return $data;
     }
 
     /**
@@ -149,7 +174,7 @@ class ObjectArray
      */
     public function join(string $glue=""): string
     {
-        return join($glue, $this->data);
+        return join($glue, $this->collect());
     }
 
     /**
@@ -157,7 +182,7 @@ class ObjectArray
      */
     public function length(): int
     {
-        return count($this->data);
+        return count($this->collect());
     }
 
     /**
@@ -168,7 +193,7 @@ class ObjectArray
      */
     public function find(callable $filter): mixed
     {
-        foreach ($this->data as $element)
+        foreach ($this->collect() as $element)
         {
             if ($filter($element) === true)
                 return $element;
@@ -185,22 +210,21 @@ class ObjectArray
     public function combine(callable $entriesMaker): array
     {
         $newData = [];
-        foreach ($this->data as $row)
+
+        $data = $this->collect();
+        $count = count($data);
+
+        for ($i=0; $i<$count; $i++)
         {
-            list($key, $value) = $entriesMaker($row);
+            list($key, $value) = $entriesMaker($data[$i], $i);
             $newData[$key] = $value;
         }
         return $newData;
     }
 
-    /**
-     * Reverse elements order (apply array_reverse on data)
-     *
-     * @note Return a NEW ObjectArray object with edited data
-     */
-    public function reverse(): self
+    public function reduce(callable $callback, mixed $initial=null): mixed
     {
-        return new self(array_reverse($this->data));
+        return array_reduce($this->collect(), $callback, $initial);
     }
 
     /**
@@ -208,7 +232,7 @@ class ObjectArray
      */
     public function any(callable $condition): bool
     {
-        foreach ($this->data as $value)
+        foreach ($this->collect() as $value)
         {
             if ($condition($value) === true)
                 return true;
@@ -221,7 +245,7 @@ class ObjectArray
      */
     public function all(callable $condition): bool
     {
-        foreach ($this->data as $value)
+        foreach ($this->collect() as $value)
         {
             if ($condition($value) !== true)
                 return false;

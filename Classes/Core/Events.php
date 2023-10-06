@@ -32,7 +32,8 @@ class Events
     public function dispatch(string $event, mixed ...$args): void
     {
         $results = ObjectArray::fromArray($this->handlers[$event] ?? [])
-        ->map(fn($handler) => $handler(...$args));
+        ->map(fn($handler) => $handler(...$args))
+        ->collect();
 
         if ($event === self::SELF_EVENT)
             return;
