@@ -99,19 +99,34 @@ $events->on("autobahnDeleteAfter", function($event){
     $query = $event["query"];
 });
 
+// Triggered when Authentication->login is called
 $events->on("authenticatedUser", function($event){
     $user = $event["user"];
 });
 
+// Triggered when the Router cannot find a matching route for the request
 $events->on("routeNotFound", function($event){
     $request = $event["request"];
     $response = $event["response"];
 });
 
+// Triggered when the Router receive an exception while executing a route callback
 $events->on("internalServerError", function($event){
     $request = $event["request"];
     $response = $event["response"];
 });
+
+// Triggered before Renderer require renderer view
+$events->on("beforeBodyViewRender", function($event) {
+    $templateName = $event["view"];
+});
+
+// Triggered after Renderer required renderer view
+//(HTML content can be injected/displayed)
+$events->on("afterBodyViewRender", function($event) {
+    $templateName = $event["view"];
+});
+
 ```
 
 [< Back to summary](../home.md)
