@@ -102,6 +102,30 @@ class ObjectArrayTest extends TestCase
         $this->assertEquals(["A", "B", "C"], $arr->collect());
     }
 
+
+    public function test_sortByKey()
+    {
+        $names = ObjectArray::fromArray([
+            ["name" => "Malcolm", "age" => 18],
+            ["name" => "Melody", "age" => 40],
+            ["name" => "Holly", "age" => 35],
+            ["name" => "Sylvester", "age" => 80],
+            ["name" => "Clyde", "age" => 35],
+            ["name" => "Eliot", "age" => 36],
+            ["name" => "Peace", "age" => 19],
+            ["name" => "Mortimer", "age" => 50],
+        ]);
+
+        $sorted = $names->sortByKey(fn($person) => $person["age"])->collect();
+        $reversed = $names->sortByKey(fn($person) => $person["age"], true)->collect();
+
+        $this->assertEquals("Sylvester", $sorted[7]["name"]);
+        $this->assertEquals("Malcolm", $sorted[0]["name"]);
+
+        $this->assertEquals("Sylvester", $reversed[0]["name"]);
+        $this->assertEquals("Malcolm", $reversed[7]["name"]);
+    }
+
     public function test_unique()
     {
         $arr = new ObjectArray([0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9]);

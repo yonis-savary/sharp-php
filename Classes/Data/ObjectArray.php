@@ -152,6 +152,23 @@ class ObjectArray
     }
 
     /**
+     * Sort elements by a given key itself given by a callback
+     *
+     * ```php
+     * $accounts = $accounts->sortByKey(fn($account) => $account["balance"])
+     * ```
+     *
+     * @note Return a NEW ObjectArray object with edited data
+     */
+    public function sortByKey(callable $callback, bool $reversed=false): self
+    {
+        return $this->withTransformers(function($data) use ($callback, $reversed) {
+            usort($data, fn($a, $b) => $callback($a) < $callback($b) ? -1 : 1);
+            return $reversed ? array_reverse($data): $data;
+        }, true);
+    }
+
+    /**
      * Return the instance's data
      */
     public function collect(): array

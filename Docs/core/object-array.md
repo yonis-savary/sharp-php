@@ -16,6 +16,7 @@ $myArray->forEach();
 $myArray->map();
 $myArray->filter();
 $myArray->reduce();
+$myArray->sortByKey();
 
 $myArray->unique();
 $myArray->diff();
@@ -87,6 +88,13 @@ $myArray->reduce(fn($acc, $cur) => $acc + $cur, 0);
 $alphabet = range('A', 'Z');
 $myArray->combine(fn($value) => [$alphabet[$i], $i]);
 // return ['A'=>0, 'B'=>1, 'C'=>2, 'D'=>3, 'E'=>4, 'F'=>5]
+
+
+// Sort the array by a given key (given by a callback)
+// Sort from worst score to best
+$users->sortByKey(fn($user) => $user["score"])
+// Sort from best score to worst
+$users->sortByKey(fn($user) => $user["score"], true)
 ```
 
 [< Back to Summary](../home.md)
