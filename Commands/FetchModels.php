@@ -15,4 +15,9 @@ class FetchModels extends Command
         $generator = ModelGenerator::getInstance();
         $generator->generateAll($app);
     }
+
+    public function getHelp(): string
+    {
+        return "Create model classes from your database tables";
+    }
 }

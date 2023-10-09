@@ -14,4 +14,9 @@ class CacheAutoload extends Command
         echo "File written : " . Autoloader::CACHE_FILE . "\n";
         echo "Delete it to switch to classic autoload\n";
     }
+
+    public function getHelp(): string
+    {
+        return "Put your autoloader's data in cache for better performances";
+    }
 }

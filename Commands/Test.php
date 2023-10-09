@@ -50,4 +50,9 @@ class Test extends Command
             }, $application);
         }
     }
+
+    public function getHelp(): string
+    {
+        return "Execute every PHPUnit installation/test suites";
+    }
 }

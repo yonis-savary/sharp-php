@@ -39,4 +39,9 @@ class Help extends Command
             );
         }
     }
+
+    public function getHelp(): string
+    {
+        return "Display a list of commands with a short description";
+    }
 }

@@ -51,4 +51,9 @@ class CreateStraw extends Command
         foreach($values as $name)
             $this->createStraw($name, $app);
     }
+
+    public function getHelp(): string
+    {
+        return "Create a SessionStraw class in your application";
+    }
 }

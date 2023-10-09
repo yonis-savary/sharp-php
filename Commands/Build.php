@@ -24,4 +24,9 @@ class Build extends Command
             echo "\n";
         }
     }
+
+    public function getHelp(): string
+    {
+        return "Call every AbstractBuildTask classes in your application";
+    }
 }
