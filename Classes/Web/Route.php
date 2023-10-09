@@ -3,6 +3,7 @@
 namespace Sharp\Classes\Web;
 
 use Exception;
+use RuntimeException;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Renderer;
@@ -63,9 +64,14 @@ class Route
         return new self($path, [self::class, "renderViewCallback"], ["GET"], $middlewares, array_merge($extras, ["template" => $template, "context" => $context]));
     }
 
-    public static function redirect(string $path, string $target, array $extras=[]): self
+    public static function redirect(string $path, string $target, array $middlewares=[], array $extras=[]): self
     {
-        return new self($path, [self::class, "redirectRequestToTarget"], [], [], array_merge($extras, ["redirection-target" => $target]));
+        return new self($path, [self::class, "redirectRequestToTarget"], [], $middlewares, array_merge($extras, ["redirection-target" => $target]));
+    }
+
+    public static function file(string $path, string $target, array $middlewares=[], array $extras=[]): self
+    {
+        return new self($path, [self::class, "serveFile"], [], $middlewares, array_merge($extras, ["file" => $target]));
     }
 
     public static function renderViewCallback(Request $request)
@@ -87,6 +93,17 @@ class Route
         return Response::redirect(
             $extras["redirection-target"]
         );
+    }
+
+    public static function serveFile(Request $request)
+    {
+        $extras = $request->getRoute()->getExtras();
+        $target = Utils::relativePath($extras["file"]);
+
+        if (!is_file($target))
+            throw new RuntimeException("[$target] File does not exists !");
+
+        return Response::file($target);
     }
 
     public function __construct(

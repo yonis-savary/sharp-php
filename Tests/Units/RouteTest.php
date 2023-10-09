@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
+use Sharp\Core\Utils;
 use Sharp\Tests\Classes\MiddlewareA;
 use Sharp\Tests\Classes\MiddlewareB;
 
@@ -186,4 +187,25 @@ class RouteTest extends TestCase
         $this->genericSlugFormatTest("/{datetime:x}", $samples["datetime"],  $samplesWithout(["datetime"]));
     }
 
+
+
+    public function test_file()
+    {
+        $relPath = "Sharp/Tests/Classes/A.php";
+        $absPath = Utils::relativePath($relPath);
+
+        $route = Route::file("/my-file", $relPath);
+        $req = new Request("GET", "/my-file");
+
+        /** @var Response $response */
+        $response = $route($req);
+
+        $this->assertEquals($absPath, $response->getContent());
+
+        ob_start();
+        $response->display(false);
+        $displayed = ob_get_clean();
+
+        $this->assertStringContainsString("class A", $displayed);
+    }
 }
