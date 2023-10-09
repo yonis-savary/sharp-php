@@ -355,7 +355,7 @@ class Response
         $attachmentName ??= basename($file);
 
         return new Response(
-            null,
+            $file,
             self::OK,
             [
                 "Content-Description" => "File Transfer",
