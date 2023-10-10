@@ -47,3 +47,4 @@ Extras
 - ⭐️ [Serving assets](./extras/assets.md)
 - 🚘 [Automatic CRUD API](./extras/autobahn.md)
 - 🔐 [Authentication](./security/authentication.md)
+- ✅ [CSRF](./security/csrf.md)

@@ -53,7 +53,7 @@ Your directory will look like
 - [x] Events
 - [x] CLI Commands
 - [x] Tests
-- [ ] Utilities commands
+- [ ] **Utilities commands**
 
 🌐 Web
 - [x] Session
@@ -68,13 +68,13 @@ Your directory will look like
 
 🔐 Security
 - [x] Authentication
-- [ ] CSRF
+- [x] CSRF
 
 🎉 Extras
 - [x] Asset serving
 - [x] Model CRUD API
 
 ⚗️ Misc
-- [ ] Complete code cleaning
-- [ ] Complete test suite review
-- [ ] Complete documentation
+- [ ] **Complete code cleaning**
+- [ ] **Complete test suite review**
+- [ ] **Complete documentation**
