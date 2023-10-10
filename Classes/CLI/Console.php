@@ -20,7 +20,7 @@ class Console
     {
         return ObjectArray::fromArray(Autoloader::classesThatExtends(Command::class))
         ->map(fn($x) => new $x())
-        ->filter(fn($x) => $x->getOrigin() != "tests")
+        ->filter(fn(Command $x) => $x->getOrigin() != "tests")
         ->collect();
     }
 
@@ -29,9 +29,9 @@ class Console
      */
     public function findCommands(string $identifier): array
     {
-        return ObjectArray::fromArray($this->listCommands())->filter(
-            fn (Command $command) => in_array($identifier, [$command->getName(), $command->getIdentifier()])
-        )->collect();
+        return ObjectArray::fromArray($this->listCommands())
+        ->filter(fn (Command $command) => in_array($identifier, [$command->getName(), $command->getIdentifier()]))
+        ->collect();
     }
 
     public function printCommandList(): void

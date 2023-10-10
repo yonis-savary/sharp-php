@@ -45,7 +45,7 @@ class AssetServer
             $this->cacheIndex = Cache::getInstance()->getReference("sharp.asset-server");
     }
 
-    public function handleIfEnabled()
+    public function handleIfEnabled(): void
     {
         if (!$this->isEnabled())
             return;
@@ -86,7 +86,7 @@ class AssetServer
         return "$routePath?file=$assetName";
     }
 
-    public function handleRequest(Request $req, bool $returnResponse=false) : Response|false
+    public function handleRequest(Request $req, bool $returnResponse=false): Response|false
     {
         $routePath = $this->configuration["url"];
         $middlewares = $this->configuration["middlewares"];
@@ -106,17 +106,18 @@ class AssetServer
 
     protected function serve(Request $req): Response
     {
-        if (!($searchedFile = $req->params("file") ?? false))
+        if (!$searchedFile = ($req->params("file") ?? false))
             return Response::json("A 'file' parameter is needed", 401);
 
-        if (!($path = $this->findAsset($searchedFile)))
+        if (!$path = $this->findAsset($searchedFile))
             return Response::json("Asset [$searchedFile] not found", 404);
 
         $res = Response::file($path);
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+
         if ($cacheTime = $this->configuration["max-age"])
             $res->withHeaders(["Cache-Control" => "max-age=$cacheTime"]);
 
-        $extension = pathinfo($path, PATHINFO_EXTENSION);
         if ($mime = self::EXTENSIONS_MIMES[$extension] ?? false)
             $res->withHeaders(["Content-Type" => $mime]);
 

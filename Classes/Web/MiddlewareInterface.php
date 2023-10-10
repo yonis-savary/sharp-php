@@ -15,5 +15,5 @@ interface MiddlewareInterface
      * @param Request $request `Request` to (in)validate
      * @return Request|Response Return a `Request` to validate, a `Response` to display it and kill the request
      */
-    public static function handle(Request $request) : Request|Response;
+    public static function handle(Request $request): Request|Response;
 }

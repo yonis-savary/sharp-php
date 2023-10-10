@@ -11,7 +11,7 @@ class Session extends AbstractMap
 {
     use Component;
 
-    public static function getDefaultInstance()
+    public function __construct()
     {
         if (session_status() === PHP_SESSION_DISABLED)
             throw new Exception("Cannot use Session when sessions are disabled !");
@@ -25,11 +25,6 @@ class Session extends AbstractMap
                 throw new RuntimeException("Cannot start session !");
         }
 
-        return new self();
-    }
-
-    public function __construct()
-    {
         $this->storage = &$_SESSION;
     }
 }

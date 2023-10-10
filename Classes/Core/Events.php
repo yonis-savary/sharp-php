@@ -35,13 +35,11 @@ class Events
         ->map(fn($handler) => $handler(...$args))
         ->collect();
 
-        if ($event === self::SELF_EVENT)
-            return;
-
-        $this->dispatch(self::SELF_EVENT, [
-            "event" => $event,
-            "args" => $args,
-            "results" => $results
-        ]);
+        if ($event !== self::SELF_EVENT)
+            $this->dispatch(self::SELF_EVENT, [
+                "event" => $event,
+                "args" => $args,
+                "results" => $results
+            ]);
     }
 }

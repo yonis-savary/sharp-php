@@ -84,7 +84,8 @@ class MySQL extends GeneratorDriver
             return "use $model;";
         })
         ->filter(fn($x) => !str_contains($x, "$classname\\$classBasename"))
-        ->unique()->collect();
+        ->unique()
+        ->collect();
 
         $primaryKey = null;
 

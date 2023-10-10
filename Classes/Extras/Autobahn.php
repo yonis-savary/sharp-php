@@ -31,7 +31,7 @@ class Autobahn
         $driver = $this->configuration["driver"];
 
         if (!Utils::implements($driver, DriverInterface::class))
-            throw new Exception("Autobahn driver must implements DriverInterface");
+            throw new Exception("Autobahn driver must implements ". DriverInterface::class);
     }
 
     /**
@@ -62,12 +62,18 @@ class Autobahn
     /**
      * @return array[\Sharp\Classes\Data\Model,array]
      */
-    protected function getNewRouteExtras(string $model, callable ...$middlewares)
+    protected function getNewRouteExtras(string $model, callable ...$middlewares): array
     {
         return ["autobahn-model" => $model, "autobahn-middlewares" => $middlewares];
     }
 
-    protected function addRoute(string $model, $middlewares, string $callback, array $methods, string $suffix="")
+    protected function addRoute(
+        string $model,
+        array $middlewares,
+        string $callback,
+        array $methods,
+        string $suffix=""
+    ): void
     {
         $routeExtras = $this->getNewRouteExtras($model, ...$middlewares);
         $model = $this->throwOnInvalidModel($model);

@@ -89,7 +89,8 @@ class ObjectArray
      */
     public function forEach(callable $callback): self
     {
-        array_walk($this->data, $callback);
+        $data = $this->collect();
+        array_walk($data, $callback);
         return $this;
     }
 

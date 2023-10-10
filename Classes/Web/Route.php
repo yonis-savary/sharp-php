@@ -74,7 +74,7 @@ class Route
         return new self($path, [self::class, "serveFile"], [], $middlewares, array_merge($extras, ["file" => $target]));
     }
 
-    public static function renderViewCallback(Request $request)
+    public static function renderViewCallback(Request $request): Response
     {
         $extras = $request->getRoute()->getExtras();
 
@@ -87,7 +87,7 @@ class Route
         );
     }
 
-    public static function redirectRequestToTarget(Request $request)
+    public static function redirectRequestToTarget(Request $request): Response
     {
         $extras = $request->getRoute()->getExtras();
         return Response::redirect(
@@ -95,7 +95,7 @@ class Route
         );
     }
 
-    public static function serveFile(Request $request)
+    public static function serveFile(Request $request): Response
     {
         $extras = $request->getRoute()->getExtras();
         $target = Utils::relativePath($extras["file"]);
@@ -128,7 +128,7 @@ class Route
         return $this->path;
     }
 
-    public function setPath(string $path)
+    public function setPath(string $path): void
     {
         $this->path = $path;
     }
@@ -138,7 +138,7 @@ class Route
         return $this->callback;
     }
 
-    public function setCallback(callable $callback)
+    public function setCallback(callable $callback): void
     {
         $this->callback = $callback;
     }
@@ -148,7 +148,7 @@ class Route
         return $this->methods;
     }
 
-    public function setMethods(array $methods)
+    public function setMethods(array $methods): void
     {
         $this->methods = $methods;
     }
@@ -158,7 +158,7 @@ class Route
         return $this->middlewares;
     }
 
-    public function setMiddlewares(array $middlewares)
+    public function setMiddlewares(array $middlewares): void
     {
         $this->middlewares = [];
         $this->addMiddlewares(...$middlewares);
@@ -169,7 +169,7 @@ class Route
         return $this->extras;
     }
 
-    public function setExtras(array $extras)
+    public function setExtras(array $extras): void
     {
         $this->extras = $extras;
     }

@@ -53,11 +53,14 @@ class EventSource
 
     public function send(string $event, mixed $data=null, $id=null, int $retry=null)
     {
+        $id = $id ? "id: $id": '';
+        $retry = $retry ? "retry: $retry": '';
+
         $message = join(self::LINE_END, [
             "event: $event" ,
             'data: '. json_encode($data),
-            ($id ? "id: $id": ''),
-            ($retry ? "retry: $retry": '')
+            $id,
+            $retry,
         ]);
 
         $this->sendMessage($message);

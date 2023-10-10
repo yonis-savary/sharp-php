@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Data\ModelGenerator;
 
+use Exception;
 use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Data\Database;
@@ -21,8 +22,11 @@ class ModelGenerator
         $driver = match($dbConfig["driver"] ?? null) {
             "mysql" => MySQL::class,
             "sqlite" => SQLite::class,
-            default => MySQL::class
+            default => null
         };
+
+        if (!$driver)
+            throw new Exception("Cannot adapt [". $dbConfig["driver"] ."] database tables");
 
         return new self($driver);
     }

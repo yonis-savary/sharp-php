@@ -2,6 +2,7 @@
 
 namespace Sharp\Tests\Units;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Core\Events;
 use Sharp\Classes\Http\Request;
@@ -100,15 +101,13 @@ class AutobahnTest extends TestCase
 
         $this->assertEquals([4,5,6], $insertedIds);
 
-
+        $this->expectException(Exception::class);
         $response = $router->route(
             new Request("POST", "/test_user_data/create-multiples", body: [
                 ["fk_user" => 1, "data" => "NEW A !"],
                 ["data" => "NEW B !"],
             ])
         );
-
-        $this->assertEquals(500, $response->getResponseCode());
 
         $this->assertTrue($dispatchedBeforeEvent);
         $this->assertTrue($dispatchedAfterEvent);

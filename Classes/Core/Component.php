@@ -21,10 +21,8 @@ trait Component
     /**
      * This function must return an instance of the called class
      * it is automatically called when the singleton is called the first time
-     *
-     * @return static Default singleton instance
      */
-    public static function getDefaultInstance()
+    public static function getDefaultInstance(): static
     {
         return new self();
     }
@@ -32,15 +30,12 @@ trait Component
     /**
      * Get the singleton instance of the called class
      * (Initialize a new instance with `getDefaultInstance()` if needed)
-     *
-     * @return static Singleton instance
      */
-    final public static function getInstance()
+    final public static function getInstance(): static
     {
-        if (self::$instance)
-            return self::$instance;
+        if (!self::$instance)
+            self::setInstance(self::getDefaultInstance());
 
-        self::setInstance(self::getDefaultInstance());
         return self::$instance;
     }
 
@@ -50,7 +45,7 @@ trait Component
      *
      * @param static $newInstance New instance to replace the current one
      */
-    final public static function setInstance(self $newInstance)
+    final public static function setInstance(self $newInstance): void
     {
         if (Utils::uses($newInstance, "\Sharp\Classes\Core\Configurable"))
             $newInstance->loadConfiguration();
@@ -61,7 +56,7 @@ trait Component
     /**
      * Destroy the current instance (And therefore call `__destruct()`)
      */
-    final public static function removeInstance()
+    final public static function removeInstance(): void
     {
         self::$instance = null;
     }

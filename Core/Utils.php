@@ -2,18 +2,14 @@
 
 namespace Sharp\Core;
 
-use InvalidArgumentException;
 use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Configuration;
 
+/**
+ * This class holds utilitaries statical methods that can be reused
+ */
 class Utils
 {
-    /*
-        -------------------------------------
-        Classes/Implementation Uils Functions
-        -------------------------------------
-    */
-
     /**
      * This function check if a class uses a specific trait
      *
@@ -207,7 +203,7 @@ class Utils
      * @return bool Is given array associative ?
      * @note an empty array will be considered as a list (non-assoc)
      */
-    public static function isAssoc(array $array)
+    public static function isAssoc(array $array): bool
     {
         if (!count($array))
             return false;
@@ -223,7 +219,7 @@ class Utils
      * @example existant_array `Utils::toArray(['A']) === ['A']`
      * @example assoc `Utils::toArray(['key'=>'value']) === [['key'=>'value']]`
      */
-    public static function toArray(mixed $value)
+    public static function toArray(mixed $value): array
     {
         if (!is_array($value))
             return [$value];
@@ -233,27 +229,6 @@ class Utils
 
         return $value;
     }
-
-
-    /**
-     * Given an associative array, this function return a lowercase-keys version of the same array
-     */
-    public static function lowerArrayKeys(array $array, bool $throwOnlDuplicate=true): array
-    {
-        $newArray = [];
-
-        foreach ($array as $key => $value)
-        {
-            $newKey = strtolower($key);
-
-            if (array_key_exists($newKey, $newArray) && $throwOnlDuplicate)
-                throw new InvalidArgumentException("Duplicate key [$key]");
-
-            $newArray[$newKey] = $value;
-        }
-        return $newArray;
-    }
-
 
     /**
      * Useful to enable debug-only features
@@ -265,7 +240,6 @@ class Utils
         $env = Configuration::getInstance()->get("env", "debug");
         return strtolower($env) === "production";
     }
-
 
     /**
      * Check if an application is present in "application" in "sharp.json"

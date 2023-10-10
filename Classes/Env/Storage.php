@@ -13,11 +13,11 @@ class Storage
     use Component;
 
     /** Used for `exploreDirectory()` to return both directories and files */
-    const NO_FILTER = 0;
+    const NO_FILTER = Utils::NO_FILTER;
     /** Used for `exploreDirectory()` to only return directories */
-    const ONLY_DIRS = 1;
+    const ONLY_DIRS = Utils::ONLY_DIRS;
     /** Used for `exploreDirectory()` to only return files */
-    const ONLY_FILES = 2;
+    const ONLY_FILES = Utils::ONLY_FILES;
 
     protected array $openedStreams = [];
     protected string $root;

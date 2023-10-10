@@ -48,7 +48,7 @@ class Request
         $this->path = preg_replace("/\?.*/", "", $this->path);
         $this->uploads = $this->getCleanUploadData($uploads);
 
-        $this->headers = Utils::lowerArrayKeys($this->headers);
+        $this->headers = array_change_key_case($this->headers, CASE_LOWER);
 
         if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
             $this->body = json_decode($this->body, true, JSON_THROW_ON_ERROR);
@@ -392,7 +392,7 @@ class Request
 
         $resHeaders = substr($result, 0, $headerSize);
         $resHeaders = $this->parseHeaders($resHeaders);
-        $resHeaders = Utils::lowerArrayKeys($resHeaders, false);
+        $resHeaders = array_change_key_case($resHeaders, CASE_LOWER);
 
         if ($supportRedirection && $nextURL = ($resHeaders['location'] ?? null))
         {

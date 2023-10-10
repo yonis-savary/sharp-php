@@ -8,11 +8,10 @@ use Sharp\Classes\Core\Events;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
-use Sharp\Classes\Core\Logger;
+use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Cache;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
-use Throwable;
 
 /**
  * Given a set of `Routes`, this component is able to
@@ -45,7 +44,7 @@ class Router
 
     protected function getCacheKey(Request $request): string
     {
-        return "sharp-router-index-" . md5($request->getMethod() . $request->getPath());
+        return md5($request->getMethod() . $request->getPath());
     }
 
     protected function putRouteToCache(Route $route, Request $request): void
@@ -53,14 +52,16 @@ class Router
         if (!is_array($route->getCallback()))
             return;
 
-        $key = $this->getCacheKey($request);
-        $this->cache->set($key, $route);
+        $this->cache->set(
+            $this->getCacheKey($request),
+            $route
+        );
     }
 
     protected function getCachedRouteForRequest(Request $request): ?Route
     {
         $key = $this->getCacheKey($request);
-        if ($cachedRoute = $this->cache->get($key, null))
+        if ($cachedRoute = $this->cache->try($key))
         {
             // useful to register slug values for cached routes
             $cachedRoute->match($request);
@@ -74,7 +75,7 @@ class Router
      * Try to load routes from the cache, on failure, load routes from files/controllers
      * @param bool $force Set to `true` to force the reload of routes
      */
-    public function loadRoutes(bool $force=false)
+    public function loadRoutes(bool $force=false): void
     {
         if ($this->loadedRoutes && (!$force))
             return;
@@ -84,37 +85,28 @@ class Router
         $this->loadControllersRoutes();
     }
 
-    protected function loadAutoloaderFiles()
+    protected function loadAutoloaderFiles(): void
     {
         foreach (Autoloader::getListFiles(Autoloader::ROUTES) as $file)
             require_once $file;
     }
 
-    protected function loadControllersRoutes()
+    protected function loadControllersRoutes(): void
     {
-        foreach (Autoloader::getListFiles(Autoloader::AUTOLOAD) as $file)
-        {
-            if (!str_contains($file, "Controllers"))
-                continue;
+        $autoloadFile = Autoloader::getListFiles(Autoloader::AUTOLOAD);
 
-            $class = Utils::pathToNamespace($file);
-            if (!class_exists($class))
-                continue;
-
-            if (!Utils::uses($class, "Sharp\Classes\Web\Controller"))
-                continue;
-
-            $class::declareRoutes($this);
-        }
+        ObjectArray::fromArray($autoloadFile)
+        ->filter(fn($file) => str_contains($file, "Controllers"))
+        ->map(Utils::pathToNamespace(...))
+        ->filter(fn($class) => Utils::uses($class, "Sharp\Classes\Web\Controller"))
+        ->forEach(fn($class) => $class::declareRoutes($this));
     }
 
     /**
      * Create a Group route that your can re-use whith `group()`
      */
-    public function createGroup(
-        string|array $urlPrefix,
-        string|array $middlewares
-    ): array {
+    public function createGroup(string|array $urlPrefix, string|array $middlewares): array
+    {
         return [
             "path" => Utils::toArray($urlPrefix),
             "middlewares" => Utils::toArray($middlewares),
@@ -131,8 +123,8 @@ class Router
 
         foreach ($group as $key => $value)
         {
-            $value = is_array($value) ? $value: [$value];
-            $this->group[$key] = array_merge($this->group[$key] ?? [], $value);
+            $this->group[$key] ??= [];
+            $this->group[$key] = array_merge($this->group[$key], Utils::toArray($value));
         }
 
         $callback($this);
@@ -178,7 +170,7 @@ class Router
         );
     }
 
-    public function addRoutes(Route ...$routes)
+    public function addRoutes(Route ...$routes): void
     {
         array_push(
             $this->routes,
@@ -186,7 +178,7 @@ class Router
         );
     }
 
-    protected function findFirstMathingRoute(Request $req) : ?Route
+    protected function findFirstMathingRoute(Request $req): ?Route
     {
         $this->loadRoutes();
         foreach ($this->routes as $route)
@@ -213,26 +205,7 @@ class Router
             return $response;
         }
 
-        try
-        {
-            return Response::adapt($route($request));
-        }
-        catch (Throwable $err)
-        {
-            Logger::getInstance()->logThrowable($err);
-
-            $response = new Response("Internal server error - ". $err->getMessage(), 500, ["Content-Type" => "text/plain"]);
-            Events::getInstance()->dispatch("internalServerError", ["request" => &$request, "response" => &$response]);
-            return $response;
-        }
-    }
-
-    /**
-     * @note TEST-PURPOSE-METHOD
-     */
-    public function deleteRoutes()
-    {
-        $this->routes = [];
+        return Response::adapt($route($request));
     }
 
     /**

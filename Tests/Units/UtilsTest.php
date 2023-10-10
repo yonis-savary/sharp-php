@@ -190,15 +190,4 @@ class UtilsTest extends TestCase
         $this->assertEquals([["A" => 5]], Utils::toArray(["A"=>5]));
         $this->assertEquals([["A" => 5]], Utils::toArray([["A"=>5]]));
     }
-
-    public function test_lowerArrayKeys()
-    {
-        $this->assertEquals(
-            ["content-type" => "application/json"],
-            Utils::lowerArrayKeys(["Content-Type" => "application/json"])
-        );
-
-        $this->expectException(InvalidArgumentException::class);
-        Utils::lowerArrayKeys(["Content-Type" => "application/json", "content-type" => "text/html"]);
-    }
 }

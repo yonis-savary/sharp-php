@@ -8,6 +8,7 @@ use Sharp\Classes\Data\Database;
 use Sharp\Classes\Data\DatabaseQuery;
 use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Extras\Autobahn;
+use Sharp\Classes\Http\Classes\ResponseCodes;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Core\Utils;
@@ -52,7 +53,7 @@ class BaseDriver implements DriverInterface
 
         $events->dispatch("autobahnCreateAfter", ["model"=>$model, "fields" => $fields, "values" => &$values, "query"=>&$query, "insertedId"=>$inserted]);
 
-        return Response::json(["insertedId"=>$inserted], Response::CREATED);
+        return Response::json(["insertedId"=>$inserted], ResponseCodes::CREATED);
     }
 
     public static function multipleCreateCallback(Request $request): Response
@@ -153,7 +154,7 @@ class BaseDriver implements DriverInterface
 
         $events->dispatch("autobahnUpdateAfter", ["model"=>$model, "primaryKey"=>$primaryKeyValue, "query"=>&$query]);
 
-        return Response::json("DONE", Response::CREATED);
+        return Response::json("DONE", ResponseCodes::CREATED);
     }
 
 
@@ -164,7 +165,7 @@ class BaseDriver implements DriverInterface
         $query = new DatabaseQuery($model::getTable(), DatabaseQuery::DELETE);
 
         if (!count($request->all()))
-            return Response::json("At least one filter must be given", Response::CONFLICT);
+            return Response::json("At least one filter must be given", ResponseCodes::CONFLICT);
 
         foreach ($request->all() as $key => $value)
             $query->where($key, $value);

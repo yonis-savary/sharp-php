@@ -23,10 +23,9 @@ class DatabaseField
 
     public bool $hasDefault = true;
 
-    public function __construct(public string $name)
-    {
-
-    }
+    public function __construct(
+        public string $name
+    ){}
 
     public function setType(int $type): self
     {

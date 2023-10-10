@@ -126,7 +126,7 @@ class Cache
      *
      * @note You can use `Cache::SECOND|MINUTE|HOUR|DAY|WEEK` constants to help your write a clean duration
      */
-    public function set(string $key, mixed $content, int $timeToLive=3600*24)
+    public function set(string $key, mixed $content, int $timeToLive=3600*24): void
     {
         $this->index[$key] ??= new CacheElement($key);
         $this->index[$key]->setContent($content, $timeToLive);

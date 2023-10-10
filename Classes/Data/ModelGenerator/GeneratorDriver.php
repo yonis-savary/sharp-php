@@ -21,20 +21,20 @@ abstract class GeneratorDriver
     {
         return ObjectArray::fromExplode("_", $name)
         ->filter()
-        ->map("ucfirst")
+        ->map(ucfirst(...))
         ->join();
     }
-
-    /**
-     * @var array<string> Return an array with tables names
-     */
-    abstract public function listTables(): array;
 
     public function generateAll(string $targetApplication): void
     {
         foreach ($this->listTables() as $table)
             $this->generate($table, $targetApplication);
     }
+
+    /**
+     * @var array<string> Return an array with tables names
+     */
+    abstract public function listTables(): array;
 
     abstract public function generate(string $table, string $targetApplication);
 }

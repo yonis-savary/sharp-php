@@ -84,11 +84,9 @@ class DatabaseQuery
             throw new Exception("Cannot insert values until insert fields are defined");
 
         if (count($values) !== count($this->insertFields))
-            throw new Exception(sprintf("Cannot insert %s values, %s expected", count($values), count($this->insertFields)));
+            throw new Exception(sprintf("DatabaseQuery insert: %s values expected, %s given", count($this->insertFields), count($values)));
 
-        $template = "(". str_repeat("{},", count($values)-1)."{})";
-        $template = Database::getInstance()->build($template, $values);
-        $this->insertValues[] = $template;
+        $this->insertValues[] = Database::getInstance()->build("{}", [$values]);
         return $this;
     }
 
@@ -120,7 +118,7 @@ class DatabaseQuery
         {
             $this->addField($table, $field->name, null, $field->type);
 
-            if (!($ref = $field->reference))
+            if (!$ref = $field->reference)
                 continue;
 
             $references[] = [

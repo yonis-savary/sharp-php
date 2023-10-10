@@ -97,7 +97,7 @@ class UploadFile
         return uniqid("upload-".date("YmdHis")."-") .".".$this->extension ;
     }
 
-    protected function failWithReason(int $reason)
+    protected function failWithReason(int $reason): bool
     {
         $this->failReason = $reason;
         return false;

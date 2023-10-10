@@ -58,7 +58,7 @@ class Autoloader
     protected static array $lists = [];
 
     /** Used to cache the results of `getClassesList()` */
-    protected static array $classesListCache = [];
+    protected static array $cachedClassList = [];
 
     /** Used to cache the results of `getListFiles()` */
     protected static array $listsCache = [];
@@ -82,11 +82,11 @@ class Autoloader
         if (self::$projectRoot)
             return self::$projectRoot;
 
-        $og = getcwd();
+        $original = getcwd();
 
         try
         {
-            while (!in_array("Sharp", scandir(".")))
+            while (!is_dir("./Sharp"))
                 chdir("..");
 
             self::$projectRoot = Utils::normalizePath(getcwd());
@@ -96,7 +96,7 @@ class Autoloader
             throw new RuntimeException("Cannot find Sharp project root directory !");
         }
 
-        chdir($og);
+        chdir($original);
     }
 
     public static function projectRoot(): string
@@ -149,26 +149,25 @@ class Autoloader
             if (!$purpose = self::DIRECTORIES_PURPOSE[$basename] ?? false)
                 continue;
 
-            if ($purpose===self::REQUIRE && $requireHelpers)
+            if ($purpose === self::REQUIRE && $requireHelpers)
             {
                 foreach (Utils::exploreDirectory($directory, Utils::ONLY_FILES) as $toRequire)
                     require_once $toRequire;
             }
 
-            self::$lists[$purpose] ??= [];
-            self::$lists[$purpose][] = $directory;
+            self::addToList($purpose, $directory);
         }
-    }
-
-    public static function getList(string $name): array
-    {
-        return self::$lists[$name] ?? [];
     }
 
     public static function addToList(string $list, ...$elements): void
     {
         self::$lists[$list] ??= [];
         array_push(self::$lists[$list], ...$elements);
+    }
+
+    public static function getList(string $name): array
+    {
+        return self::$lists[$name] ?? [];
     }
 
     public static function getListFiles(string $name): array
@@ -190,15 +189,18 @@ class Autoloader
      */
     public static function getClassesList(bool $forceReload=false): array
     {
-        if ((!$forceReload) && self::$classesListCache)
-            return self::$classesListCache;
+        if ((!$forceReload) && self::$cachedClassList)
+            return self::$cachedClassList;
 
-        self::$classesListCache = ObjectArray::fromArray(self::getListFiles(self::AUTOLOAD))
-        ->map(fn($x) => Utils::pathToNamespace($x))
-        ->filter(class_exists(...))
-        ->collect();
+        $files = self::getListFiles(self::AUTOLOAD);
 
-        return self::$classesListCache;
+        self::$cachedClassList =
+            ObjectArray::fromArray($files)
+            ->map(fn($x) => Utils::pathToNamespace($x))
+            ->filter(class_exists(...))
+            ->collect();
+
+        return self::$cachedClassList;
     }
 
     /**
@@ -245,7 +247,7 @@ class Autoloader
         list(
             self::$lists,
             self::$listsCache,
-            self::$classesListCache
+            self::$cachedClassList
         ) = include(self::CACHE_FILE);
 
         return true;
@@ -277,7 +279,7 @@ class Autoloader
         return [".join(",", [
             $toString(self::$lists),
             $toString(self::$listsCache),
-            $toString(self::$classesListCache),
+            $toString(self::$cachedClassList),
         ])."];", 2));
     }
 }

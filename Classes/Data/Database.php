@@ -111,26 +111,26 @@ class Database
         return $this->connection->lastInsertId();
     }
 
-    protected function prepareString($str, $quote=false): string
+    protected function prepareString(mixed $value, $quote=false): string
     {
-        if (is_array($str))
-        {
-            $template = "(". join(",", array_map(fn()=>"{}", $str)) .")";
-            return $this->build($template, $str);
-        }
+        if (is_array($value))
+            return $this->build(
+                "(". join(",", array_map(fn()=>"{}", $value)) .")",
+                $value
+            );
 
-        if ($str === null)
+        if ($value === null)
             return 'NULL';
 
-        if ($str === true)
-            return 1;
+        if ($value === true)
+            return 'TRUE';
 
-        if ($str === false)
-            return 0;
+        if ($value === false)
+            return 'FALSE';
 
-        $str = preg_replace('/([\'\\\\])/', '$1$1', $str);
+        $value = preg_replace('/([\'\\\\])/', '$1$1', $value);
 
-        return $quote ? "'$str'": $str;
+        return $quote ? "'$value'": $value;
     }
 
     /**
@@ -161,13 +161,17 @@ class Database
         }
 
         $count = 0;
-        $queryClone = preg_replace_callback('/\{\}/',
-        function($match) use (&$count, $quotedPositions, $context) {
-            $doQuote = !in_array($match[0][1], $quotedPositions);
-            $val = $this->prepareString($context[$count] ?? null, $doQuote);
-            $count++;
-            return $val;
-        }, $queryClone, flags:PREG_OFFSET_CAPTURE);
+        $queryClone = preg_replace_callback(
+            '/\{\}/',
+            function($match) use (&$count, $quotedPositions, $context) {
+                $doQuote = !in_array($match[0][1], $quotedPositions);
+                $val = $this->prepareString($context[$count] ?? null, $doQuote);
+                $count++;
+                return $val;
+            },
+            $queryClone,
+            flags:PREG_OFFSET_CAPTURE
+        );
 
         return $queryClone;
     }

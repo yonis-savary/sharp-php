@@ -97,7 +97,7 @@ class SQLite extends GeneratorDriver
         $lines[]= $currentLine;
 
         return ObjectArray::fromArray($lines)
-        ->map(fn($line) => $this->lineToField($line))
+        ->map($this->lineToField(...))
         ->filter()
         ->collect();
     }
@@ -152,7 +152,9 @@ class SQLite extends GeneratorDriver
         $fileDir = Utils::joinPath($targetApplication, "Models");
         $filePath = Utils::joinPath($fileDir, $fileName);
 
-        if (!is_dir($fileDir)) mkdir($fileDir);
+        if (!is_dir($fileDir))
+            mkdir($fileDir);
+
         $classname = Utils::pathToNamespace($fileDir);
 
         $descriptionRaw = $this->schemaCache[$table];
