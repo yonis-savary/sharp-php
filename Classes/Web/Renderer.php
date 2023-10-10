@@ -9,6 +9,7 @@ use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Core\Events;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Core\Logger;
+use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Web\Classes\Shard;
 use Sharp\Core\Autoloader;
 
@@ -16,13 +17,26 @@ class Renderer
 {
     use Component, Configurable;
 
+    protected array $pathCache = [];
+
     protected array $shards = [];
     protected ?Shard $current = null;
     protected array $sections = [];
 
     public static function getDefaultConfiguration() : array
     {
-        return ['file_extension' => '.php'];
+        return [
+            'cached' => false,
+            'file_extension' => '.php'
+        ];
+    }
+
+    public function __construct()
+    {
+        $this->loadConfiguration();
+
+        if ($this->isCached())
+            $this->pathCache = &Cache::getInstance()->getReference("sharp.renderer.path-cache");
     }
 
     /**
@@ -32,7 +46,10 @@ class Renderer
      */
     public function findTemplate(string $template): string|false
     {
-        $ext = $this->getConfiguration()['file_extension'];
+        if ($cached = $this->pathCache[$template] ?? false)
+            return $cached;
+
+        $ext = $this->configuration['file_extension'];
 
         if (!str_ends_with($template, $ext))
             $template .= $ext;
@@ -42,8 +59,11 @@ class Renderer
 
         foreach (Autoloader::getListFiles(Autoloader::VIEWS) as $file)
         {
-            if (str_ends_with($file, $template))
-                return $file;
+            if (!str_ends_with($file, $template))
+                continue;
+
+            $this->pathCache[$template] = $file;
+            return $file;
         }
         return false;
     }
@@ -53,7 +73,7 @@ class Renderer
      */
     public function templateExists(string $templateName): bool
     {
-        return ($this->findTemplate($templateName) !== false);
+        return false !== $this->findTemplate($templateName);
     }
 
     public function render(string $templateName, array $context=[]): Response
