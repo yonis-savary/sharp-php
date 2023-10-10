@@ -1,5 +1,6 @@
 <?php
 
+use Sharp\Classes\Core\Events;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Core\Logger;
 
@@ -9,20 +10,32 @@ use Sharp\Classes\Core\Logger;
  * - For CLI users : a message is displayed telling that an error occured
  */
 set_exception_handler(function(Throwable $exception){
-    Logger::getInstance()->logThrowable($exception);
+    try
+    {
+        Events::getInstance()->dispatch("uncaughtException", ["throwable" => $exception]);
+        Logger::getInstance()->logThrowable($exception);
 
-    if (php_sapi_name() === "cli")
-        die(join("\n", [
-            "\n",
-            "_____________________________________________",
-            "Got an exception/error, please read your logs",
-            "(".$exception->getMessage()." at ".$exception->getFile().":".$exception->getLine().")"
-        ]));
+        if (php_sapi_name() === "cli")
+            die(join("\n", [
+                "\n",
+                "_____________________________________________",
+                "Got an exception/error, please read your logs",
+                "(".$exception->getMessage()." at ".$exception->getFile().":".$exception->getLine().")"
+            ]));
 
-    (new Response("Internal Server Error", 500, ["Content-Type" => "text/plain"]))
-    ->display();
+        (new Response("Internal Server Error", 500, ["Content-Type" => "text/plain"]))
+        ->display();
+        die;
+    }
+    catch (Throwable $err)
+    {
+        // In case everything went wrong even logging/events !
 
-    die;
+        http_response_code(500);
+        echo "Internal Server Error <hr>";
+        echo $err->getMessage();
+        die;
+    }
 });
 
 /**

@@ -110,12 +110,6 @@ $events->on("routeNotFound", function($event){
     $response = $event["response"];
 });
 
-// Triggered when the Router receive an exception while executing a route callback
-$events->on("internalServerError", function($event){
-    $request = $event["request"];
-    $response = $event["response"];
-});
-
 // Triggered before Renderer require renderer view
 $events->on("beforeBodyViewRender", function($event) {
     $templateName = $event["view"];
@@ -127,6 +121,10 @@ $events->on("afterBodyViewRender", function($event) {
     $templateName = $event["view"];
 });
 
+// Triggered when an exception is not processed by any try/catch
+$events->on("uncaughtException", function($event) {
+    $thrown = $event["throwable"];
+});
 ```
 
 [< Back to summary](../home.md)
