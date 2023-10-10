@@ -56,7 +56,7 @@ class RouterTest extends TestCase
     {
         $router = new Router();
 
-        $assertRoutesAreGrouped = function() use (&$router) {
+        $assertRoutesAreGrouped = function(Router $router) {
             $this->assertCount(2, $router->getRoutes());
             foreach ($router->getRoutes() as $route)
             {
@@ -70,7 +70,7 @@ class RouterTest extends TestCase
             "middlewares" => RequestHasPostData::class
         ];
 
-        $router->deleteRoutes();
+        $router = new Router();
 
         $router->groupCallback($group, function(Router $router){
             $router->addRoutes(
@@ -79,8 +79,8 @@ class RouterTest extends TestCase
             );
         });
 
-        $assertRoutesAreGrouped();
-        $router->deleteRoutes();
+        $assertRoutesAreGrouped($router);
+        $router = new Router();
 
         $router->addRoutes(
             ...$router->group(
@@ -90,8 +90,8 @@ class RouterTest extends TestCase
             )
         );
 
-        $assertRoutesAreGrouped();
-        $router->deleteRoutes();
+        $assertRoutesAreGrouped($router);
+        $router = new Router();
 
         $router->addGroup(
             $group,
@@ -99,7 +99,7 @@ class RouterTest extends TestCase
             Route::view("/contact", "contact")
         );
 
-        $assertRoutesAreGrouped();
+        $assertRoutesAreGrouped($router);
     }
 
     /*

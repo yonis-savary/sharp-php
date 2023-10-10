@@ -159,7 +159,7 @@ Here are the format that are currently supported
 
 ## Additionnal features
 
-- Any router got the `deleteRoutes()` method to clear its routes, and the `getRoutes()` method to retrieve them
+- Any router got `getRoutes()` method to retrieve added routes them
 - The `Route::view()` method can be used to create a route that render a view when called
 - The `Route::redirect()` method can be used to create a redirection to another URL
 - The [helpers-routing.php](../../Helpers/helpers-routing.php) file got two useful function to declare routes
