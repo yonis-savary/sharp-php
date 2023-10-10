@@ -6,17 +6,22 @@ use Sharp\Classes\CLI\Args;
 use Sharp\Classes\CLI\Command;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Core\Autoloader;
+use Sharp\Classes\Core\Configurable;
 
 class FillConfiguration extends Command
 {
+    public function getHelp(): string
+    {
+        return "Complete or create your configuration with the famework's default configuration";
+    }
+
     public function __invoke(Args $args)
     {
-        $configurables = Autoloader::classesThatUses('Sharp\Classes\Core\Configurable');
-
+        $configurables = Autoloader::classesThatUses(Configurable::class);
         $config = Configuration::getInstance();
 
         /**
-         * @var Sharp\Classes\Core\Configurable $class
+         * @var Configurable $class
          */
         foreach ($configurables as $class)
         {
@@ -35,10 +40,5 @@ class FillConfiguration extends Command
         }
 
         $config->save();
-    }
-
-    public function getHelp(): string
-    {
-        return "Complete or create your configuration with the famework's default configuration";
     }
 }

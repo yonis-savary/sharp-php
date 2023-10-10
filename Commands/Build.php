@@ -9,6 +9,11 @@ use Sharp\Core\Autoloader;
 
 class Build extends Command
 {
+    public function getHelp(): string
+    {
+        return "Call every AbstractBuildTask classes in your application";
+    }
+
     public function __invoke(Args $args)
     {
         echo "Building app...\n\n";
@@ -23,10 +28,5 @@ class Build extends Command
 
             echo "\n";
         }
-    }
-
-    public function getHelp(): string
-    {
-        return "Call every AbstractBuildTask classes in your application";
     }
 }

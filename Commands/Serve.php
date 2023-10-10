@@ -7,6 +7,11 @@ use Sharp\Classes\CLI\Command;
 
 class Serve extends Command
 {
+    public function getHelp(): string
+    {
+        return "Start built-in PHP server in Public, default port is 8000 (ex: php do serve 5000)";
+    }
+
     public function __invoke(Args $args)
     {
         $port = intval($args->values()[0] ?? 8000);
@@ -22,10 +27,5 @@ class Serve extends Command
 
         while (!feof($proc))
             echo fread($proc, 1024);
-    }
-
-    public function getHelp(): string
-    {
-        return "Start built-in PHP server in Public, default port is 8000 (ex: php do serve 5000)";
     }
 }

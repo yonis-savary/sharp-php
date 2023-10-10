@@ -10,6 +10,11 @@ use Sharp\Classes\Env\Configuration;
 
 class EnableApplication extends Command
 {
+    public function getHelp(): string
+    {
+        return "Enable applications by putting them in your configuration";
+    }
+
     public function __invoke(Args $args)
     {
         $values = $args->values();
@@ -34,10 +39,5 @@ class EnableApplication extends Command
             return array_values(array_unique($applications));
         }, []);
         $config->save();
-    }
-
-    public function getHelp(): string
-    {
-        return "Enable applications by putting them in your configuration";
     }
 }

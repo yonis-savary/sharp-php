@@ -9,6 +9,11 @@ use Sharp\Core\Utils;
 
 class Test extends Command
 {
+    public function getHelp(): string
+    {
+        return "Execute every PHPUnit installation/test suites";
+    }
+
     protected function executeInDir(callable $callback, string $directory)
     {
         $original = getcwd();
@@ -49,10 +54,5 @@ class Test extends Command
 
             }, $application);
         }
-    }
-
-    public function getHelp(): string
-    {
-        return "Execute every PHPUnit installation/test suites";
     }
 }
