@@ -10,6 +10,7 @@ use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Session;
 use Sharp\Core\Utils;
+use Sharp\Classes\Data\Model;
 
 class Authentication
 {
@@ -53,7 +54,7 @@ class Authentication
         if (!class_exists($model))
             throw new InvalidArgumentException("[$model] class does not exists");
 
-        if (!Utils::uses($model, 'Sharp\Classes\Data\Model'))
+        if (!Utils::uses($model, Model::class))
             throw new InvalidArgumentException("[$model] class must use Model trait");
 
         $modelFields = $model::getFieldNames();

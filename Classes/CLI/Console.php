@@ -7,6 +7,7 @@ use Sharp\Classes\CLI\Command;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Events;
 use Sharp\Classes\Data\ObjectArray;
+use Sharp\Commands\Help;
 use Sharp\Core\Autoloader;
 
 class Console
@@ -16,7 +17,7 @@ class Console
     /**
      * @return array<Command>
      */
-    public function listCommands(): array
+    public static function listCommands(): array
     {
         return ObjectArray::fromArray(Autoloader::classesThatExtends(Command::class))
         ->map(fn($x) => new $x())
@@ -29,18 +30,17 @@ class Console
      */
     public function findCommands(string $identifier): array
     {
-        return ObjectArray::fromArray($this->listCommands())
+        return ObjectArray::fromArray(self::listCommands())
         ->filter(fn (Command $command) => in_array($identifier, [$command->getName(), $command->getIdentifier()]))
         ->collect();
     }
 
     public function printCommandList(): void
     {
-        $commands = $this->listCommands();
+        $help = new Help();
+        $nullArgs = new Args();
 
-        printf("(%s) commands availables :\n", count($commands));
-        foreach ($commands as $command)
-            printf(" - %s (%s)\n", $command->getName(), $command->getIdentifier());
+        $help($nullArgs);
     }
 
     /**

@@ -34,7 +34,7 @@ abstract class Command
 
     public function getHelp(): string
     {
-        return "This command's help is not defined yet";
+        return "";
     }
 
     /**

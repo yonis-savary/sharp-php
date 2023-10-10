@@ -15,6 +15,7 @@ use Sharp\Classes\Data\Classes\QuerySet;
 use Sharp\Classes\Data\Classes\QueryConditionRaw;
 use Sharp\Classes\Data\Database;
 use Sharp\Core\Utils;
+use Sharp\Classes\Data\Model;
 
 class DatabaseQuery
 {
@@ -105,7 +106,7 @@ class DatabaseQuery
 
     public function exploreModel(string $model, bool $recursive=true, array $foreignKeyIgnores=[]): self
     {
-        if (!Utils::uses($model, "Sharp\Classes\Data\Model"))
+        if (!Utils::uses($model, Model::class))
             throw new InvalidArgumentException("[$model] must use model trait");
         /** @var \Sharp\Classes\Data\Model $model */
 

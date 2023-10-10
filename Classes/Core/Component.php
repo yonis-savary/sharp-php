@@ -2,8 +2,6 @@
 
 namespace Sharp\Classes\Core;
 
-use Sharp\Core\Utils;
-
 /**
  * Components are classes that has a global instance (like a singleton)
  * but that can also be instanciated
@@ -47,9 +45,6 @@ trait Component
      */
     final public static function setInstance(self $newInstance): void
     {
-        if (Utils::uses($newInstance, "\Sharp\Classes\Core\Configurable"))
-            $newInstance->loadConfiguration();
-
         self::$instance = $newInstance;
     }
 

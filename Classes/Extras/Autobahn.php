@@ -11,6 +11,7 @@ use Sharp\Classes\Extras\AutobahnDrivers\DriverInterface;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Web\Router;
 use Sharp\Core\Utils;
+use Sharp\Classes\Data\Model;
 
 class Autobahn
 {
@@ -39,7 +40,7 @@ class Autobahn
      */
     public function throwOnInvalidModel(string $model)
     {
-        if (!Utils::uses($model, "Sharp\Classes\Data\Model"))
+        if (!Utils::uses($model, Model::class))
             throw new InvalidArgumentException("[$model] does not use the Model trait !");
 
         return $model;

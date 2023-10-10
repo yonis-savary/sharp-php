@@ -14,15 +14,14 @@ use Sharp\Tests\Classes\B;
 use Sharp\Tests\Classes\BA;
 use Sharp\Tests\Classes\Interfaces\InterfaceA;
 use Sharp\Tests\Classes\Interfaces\InterfaceB;
+use Sharp\Tests\Classes\Traits\TraitA;
 
 class UtilsTest extends TestCase
 {
     public function test_uses()
     {
-        $traitA = 'Sharp\Tests\Classes\Traits\TraitA';
-
-        $this->assertTrue( Utils::uses(A::class, $traitA) );
-        $this->assertFalse( Utils::uses(B::class, $traitA) );
+        $this->assertTrue(Utils::uses(A::class, TraitA::class));
+        $this->assertFalse(Utils::uses(B::class, TraitA::class));
     }
 
     public function test_implements()

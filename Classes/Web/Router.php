@@ -12,6 +12,7 @@ use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Cache;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
+use Sharp\Classes\Web\Controller;
 
 /**
  * Given a set of `Routes`, this component is able to
@@ -101,7 +102,7 @@ class Router
         ObjectArray::fromArray($autoloadFile)
         ->filter(fn($file) => str_contains($file, "Controllers"))
         ->map(Utils::pathToNamespace(...))
-        ->filter(fn($class) => Utils::uses($class, "Sharp\Classes\Web\Controller"))
+        ->filter(fn($class) => Utils::uses($class, Controller::class))
         ->forEach(fn($class) => $class::declareRoutes($this));
     }
 
