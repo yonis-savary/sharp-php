@@ -60,6 +60,9 @@ class Router
 
     protected function getCachedRouteForRequest(Request $request): ?Route
     {
+        if (!$this->isCached())
+            return null;
+
         $key = $this->getCacheKey($request);
         if ($cachedRoute = $this->cache->try($key))
         {
@@ -123,8 +126,13 @@ class Router
 
         foreach ($group as $key => $value)
         {
-            $this->group[$key] ??= [];
-            $this->group[$key] = array_merge($this->group[$key], Utils::toArray($value));
+            // Warning: dictionnaries need to be merged, we cannot use Utils::toArray here
+            $value = is_array($value)? $value: [$value];
+
+            $this->group[$key] = array_merge(
+                $this->group[$key] ?? [],
+                $value
+            );
         }
 
         $callback($this);
@@ -140,6 +148,7 @@ class Router
         if (!count($group))
             return $routes;
 
+
         foreach ($routes as &$route)
         {
             if ($groupPrefix = $group["path"] ?? false)
@@ -151,7 +160,9 @@ class Router
             }
 
             if ($extras = $group["extras"] ?? false)
+            {
                 $route->setExtras(array_merge($route->getExtras(), $extras));
+            }
 
             if ($middlewares = $group["middlewares"] ?? false)
             {
