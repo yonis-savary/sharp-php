@@ -375,7 +375,14 @@ class DatabaseQuery
 
     public function first(): ?array
     {
+        $oldLimit = $this->limit;
+        $oldOffset = $this->offset;
+
         $res = $this->limit(1, 0)->fetch();
+
+        $this->limit = $oldLimit;
+        $this->offset = $oldOffset;
+
         return $res[0] ?? null;
     }
 
