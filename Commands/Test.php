@@ -41,14 +41,14 @@ class Test extends Command
                 $output = shell_exec("./vendor/bin/phpunit --colors=never --display-warnings");
                 $duration = hrtime(true) - $start;
 
-                $durationMicrosecond = $duration/1_000_000;
+                $durationMilliseconds = $duration/1_000_000;
 
                 $lines = array_filter(explode("\n", $output));
 
                 $lastLine = end($lines);
 
                 if (str_starts_with($lastLine, "OK"))
-                    echo " - OK ($application, " . substr($lastLine, 4) ." in $durationMicrosecond µs\n";
+                    echo " - OK ($application, " . substr($lastLine, 4) ." in $durationMilliseconds ms\n";
                 else
                     echo "Errors/Warnings while testing [$application] :\n$output";
 
