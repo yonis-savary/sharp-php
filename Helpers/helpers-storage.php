@@ -10,7 +10,7 @@ use Sharp\Classes\Env\Storage;
  * @param string $path Relative path to get the Storage of (relative to your main Storage directory)
  * @return Storage New storage with the $path as root
  */
-function storegetSubStorage(string $path): Storage
+function storeGetSubStorage(string $path): Storage
 {
     return Storage::getInstance()->getSubStorage($path);
 }
