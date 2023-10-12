@@ -5,12 +5,13 @@ namespace Sharp\Classes\Security;
 use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Session;
 use Sharp\Core\Utils;
 use Sharp\Classes\Data\Model;
+use Sharp\Classes\Events\AuthenticatedUser;
 
 class Authentication
 {
@@ -21,7 +22,6 @@ class Authentication
     const USER_DATA = "sharp.authentication.user_data";
     const IS_LOGGED = "sharp.authentication.is_logged";
 
-    /** @var \Sharp\CLasses\Data\Model $model */
     protected $model;
     protected string $loginField;
     protected string $passwordField;
@@ -107,7 +107,7 @@ class Authentication
         ]);
         $this->refreshExpireTime();
 
-        Events::getInstance()->dispatch("authenticatedUser", ["user" => $userData]);
+        EventListener::getInstance()->dispatch(new AuthenticatedUser($userData, $this->model));
     }
 
     protected function failAttempt(): bool

@@ -1,8 +1,9 @@
 <?php
 
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Core\Logger;
+use Sharp\Classes\Events\UncaughtException;
 
 /**
  * Exception kill the request if not handled :
@@ -12,7 +13,7 @@ use Sharp\Classes\Core\Logger;
 set_exception_handler(function(Throwable $exception){
     try
     {
-        Events::getInstance()->dispatch("uncaughtException", ["throwable" => $exception]);
+        EventListener::getInstance()->dispatch(new UncaughtException($exception));
         Logger::getInstance()->logThrowable($exception);
 
         if (php_sapi_name() === "cli")

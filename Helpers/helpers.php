@@ -8,7 +8,8 @@
  * it is easier to create an alias for common actions
  */
 
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\AbstractEvent;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Env\Configuration;
@@ -126,7 +127,7 @@ function lastInsertId(): int|false
  */
 function onEvent(string $event, callable ...$callbacks): void
 {
-    $events = Events::getInstance();
+    $events = EventListener::getInstance();
 
     foreach ($callbacks as $callback)
         $events->on($event, $callback);
@@ -135,10 +136,10 @@ function onEvent(string $event, callable ...$callbacks): void
 /**
  * Trigger an event with `Event::getInstance()->dispatch`
  *
- * @param string $event Event name to trigger
+ * @param AbstractEvent $event Event name to trigger
  * @param mixed ...$args Arguments to give to the event's callbacks
  */
-function dispatch(string $event, mixed ...$args): void
+function dispatch(AbstractEvent $event, mixed ...$args): void
 {
-    Events::getInstance()->dispatch($event, ...$args);
+    EventListener::getInstance()->dispatch($event, ...$args);
 }

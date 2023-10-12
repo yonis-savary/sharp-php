@@ -3,13 +3,13 @@
 namespace Sharp\Classes\Core;
 
 use Sharp\Classes\Core\Component;
+use Sharp\Classes\Events\DispatchedEvent;
 use Sharp\Classes\Data\ObjectArray;
+use Sharp\Core\Utils;
 
-class Events
+class EventListener
 {
     use Component;
-
-    const SELF_EVENT = "dispatchedEvent";
 
     protected array $handlers = [];
 
@@ -26,20 +26,18 @@ class Events
     /**
      * Trigger an event and call every attached callbacks (if any)
      *
-     * @param string $event Event name to trigger
+     * @param AbstractEvent $event Event object to trigger
      * @param mixed ...$args Parameters to give to the event's callbacks
      */
-    public function dispatch(string $event, mixed ...$args): void
+    public function dispatch(AbstractEvent $event): void
     {
-        $results = ObjectArray::fromArray($this->handlers[$event] ?? [])
-        ->map(fn($handler) => $handler(...$args))
+        $eventName = $event->getName();
+
+        $results = ObjectArray::fromArray($this->handlers[$eventName] ?? [])
+        ->map(fn($handler) => $handler($event))
         ->collect();
 
-        if ($event !== self::SELF_EVENT)
-            $this->dispatch(self::SELF_EVENT, [
-                "event" => $event,
-                "args" => $args,
-                "results" => $results
-            ]);
+        if ($eventName !== DispatchedEvent::class)
+            $this->dispatch(new DispatchedEvent($event, $results));
     }
 }

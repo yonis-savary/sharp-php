@@ -6,10 +6,12 @@ use Exception;
 use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Cache;
+use Sharp\Classes\Events\AfterViewRender;
+use Sharp\Classes\Events\BeforeViewRender;
 use Sharp\Classes\Web\Classes\Shard;
 use Sharp\Core\Autoloader;
 
@@ -93,12 +95,12 @@ class Renderer
                 $$name = $value;
         }
 
-        $events = Events::getInstance();
+        $events = EventListener::getInstance();
 
         ob_start();
-        $events->dispatch("beforeBodyViewRender", ["view" => $templateName]);
+        $events->dispatch(new BeforeViewRender($templateName));
         require $path;
-        $events->dispatch("afterBodyViewRender", ["view" => $templateName]);
+        $events->dispatch(new AfterViewRender($templateName));
         $current->endSection();
         $content = ob_get_clean();
 

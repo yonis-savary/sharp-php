@@ -3,7 +3,7 @@
 namespace Sharp\Classes\Extras\AutobahnDrivers;
 
 use Exception;
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Data\DatabaseQuery;
 use Sharp\Classes\Data\ObjectArray;
@@ -12,6 +12,16 @@ use Sharp\Classes\Http\Classes\ResponseCodes;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Core\Utils;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnCreateAfter;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnCreateBefore;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnDeleteAfter;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnDeleteBefore;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnMultipleCreateAfter;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnMultipleCreateBefore;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnReadAfter;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnReadBefore;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateAfter;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateBefore;
 
 class BaseDriver implements DriverInterface
 {
@@ -42,8 +52,8 @@ class BaseDriver implements DriverInterface
         $fields = array_keys($params);
         $values = array_values($params);
 
-        $events = Events::getInstance();
-        $events->dispatch("autobahnCreateBefore", ["model"=>$model, "fields" => $fields, "values" => &$values]);
+        $events = EventListener::getInstance();
+        $events->dispatch(new AutobahnCreateBefore($model, $fields, $values));
 
         $query = new DatabaseQuery($model::getTable(), DatabaseQuery::INSERT);
         $query->setInsertField($fields);
@@ -51,7 +61,7 @@ class BaseDriver implements DriverInterface
         $query->fetch();
         $inserted = Database::getInstance()->lastInsertId();
 
-        $events->dispatch("autobahnCreateAfter", ["model"=>$model, "fields" => $fields, "values" => &$values, "query"=>&$query, "insertedId"=>$inserted]);
+        $events->dispatch(new AutobahnCreateAfter($model, $fields, $values, $query, $inserted));
 
         return Response::json(["insertedId"=>$inserted], ResponseCodes::CREATED);
     }
@@ -79,18 +89,18 @@ class BaseDriver implements DriverInterface
         foreach ($middlewares as $middleware)
             $data = $data->filter($middleware);
 
+        $events = EventListener::getInstance();
+        $events->dispatch(new AutobahnMultipleCreateBefore($data));
+
         $data->forEach(function($element) use (&$query) {
             $query->insertValues(array_values($element));
         });
-
-        $events = Events::getInstance();
-        $events->dispatch("autobahnMultipleCreateBefore", ["model"=>$model, "query"=>&$query]);
 
         $query->fetch();
         $lastInsert = Database::getInstance()->lastInsertId();
         $insertedIdList = range($lastInsert-$data->length()+1, $lastInsert);
 
-        $events->dispatch("autobahnMultipleCreateAfter", ["model"=>$model, "query"=>&$query, "insertedId" => $insertedIdList]);
+        $events->dispatch(new AutobahnMultipleCreateAfter($model, $query, $insertedIdList));
 
         return Response::json(['insertedId' => $insertedIdList]);
     }
@@ -112,12 +122,12 @@ class BaseDriver implements DriverInterface
         foreach ($middlewares as $middleware)
             $middleware($query);
 
-        $events = Events::getInstance();
-        $events->dispatch("autobahnReadBefore", ["model"=>$model, "query"=>&$query]);
+        $events = EventListener::getInstance();
+        $events->dispatch(new AutobahnReadBefore($model, $query));
 
         $results = $query->fetch();
 
-        $events->dispatch("autobahnReadAfter", ["model"=>$model, "query"=>&$query, "results"=>$results]);
+        $events->dispatch(new AutobahnReadAfter($model, $query, $results));
 
         return Response::json($results);
     }
@@ -147,12 +157,12 @@ class BaseDriver implements DriverInterface
         foreach ($middlewares as $middleware)
             $middleware($query);
 
-        $events = Events::getInstance();
-        $events->dispatch("autobahnUpdateBefore", ["model"=>$model, "primaryKey"=>$primaryKeyValue, "query"=>&$query]);
+        $events = EventListener::getInstance();
+        $events->dispatch(new AutobahnUpdateBefore($model, $primaryKeyValue, $query));
 
         $query->fetch();
 
-        $events->dispatch("autobahnUpdateAfter", ["model"=>$model, "primaryKey"=>$primaryKeyValue, "query"=>&$query]);
+        $events->dispatch(new AutobahnUpdateAfter($model, $primaryKeyValue, $query));
 
         return Response::json("DONE", ResponseCodes::CREATED);
     }
@@ -173,12 +183,12 @@ class BaseDriver implements DriverInterface
         foreach ($middlewares as $middleware)
             $middleware($query);
 
-        $events = Events::getInstance();
-        $events->dispatch("autobahnDeleteBefore", ["model"=>$model, "query"=>&$query]);
+        $events = EventListener::getInstance();
+        $events->dispatch(new AutobahnDeleteBefore($model, $query));
 
         $query->fetch();
 
-        $events->dispatch("autobahnDeleteAfter", ["model"=>$model, "query"=>&$query]);
+        $events->dispatch(new AutobahnDeleteAfter($model, $query));
 
         return Response::json("DONE");
     }

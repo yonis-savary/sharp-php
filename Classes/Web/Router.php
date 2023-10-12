@@ -4,12 +4,13 @@ namespace Sharp\Classes\Web;
 
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Cache;
+use Sharp\Classes\Events\RouteNotFound;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
 use Sharp\Classes\Web\Controller;
@@ -213,7 +214,7 @@ class Router
         if (!$route)
         {
             $response = new Response("Page not found", 404, ["Content-Type" => "text/plain"]);
-            Events::getInstance()->dispatch("routeNotFound", ["request" => &$request, "response" => &$response]);
+            EventListener::getInstance()->dispatch(new RouteNotFound($request, $response));
             return $response;
         }
 

@@ -3,7 +3,8 @@
 namespace Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
+use Sharp\Classes\Events\AuthenticatedUser;
 use Sharp\Classes\Security\Authentication;
 use Sharp\Tests\Models\TestUser;
 
@@ -46,13 +47,13 @@ class AuthenticationTest extends TestCase
 
     public function test_event()
     {
-        $events = Events::getInstance();
+        $events = EventListener::getInstance();
         $authentication = new Authentication();
         $authentication->logout();
 
         $eventVar = null;
-        $events->on("authenticatedUser", function($event) use (&$eventVar) {
-            $eventVar = $event["user"]["data"]["login"];
+        $events->on(AuthenticatedUser::class, function(AuthenticatedUser $event) use (&$eventVar) {
+            $eventVar = $event->user["data"]["login"];
         });
 
         $authentication->attempt("admin", "root");
@@ -61,7 +62,7 @@ class AuthenticationTest extends TestCase
         $authentication->attempt("admin", "admin");
         $this->assertEquals("admin", $eventVar);
 
-        Events::removeInstance();
+        EventListener::removeInstance();
     }
 
 

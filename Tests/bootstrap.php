@@ -1,6 +1,6 @@
 <?php
 
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Data\ModelGenerator\ModelGenerator;
@@ -22,7 +22,7 @@ The goal is to make a good envrionment to Test (with Database, Configuration...e
 
 */
 
-Events::removeInstance();
+EventListener::removeInstance();
 
 $defaultStorage = Storage::getInstance();
 $defaultLogger = Logger::getInstance();

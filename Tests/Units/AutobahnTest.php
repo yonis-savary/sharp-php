@@ -4,12 +4,22 @@ namespace Sharp\Tests\Units;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Data\Database;
 use Sharp\Classes\Extras\Autobahn;
 use Sharp\Classes\Web\Router;
 use Sharp\Tests\Models\TestUserData;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnCreateBefore;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnCreateAfter;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnMultipleCreateBefore;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnMultipleCreateAfter;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnReadBefore;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnReadAfter;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateBefore;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateAfter;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnDeleteBefore;
+use Sharp\Classes\Events\AutobahnEvents\AutobahnDeleteAfter;
 
 class AutobahnTest extends TestCase
 {
@@ -53,8 +63,8 @@ class AutobahnTest extends TestCase
     {
         $dispatchedBeforeEvent = false;
         $dispatchedAfterEvent = false;
-        Events::getInstance()->on("autobahnCreateBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
-        Events::getInstance()->on("autobahnCreateAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+        EventListener::getInstance()->on(AutobahnCreateBefore::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        EventListener::getInstance()->on(AutobahnCreateAfter::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
 
         $this->resetTestUserDataTable();
 
@@ -80,8 +90,8 @@ class AutobahnTest extends TestCase
     {
         $dispatchedBeforeEvent = false;
         $dispatchedAfterEvent = false;
-        Events::getInstance()->on("autobahnMultipleCreateBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
-        Events::getInstance()->on("autobahnMultipleCreateAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+        EventListener::getInstance()->on(AutobahnMultipleCreateBefore::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        EventListener::getInstance()->on(AutobahnMultipleCreateAfter::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
 
         $this->resetTestUserDataTable();
 
@@ -118,8 +128,8 @@ class AutobahnTest extends TestCase
     {
         $dispatchedBeforeEvent = false;
         $dispatchedAfterEvent = false;
-        Events::getInstance()->on("autobahnReadBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
-        Events::getInstance()->on("autobahnReadAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+        EventListener::getInstance()->on(AutobahnReadBefore::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        EventListener::getInstance()->on(AutobahnReadAfter::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
 
         $this->resetTestUserDataTable();
 
@@ -185,8 +195,8 @@ class AutobahnTest extends TestCase
     {
         $dispatchedBeforeEvent = false;
         $dispatchedAfterEvent = false;
-        Events::getInstance()->on("autobahnUpdateBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
-        Events::getInstance()->on("autobahnUpdateAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+        EventListener::getInstance()->on(AutobahnUpdateBefore::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        EventListener::getInstance()->on(AutobahnUpdateAfter::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
 
         $this->resetTestUserDataTable();
 
@@ -216,8 +226,8 @@ class AutobahnTest extends TestCase
     {
         $dispatchedBeforeEvent = false;
         $dispatchedAfterEvent = false;
-        Events::getInstance()->on("autobahnDeleteBefore", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
-        Events::getInstance()->on("autobahnDeleteAfter", function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
+        EventListener::getInstance()->on(AutobahnDeleteBefore::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedBeforeEvent = (!$dispatchedAfterEvent); });
+        EventListener::getInstance()->on(AutobahnDeleteAfter::class, function() use (&$dispatchedBeforeEvent, &$dispatchedAfterEvent) { $dispatchedAfterEvent = $dispatchedBeforeEvent; });
 
         $this->resetTestUserDataTable();
 

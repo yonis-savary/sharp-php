@@ -7,8 +7,9 @@ use PDOException;
 use PDOStatement;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Env\Storage;
+use Sharp\Classes\Events\ConnectedDatabase;
 
 class Database
 {
@@ -56,14 +57,17 @@ class Database
         $dsn = $this->getDSN();
         $this->connection = new PDO($dsn, $user, $password);
 
-        Events::getInstance()->dispatch("connectedDatabase", [
-            "driver" => $driver,
-            "database" => $database,
-            "host" => $host,
-            "port" => $port,
-            "user" => $user,
-            "connection" => &$this->connection,
-        ]);
+
+        EventListener::getInstance()->dispatch(
+            new ConnectedDatabase(
+                $this->connection,
+                $driver,
+                $database,
+                $host,
+                $port,
+                $user,
+            )
+        );
     }
 
     /**

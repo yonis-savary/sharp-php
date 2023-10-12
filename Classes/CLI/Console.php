@@ -5,8 +5,9 @@ namespace Sharp\Classes\CLI;
 use Sharp\Classes\CLI\Args;
 use Sharp\Classes\CLI\Command;
 use Sharp\Classes\Core\Component;
-use Sharp\Classes\Core\Events;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Data\ObjectArray;
+use Sharp\Classes\Events\CalledCommand;
 use Sharp\Commands\Help;
 use Sharp\Core\Autoloader;
 
@@ -82,12 +83,6 @@ class Console
         printf("%s[ %s ]%s\n", str_repeat("-", 5), $command->getIdentifier() , str_repeat("-", 25));
         $return = $command(Args::fromArray($argv));
 
-        Events::getInstance()->dispatch("calledCommand", [
-            "command" => $command::class,
-            "name" => $command->getName(),
-            "origin" => $command->getOrigin(),
-            "identifier" => $command->getIdentifier(),
-            "returned" => $return
-        ]);
+        EventListener::getInstance()->dispatch(new CalledCommand($command, $return));
     }
 }
