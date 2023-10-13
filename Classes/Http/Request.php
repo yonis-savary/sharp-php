@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Http;
 
+use CurlHandle;
 use RuntimeException;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Http\Classes\UploadFile;
@@ -341,6 +342,70 @@ class Request
         });
     }
 
+
+    /**
+     * Build a cURL handle for the Request object
+     *
+     * @param ?int $timeout Optionnal cURL timeout limit (seconds)
+     * @param ?string $userAgent Optionnal cURL user-agent header to use
+     * @return CurlHandle Instance containing every request informations
+     */
+    public function toCurlHandle(
+        int $timeout=null,
+        ?string $userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0'
+    ): CurlHandle
+    {
+        $thisGET = $this->get() ?? [];
+        $thisPOST = $this->post() ?? [];
+        $thisMethod = $this->getMethod();
+        $headers = $this->getHeaders();
+        $isJSONRequest = str_starts_with($headers["content-type"] ?? "", "application/json");
+
+        $getParams = count($thisGET) ? http_build_query($this->get(), "?", ";") : "";
+        $url = trim($this->getPath() . $getParams);
+
+        $handle = curl_init($url);
+
+        switch ($thisMethod)
+        {
+            case "GET": /* GET by default*/ ; break;
+            case "POST":
+                curl_setopt($handle, CURLOPT_POST, true);
+                break;
+            case "HEAD":
+                curl_setopt($handle, CURLOPT_NOBODY, 1);
+                break;
+            case "PUT":
+            case "PATCH": curl_setopt($handle, CURLOPT_PUT, 1); break;
+            default: curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $thisMethod); break;
+        }
+
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handle, CURLOPT_HEADER, true);
+
+
+        if (count($thisPOST))
+            curl_setopt($handle, CURLOPT_POSTFIELDS,
+                $isJSONRequest ?
+                    json_encode($thisPOST, JSON_THROW_ON_ERROR):
+                    $thisPOST
+            );
+
+        if ($timeout)
+            curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
+
+        if ($userAgent)
+            $headers['user-agent'] = $userAgent;
+
+        $headersString = [];
+        foreach ($headers as $key => &$value)
+            $headersString[] = "$key: $value";
+
+        curl_setopt($handle, CURLOPT_HTTPHEADER, $headersString);
+
+        return $handle;
+    }
+
     /**
      * Fetch a Request target with Curl !
      * @param Logger $logger Optionnal Logger that can be used to log info about the request/response
@@ -354,33 +419,11 @@ class Request
         int $timeout=null,
         ?string $userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0',
         bool $supportRedirection=true
-    ): Response
+    ): Response|CurlHandle
     {
+        $handle = $this->toCurlHandle($timeout, $userAgent);
+
         $logger ??= new Logger(null);
-
-        $url = trim($this->getPath(). http_build_query($this->get(), "?", ";"));
-
-        $handle = curl_init($url);
-        curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $this->getMethod());
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($handle, CURLOPT_HEADER, true);
-
-        $post = $this->post();
-        if ($post && count($post))
-            curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-
-        if ($timeout)
-            curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
-
-        $headers = $this->getHeaders();
-        if ($userAgent)
-            $headers['user-agent'] = $userAgent;
-
-        $headersString = [];
-        foreach ($headers as $key => &$value)
-            $headersString[] = "$key: $value";
-
-        curl_setopt($handle, CURLOPT_HTTPHEADER, $headersString);
 
         $this->logSelf($logger);
         if (!($result = curl_exec($handle)))
