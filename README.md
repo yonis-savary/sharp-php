@@ -44,7 +44,7 @@ Your directory will look like
 - `.gitmodules`
 
 
-## Next release's features
+## Release's features
 
 🤖 Core
 - [x] JSON Configuration
@@ -53,7 +53,7 @@ Your directory will look like
 - [x] Events
 - [x] CLI Commands
 - [x] Tests
-- [ ] **Utilities commands**
+- [x] Utilities commands
 
 🌐 Web
 - [x] Session
@@ -73,8 +73,3 @@ Your directory will look like
 🎉 Extras
 - [x] Asset serving
 - [x] Model CRUD API
-
-⚗️ Misc
-- [ ] **Complete code cleaning**
-- [ ] **Complete test suite review**
-- [ ] **Complete documentation**
