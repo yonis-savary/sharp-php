@@ -30,8 +30,7 @@ class RendererTest extends TestCase
 
     public function test_render()
     {
-        $res = Renderer::getInstance()->render("sharp-tests-child", ["variable" => "VARIABLE"]);
-        $content = $res->getContent();
+        $content = Renderer::getInstance()->render("sharp-tests-child", ["variable" => "VARIABLE"]);
 
         $this->assertTrue(substr_count($content, "CHILD") == 1);
         $this->assertTrue(substr_count($content, "PARENT") == 1);

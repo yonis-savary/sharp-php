@@ -65,7 +65,7 @@ function style(string $target, bool $inject=false): string
  */
 function render(string $templateName, array $vars=[]) : string
 {
-    return Renderer::getInstance()->render($templateName, $vars)->getContent();
+    return Renderer::getInstance()->render($templateName, $vars);
 }
 
 /**
