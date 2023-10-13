@@ -235,18 +235,20 @@ class Utils
      *
      * @return `true` if "env" is set to "production" in your configuration
      */
-    public static function isProduction(): bool
+    public static function isProduction(Configuration $configuration=null): bool
     {
-        $env = Configuration::getInstance()->get("env", "debug");
+        $configuration ??= Configuration::getInstance();
+        $env = $configuration->get("env", "debug");
         return strtolower($env) === "production";
     }
 
     /**
      * Check if an application is present in "application" in "sharp.json"
      */
-    public static function isApplicationEnabled(string $application): bool
+    public static function isApplicationEnabled(string $application, Configuration $configuration=null): bool
     {
-        $enabled = Configuration::getInstance()->toArray("applications");
+        $configuration ??= Configuration::getInstance();
+        $enabled = $configuration->toArray("applications");
         return in_array($application, $enabled);
     }
 }
