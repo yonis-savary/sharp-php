@@ -45,7 +45,7 @@ class Autoloader
         "Helpers"     => self::REQUIRE,
     ];
 
-    const CACHE_FILE = "Sharp/autoload.php.cache";
+    const CACHE_FILE = "Storage/Cache/autoload.php.cache";
 
     /**
      * Hold the absolute path to the project root
