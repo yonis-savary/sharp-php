@@ -3,7 +3,7 @@
 # 🔏 Session Management
 
 With Sharp, the session management is really straightforward, it is made
-through [Session](../../Classes/Env/Session.php)
+through the [`Session`](../../Classes/Env/Session.php) component
 
 ```php
 $session = Session::getInstance();
@@ -25,16 +25,18 @@ $hasPrivileges = $session->has("privileges");
 
 # Unset remove some data from the session
 $session->unset("temp-file");
+
+# Perform an operation on a key
+$session->edit("fail-counter", fn($x=0) => $x+1);
+
+# Set/Replace multiple keys at the same time
+$session->merge([
+    "logged" => 0,
+    "fail-counter" => 0
+]);
 ```
 
-**Also, two shortcuts are present in [Helpers/helpers.php](../../Helpers/helpers.php) to help you
-read/write data from the session**
-
-```php
-session("myKey"); // Alias to Session::getInstance()->get()
-sessionSet("myKey", $myValue); // Alias to Session::getInstance()->set()
-```
 > [!NOTE]
-> `Session` class is bound to `$_SESSION` by reference, which mean that you can edit `$_SESSION` and still get your data with the `Session` component
+> `Session` class is bound to `$_SESSION` by reference ! Which mean that you can edit `$_SESSION` and still get your data with the `Session` component
 
 [< Back to summary](../home.md)

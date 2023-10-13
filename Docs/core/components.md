@@ -2,17 +2,18 @@
 
 # 🧩 Sharp components
 
-Some classes/features need to be accessed globally from your application (like `Configuration`, `Logger`...etc)
+Some classes need to be accessed globally from your application (like `Configuration`, `Logger`...etc)
 to resolve this, the [`Component`](../../Classes/Core/Component.php) trait was created.
 
-To be clear: **this trait purpose is to be a [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that
-does not limit itself to one instance**;
+To be clear: **This trait's purpose is to be a [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that
+does not limit itself to one instance**
 
 One main instance exists, and can be retrieved with `getInstance()`,
 but you can still create other instances of your classes, which can be very useful
-(example: you may have one main connection to your database, but create another for some specific part of your application)
 
-A Component class got those methods :
+(Example: you may have one main connection to your database, but create another for some specific part of your application)
+
+Every Component got those methods :
 ```php
 /* Can be modified, gives a default instance of your class when getInstance is called the first time */
 public static function getDefaultInstance();
@@ -27,6 +28,9 @@ final public static function setInstance(self $newInstance);
 final public static function removeInstance();
 ```
 
+> [!NOTE]
+> Apart from edge case, the only method you should use from this trait is `getInstance()`
+
 ## ✅ Tutorial: Creating a Component
 
 ### Context
@@ -35,8 +39,8 @@ final public static function removeInstance();
 
 ### Creation
 
-We want to create a `MagicOrderPrinter`, which is a class that
-can print a PDF of an order and log informations about it
+We want to create a component named `MagicOrderPrinter`, which is a class that
+can print a PDF of an order and log information about it
 
 First, we need to define our class
 
@@ -77,7 +81,7 @@ class MagicOrderPrinter
 ```
 
 From here, the first time we call `MagicOrderPrinter::getInstance()`,
-a global instance will be created, and shall log informations to `magic-printer.csv` by default
+a global instance will be created, and shall log information to `magic-printer.csv` by default
 
 ```php
 # Using the default instance

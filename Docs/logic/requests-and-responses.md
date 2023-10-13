@@ -2,13 +2,24 @@
 
 # 📨 Requests and Responses
 
-[`Request`](../../Classes/Http/Request.php) and [`Response`](../../Classes/Http/Response.php) classes are basics data structure to interact with input/output, both of them are made of getters/setters with a few additionnal features
+[`Request`](../../Classes/Http/Request.php) and [`Response`](../../Classes/Http/Response.php) classes are basics data structure to interact with input/output, both of them are made of getters/setters with a few additional features
+
+> [!NOTE]
+> In an effort to normalize header names,
+> each Response/Request header name is transformed to its lowercase equivalent
 
 ## Basic Requests Usage
 
+### Request Creation
+
+In most cases, you won't have the need to create a Request
+
 ```php
+// Build from PHP Global variables
+$request = Request::buildFromGlobals();
+
 // Manually build a response
-// $get, $post, $headers must be associatives
+// $get, $post, $headers must be associative
 new Request(
     protected string $method,
     protected string $path,
@@ -17,17 +28,21 @@ new Request(
     protected array $uploads=[],
     protected array $headers=[]
 );
+```
 
-// Build from PHP Global variables
-$request = Request::buildFromGlobals();
+### Retrieving Parameters & Body
 
+```php
 $POST = $request->post(); // Get POST data
 $GET  = $request->get();  // Get GET data
-$ALL  = $request->all(); // Get POST + GET merged data
+$ALL  = $request->all(); // Get POST + GET merged data (GET is considered more important)
+$body = $request->body(); // Get JSON Body
 
 // Params read parameters from both POST and GET sources
-$params = $request->params(["username", "password"]); // Get an associative array
-$params = $request->params("password"); // Get a value or null if inexistant
+// Get a value or null if inexistent
+$password = $request->params("password");
+// Get an associative array
+$creds = $request->params(["username", "password"]);
 
 // $request->paramsFromGet(); Same as params but only takes values from GET
 // $request->paramsFromPost(); Same as params but only takes values from POST
@@ -38,9 +53,15 @@ list($username, $password) = $request->list("username", "password");
 // Delete parameters from both POST and GET data
 $request->unset(["username", "password"]);
 
+```
+
+
+### Getters/Setters
+
+```php
 $request->getMethod(); // Get HTTP Method
 $request->getPath(); // Get pathname (Without GET parameters)
-$request->getHeaders(); // Get an associative array with HeaderName => HeaderValue
+$request->getHeaders(); // Get an associative array with header-name => HeaderValue
 
 $request->setSlugs(); // Set slugs values
 $request->getSlugs(); // Get slugs values
@@ -52,9 +73,12 @@ $request->setRoute();
 $request->getRoute();
 
 $request->getUploads(); // Get an array of UploadFile
+
 ```
 
 ## Basic Responses Usage
+
+### Response creation
 
 ```php
 // Generate an HTML response
@@ -63,7 +87,7 @@ $response = Response::html("<html>...");
 // Generate a JSON response
 $response = Response::json($myObject);
 
-// Generate a Response that transfert a file to the client
+// Generate a Response that transfer a file to the client
 $response = Response::file("/path/to/my/file.txt");
 
 // Generate a Response that redirect the Client
@@ -83,6 +107,11 @@ new Response(
 // can generate a string to display to the client
 // (it is called if given content is null)
 
+```
+
+### Response interaction
+
+```php
 // Get raw content object
 $content = $response->getContent();
 
@@ -119,7 +148,7 @@ You can give some parameters to this function
 to customize its behavior
 
 ```php
-// $logger: A Logger can be given to log debug informations
+// $logger: A Logger can be given to log debug information
 // $timeout: If given, will given the CURL handler a max timeout
 // $userAgent: The default userAgent can be overwritten too
 // $supportRedirection: If `true`, fetch() will follow 3XX response and return the last response
@@ -130,5 +159,24 @@ $request->fetch(
     bool $supportRedirection=true
 );
 ```
+
+## Request Configuration
+
+Here is the default configuration for `Request`
+
+```json
+"request": {
+    "typed-parameters": true
+}
+```
+
+`typed-parameters` means that every `GET` parameters that comes as a string will be interpreted.
+When this parameter is enabled `Request` tried to interpret Boolean & Null values coming from `$_GET`
+
+| Origin                               | Transformed       |
+|--------------------------------------|-------------------|
+| `"true"`, `"TRUE"`, `"True"`, ...    | `true` (boolean)  |
+| `"false"`, `"FALSE"`, `"False"`, ... | `false` (boolean) |
+| `"null"`, `"NULL"`, `"Null"`, ...    | `null`            |
 
 [< Back to summary](../home.md)

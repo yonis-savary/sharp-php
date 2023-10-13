@@ -1,19 +1,10 @@
 [< Back to summary](../home.md)
 
-# Sharp-PHP - Serving Assets with `AssetServer`
+# Asset Serving
 
 The `AssetServer` component is here to help you serve your assets (CSS/JS/IMG...etc.)
 
 This component was made to make the application directory cleaner by putting assets in a `Assets` directory and not `Public`
-
-## TL;DR
-
-Put your assets in your application `Assets` (sub)directory
-
-Give one of those function a relative asset file name to...
-- `style($x)` to put a stylesheet in your view
-- `script($x)` to put a script in your view
-- `asset($x)` to get an URL used to fetch the resource
 
 ## Organize your assets
 
@@ -32,7 +23,7 @@ Here is the default configuration for `AssetServer`
 }
 ```
 
-- setting `enabled` to `true` make sure the component analyse any incoming request
+- setting `enabled` to `true` make sure the component analyze any incoming request
 - `url` define with URL is used to serve assets
 - `middlewares` is used to add security layers to your assets (example: you can make them only accessible for authenticated user)
 - setting `max-age` to an integer allow your assets to be cached by the browser (example: 3600 cache the resource for 1 hour)
@@ -60,7 +51,7 @@ To get your assets, put this in your view
     src="<?= AssetsServer::getInstance()->getURL('shipping.js') ?>"
 ></script>
 ```
-But writting this is quite long and not very readable.
+But writing this is quite long and not very readable.
 
 To address this, the [`helper-web.php`](../../Helpers/helpers-web.php) got three useful functions
 

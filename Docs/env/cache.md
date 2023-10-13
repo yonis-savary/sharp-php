@@ -2,8 +2,7 @@
 
 # 🔥 Cache
 
-The [`Cache`](../../Classes/Env/Cache.php)
-class can save [serialized](https://www.php.net/manual/en/language.oop5.serialization.php) objects in any [`Storage`](./storage.md)
+The [`Cache`](../../Classes/Env/Cache.php) class can save [serialized](https://www.php.net/manual/en/language.oop5.serialization.php) objects in any [`Storage`](./storage.md)
 
 ```php
 $cache = Cache::getInstance();
@@ -26,7 +25,7 @@ $exists = $cache->has("my-key");
 $cache->delete("key-to-delete");
 ```
 
-## Advanced - Working with references
+## Working with references
 
 Let's say you have a component that need to cache some data to work faster
 
@@ -62,5 +61,18 @@ public function setData(mixed $data)
 
 This is the same as the first solution, the element will be saved on destruct and
 can always be retrieved with `Cache->get()`
+
+## Advanced features
+
+```php
+// Get a Storage object pointing to the Cache directory
+$myCache->getStorage();
+
+// Get existing (and not expired) keys in the cache
+$myCache->getKeys();
+
+// Get another Cache object pointing into a subdirectory of the parent cache
+$myCache->getSubCache();
+```
 
 [< Back to summary](../home.md)

@@ -2,9 +2,9 @@
 
 # 🚃 ObjectArray class
 
-Sharp got the [`ObjectArray`](../../Classes/Data/ObjectArray.php) class, which purpose is to be an Object version of an array of data (list, not associative array)
+Sharp got the [`ObjectArray`](../../Classes/Data/ObjectArray.php) class, which purpose is to be an Object version of an array of data (A list, not an associative array)
 
-This class got the most of "standart" array methods an array can have, this include
+This class got the most of ["standard"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array#array_methods_and_empty_slots) array methods an array can have, this include
 ```php
 $myArray = new ObjectArray();
 $myArray->push();
@@ -24,14 +24,11 @@ $myArray->slice();
 $myArray->reverse();
 ```
 
-Most of them do exactly what you expect them to do
+And most of them do exactly what you expect them to do
 
-But this class data handling is quite particular,
-when calling
-
-```$myArray->map($myFunction)```
-
-**Callbacks are not applied, until you call `$myArray->collect()`, which return the new data**
+> [!IMPORTANT]
+> This class data handling behavior is quite particular, when calling `$myArray->map($myFunction)`,
+> callbacks are not applied until you call `$myArray->collect()`, which return the new data
 
 Every functions above return a new `ObjectArray` instance with a new filter/transformer, which means that you can create copies
 
@@ -57,7 +54,7 @@ Also, as `ObjectArray` return new instances of itself, this mean that you can ch
 // [0,4,8,12]
 ```
 
-## Additionnal properties/methods
+## Additional properties/methods
 
 ```php
 // Alias to the constructor, can be used as a callback
@@ -92,9 +89,9 @@ $myArray->combine(fn($value) => [$alphabet[$i], $i]);
 
 // Sort the array by a given key (given by a callback)
 // Sort from worst score to best
-$users->sortByKey(fn($user) => $user["score"])
+$users->sortByKey(fn($user) => $user["score"]);
 // Sort from best score to worst
-$users->sortByKey(fn($user) => $user["score"], true)
+$users->sortByKey(fn($user) => $user["score"], true);
 ```
 
 [< Back to Summary](../home.md)

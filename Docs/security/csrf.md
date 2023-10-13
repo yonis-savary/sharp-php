@@ -27,7 +27,7 @@ $csrf->checkRequest($requestObject);
 
 By default, `Csrf` gives you an HTML Input as is :
 
-```html
+```php
 <input type="hidden" name="csrf-token" value="<token>">
 ```
 

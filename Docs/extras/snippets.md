@@ -71,14 +71,14 @@ tags: view, template, html, render
 
 ```php
 Renderer::getInstance()->render(
-    "directory/viewname",
+    "directory/view_name",
     ["name" => "Paul"]
 );
 
 # Global query function
 render(/*...*/);
 ```
-`viewname.php`:
+`view_name.php`:
 ```php
 <p>Hello <?= $name ?> </p>
 ```

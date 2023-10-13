@@ -2,7 +2,7 @@
 
 The goals behind Sharp are :
 1. Make a clean code that is intuitive
-2. Remove unecessary abstraction layers
+2. Remove unnecessary abstraction layers
 3. Don't hide the code behind Facades objects
 4. Make a Framework that doesn't break your IDE
 5. Let you code apps quickly without worrying about setup/build
@@ -17,34 +17,36 @@ or in GitHub directly
 Even though this documentation should be enough to get started, don't hesitate to checkout the framework source code, it is a good way to learn about it too
 
 Core
-- 📦 [App directory & Configuration](./core/config.md)
-- 🧩 [Understanding Sharp components](./core/components.md)
-- 💻 [CLI command](./core/commands.md)
-- 📃 [Logging](./core/logging.md)
-- 🔏 [Session](./core/session.md)
-- 🌐 [Code Helpers](./core/helpers.md)
-- 💬 [Q/A & Snippets](./extras/snippets.md)
+- [📦 App directory & Configuration](./core/config.md)
+- [🧩 Understanding Sharp components](./core/components.md)
+- [💻 CLI command](./core/commands.md)
+- [📃 Logging](./core/logging.md)
+- [🔏 Session](./core/session.md)
 
-Core (Advanced):
+Routing & Logic
+- [🛣️ Routing](./logic/routing.md)
+- [⚙️ Controllers](./logic/controllers.md)
+- [🚦 Middlewares](./logic/middlewares.md)
+- [📨 Requests & Responses](./logic/requests-and-responses.md)
+- [🖌️ View Rendering](./logic/rendering.md)
+
+Core (Advanced)
 - [📁 Storage](./env/storage.md)
 - [🔥 Cache](./env/cache.md)
 - [🪝 Events](./core/events.md)
 - [🚃 ObjectArray class](./core/object-array.md)
 
-Routing & Logic
-- 🛣️ [Routing](./logic/routing.md)
-- ⚙️  [Controllers](./logic/controllers.md)
-- 🚦 [Middlewares](./logic/middlewares.md)
-- 📨 [Requests & Responses](./logic/requests-and-responses.md)
-
 Database
-- 📚 [Database and Models](./data/database.md)
+- [📚 Database and Models](./data/database.md)
+- [📜 Database Queries](./data/database-query.md)
 
 Business Logic
-- 🥤 [Session Straw](./extras/session-straw.md)
+- [🥤 Session Straw](./extras/session-straw.md)
 
 Extras
-- ⭐️ [Serving assets](./extras/assets.md)
-- 🚘 [Automatic CRUD API](./extras/autobahn.md)
-- 🔐 [Authentication](./security/authentication.md)
-- ✅ [CSRF](./security/csrf.md)
+- [⭐️ Serving assets](./extras/assets.md)
+- [🚘 Automatic CRUD API](./extras/autobahn.md)
+- [🔐 Authentication](./security/authentication.md)
+- [✅ CSRF](./security/csrf.md)
+- [🌐 Code Helpers](./core/helpers.md)
+- [💬 Q/A & Snippets](./extras/snippets.md)

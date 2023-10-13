@@ -2,9 +2,11 @@
 
 # 📚 Database and models
 
+Database connection is made through the [`Database`](../../Classes/Data/Database.php) component (which uses `PDO`)
+
 ## Using the database
 
-Before using your database, you have to configure its connection
+Before using the database, we have to configure its connection
 
 ```json
 "database": {
@@ -37,23 +39,23 @@ $results = $db->query($query);
 $id = $db->lastInsertId();
 ```
 
-### Additionnal properties
+### Additional Database Properties
 
 ```php
-$db = Database::getInstance();
-
-$db->hasTable("ship_order");
-
-$db->hasField("ship_order", "fk_ship");
-
-# build() binding can take arrays of data
+// build() binding can take arrays of data
 $results = $db->query(
     "SELECT id FROM ship WHERE name IN {}",
     [["Above the code", "PHP Bounty"]]
 );
+
+// Check if a table exists (return true/false)
+$db->hasTable("ship_order");
+
+// Check if a field in a table exists (return true if both exists)
+$db->hasField("ship_order", "fk_ship");
 ```
 
-### Working with SQLite !
+### Working with SQLite
 
 `Database` also support SQLite connections ! Here is an example of configuration
 
@@ -69,27 +71,34 @@ This config will create a `Storage/myDatabase.db` file with your data inside
 
 ## Interacting with models
 
-Sharp philosophy on models is: your application don't have to dictate how your database schema should look like, it is your application that must adapt itself to your structure
+Sharp philosophy on models is
+> Your application don't have to dictate how your database schema should look like
+>
+> It is your application that must adapt itself to your structure
 
-Models in Sharp are very simple; A model is a class that use the
+A Model in Sharp is a class that use the
 [`Sharp\Classes\Data\Model`](../../Classes/Data/Model.php) trait
 
 The goal of sharp is to avoid writting manually any model, they can be generated automatically
 
 ### Generating models
 
-To generate your models, you first have to configure your database connection, when it's done, launch this in your terminal
+To generate your models, launch this in your terminal
 
 ```bash
 php do fetch-models
 ```
 
-This will create models classes in `YourApp/Models`
+This will create models classes in `YourApp/Models`, with `snake_case` names transformed their `PascalCase` equivalent
 
 > [!NOTE]
-> SQL adapters transforms `snake_case` names to `PascalCase`
+> So far, only two types of database are supported :
+> - MySQL (+MariaDB)
+> - SQLite
+>
+> A new adapter can be created by implementing a new `GeneratorDriver`
 
-### Interaction
+### Model Interaction
 
 Let's say we have a `User` model which got this structure:
 ```sql
@@ -126,6 +135,9 @@ $someUser = User::select()
 ->where("id", 168)
 ->first();
 
+// Same as the previous query
+$someUser = User::findId(168);
+
 User::update()
 ->set("fk_type", 2)
 ->where("fk_type", 5)
@@ -137,53 +149,6 @@ User::delete()
 ->fetch();
 ```
 
-### Select query return format
-
-Select queries are specials, they explore your models relations to select every possible fields
-
-Let's say you have a `User` model, which points to the `Person` model through `fk_person`, which points to `PersonPhone` through `fk_phone`, our response format will be
-
-```json
-[
-    {
-        "data":
-        {
-            "id": "...",
-            "login": "...",
-            "password": "...",
-            "...": "..."
-        },
-        "fk_person":
-        {
-            "data":
-            {
-                "firstname": "bob",
-                "lastname": "robertson",
-                "...": "..."
-            },
-            "fk_phone":
-            {
-                "number": "0123456789",
-                "...": "..."
-            }
-        }
-    }
-]
-```
-
-### Bottleneck model exploration
-
-Using this prototype
-```php
-select(bool $recursive=true, array $foreignKeyIgnores=[]);
-```
-
-We can control how `DatabaseQuery` explore our "model tree"
-
-By setting `$recursive` to `false`, we only fetch our model data, and don't explore more
-
-Putting relations in `$foreignKeysIgnores` as `table&foreign_key[&foreign_key]` :
-- To ignore the phone key, we can put `"user&fk_person&fk_phone"`
-- Putting `"user&fk_person"` will also ignore every model that depends on it (`"user&fk_person&fk_phone"` in this case)
+To know more on `DatabaseQuery`, you can read [its documentation](./database-query.md)
 
 [< Back to summary](../home.md)

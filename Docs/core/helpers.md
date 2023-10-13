@@ -4,7 +4,7 @@
 
 Sharp got some helpers files that are included when the framework is loaded.
 
-Those files contains shortcuts to basic framework operation (like adding a route, logging informations... etc.)
+Those files contains shortcuts to basic framework operation (like adding a route, logging information... etc.)
 
 ## Files
 
@@ -44,7 +44,7 @@ function emergency(mixed ...$messages): void;
 ```php
 function storePath            (string $path): string;
 
-function storegetSubStorage   (string $path): Storage;
+function storeGetSubStorage   (string $path): Storage;
 function storeGetStream       (string $path, string $mode="r", bool $autoclose=true): mixed;
 
 function storeWrite           (string $path, string $content, int $flags=0): void;

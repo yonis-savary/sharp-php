@@ -4,7 +4,7 @@
 
 Sharp got the [`Authentication`](../../Classes/Security/Authentication.php) class to handle authentication
 
-Authentication is made through [Models](../data/database.md)
+Authentication is made through a [Model](../data/database.md) that you can choose
 
 ## Configuration
 
@@ -20,10 +20,10 @@ You have to configure those five parameters in your configuration:
 }
 ```
 
-- `model` is the full namespace to your model class
+- `model` is the full classname to your model class
 - `login-field` is the name of the unique field in your model
 - `password-field` is the name of the field where your password hash is stored
-- `salt-field` (optionnal, can be `null`) is the name of the field where your password salt is stored
+- `salt-field` (optional, can be `null`) is the name of the field where your password salt is stored
 - `session-duration` duration of Authentication session in seconds (for example, 3600sec <=> 1 hour, after one hour of inactivity, the user is logged out)
 
 ## Usage
@@ -46,7 +46,7 @@ $user = $authentication->getUser();
 // Logout the user as reset attempt number
 $authentication->logout();
 
-// Number of failed attempts number (reseted when logged in)
+// Number of failed attempts number (reset to 0 when logged in)
 $authentication->attemptNumber();
 ```
 
@@ -101,6 +101,7 @@ class AuthController
     public static function declareRoutes()
     {
         Router::getInstance()->addRoutes(
+            Route::view("/login", "user/login"),
             Route::post("/login", [self::class, "handleLogin"])
         );
     }

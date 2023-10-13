@@ -26,9 +26,13 @@ Router::getInstance()->addRoutes(
 );
 ```
 
+But as your application grows, the routes number can become confusing, knowing which route lead to which method and which method is used by which route can be hard
+
 ## Controller trait
 
-If you want to group your logic and routes declarations, you can make your class use the `Controller` trait, which has the `declareRoutes()` method that is called when your application's routes are loaded
+If you want to group your logic and routes declarations, you can make a class that use the `Controller` trait
+
+When `Router` loads your application routes, it will call the `declareRoutes()` method of every `Controller` and give itself as a parameter
 
 ```php
 class MyController

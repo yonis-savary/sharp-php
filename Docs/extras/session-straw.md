@@ -19,8 +19,8 @@ $session->set(USER_PERMISSION, [1,2,3]);
 $permissions = $session->get(USER_PERMISSION);
 ```
 
-It is readable, but not very pratical, we can do better,
-with the [Session Straw](../../Classes/Extras/SessionStraw.php) trait
+It is readable, but not very practical, we can do better,
+with the [`SessionStraw`](../../Classes/Extras/SessionStraw.php) trait
 
 This trait is simply a way to transform a class into a global getter-setter that store its data to the session
 
@@ -32,7 +32,7 @@ UserPermission::set([1,2,3]);
 $permission = UserPermission::get();
 ```
 
-This way, you have a global variable that is stored in the session under a namespace
+This way, you have a global variable that is stored in the session
 
 ### Creating a straw
 
