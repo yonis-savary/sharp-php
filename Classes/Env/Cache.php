@@ -38,6 +38,9 @@ class Cache
 
         foreach ($this->storage->listFiles() as $file)
         {
+            if (!preg_match("/^.*_.*_.*$/", basename($file)))
+                continue;
+
             if (!($element = CacheElement::fromFile($file)))
                 continue;
 
