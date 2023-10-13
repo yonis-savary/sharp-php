@@ -97,8 +97,8 @@ class UploadFileTest extends TestCase
 
     public function test_getInputName()
     {
-        $upload = new UploadFile($this->getDummyPHPUpload(), "someupload");
-        $this->assertEquals("someupload", $upload->getInputName());
+        $upload = new UploadFile($this->getDummyPHPUpload(), "someUpload");
+        $this->assertEquals("someUpload", $upload->getInputName());
     }
 
     public function test_getExtension()

@@ -167,6 +167,17 @@ class ResponseTest extends TestCase
         $this->assertEquals("/another-one", $response->getHeaders()["location"]);
     }
 
+    public function test_render()
+    {
+        $response = Response::render("sharp-tests/sharp-tests-child.php", ["variable" => "VARIABLE"]);
+        $content = $response->getContent();
+
+        $this->assertTrue(substr_count($content, "CHILD") == 1);
+        $this->assertTrue(substr_count($content, "PARENT") == 1);
+        $this->assertTrue(substr_count($content, "COMPONENT") == 2);
+        $this->assertTrue(substr_count($content, "VARIABLE") == 1);
+    }
+
     public function test_adapt()
     {
         $this->assertInstanceOf(Response::class, Response::adapt(123));

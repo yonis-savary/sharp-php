@@ -47,7 +47,7 @@ class RouteTest extends TestCase
         $this->assertEquals(["DELETE"], $route->getMethods());
     }
 
-    public function test_getsetPath()
+    public function test_getSetPath()
     {
         $myPath = "/A";
         $secondPath = "/B";
@@ -58,7 +58,7 @@ class RouteTest extends TestCase
         $this->assertEquals($secondPath, $route->getPath());
     }
 
-    public function test_getsetCallback()
+    public function test_getSetCallback()
     {
         $myCallback = fn()=>"A";
         $secondCallback = fn()=>"B";
@@ -69,7 +69,7 @@ class RouteTest extends TestCase
         $this->assertEquals($secondCallback, $route->getCallback());
     }
 
-    public function test_getsetMethods()
+    public function test_getSetMethods()
     {
         $myMethods = ["A"];
         $secondMethods = ["B"];
@@ -80,7 +80,7 @@ class RouteTest extends TestCase
         $this->assertEquals($secondMethods, $route->getMethods());
     }
 
-    public function test_getsetMiddlewares()
+    public function test_getSetMiddlewares()
     {
         $myMiddlewares = [MiddlewareA::class];
         $secondMiddlewares = [MiddlewareB::class];
@@ -91,7 +91,7 @@ class RouteTest extends TestCase
         $this->assertEquals($secondMiddlewares, $route->getMiddlewares());
     }
 
-    public function test_getsetExtras()
+    public function test_getSetExtras()
     {
         $myExtras = ["A"];
         $secondExtras = ["B"];
@@ -186,8 +186,6 @@ class RouteTest extends TestCase
         $this->genericSlugFormatTest("/{time:x}",     $samples["time"],  $samplesWithout(["time"]));
         $this->genericSlugFormatTest("/{datetime:x}", $samples["datetime"],  $samplesWithout(["datetime"]));
     }
-
-
 
     public function test_file()
     {

@@ -58,6 +58,17 @@ class ConfigurableTest extends TestCase
         $this->assertTrue($instance->isEnabled());
     }
 
+    public function test_isCached()
+    {
+        $instance = new DummyConfigurable();
+
+        $instance->setConfiguration(["cached" => false]);
+        $this->assertFalse($instance->isCached());
+
+        $instance->setConfiguration(["cached" => true]);
+        $this->assertTrue($instance->isCached());
+    }
+
     public function test_getConfiguration()
     {
         $configData = ["enabled" => false, "cached" => false];

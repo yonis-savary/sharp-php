@@ -121,7 +121,7 @@ class RouterTest extends TestCase
 
     /**
      * Test if the Router cache correctly routes that have the same path but
-     * support differents methods
+     * support different methods
      */
     public function test_issue_cached_same_path_different_methods()
     {
@@ -147,12 +147,8 @@ class RouterTest extends TestCase
 
     }
 
-
-
-
     public function test_issue_same_path_with_suffix()
     {
-
         $router = new Router();
 
         $dummy = 0;

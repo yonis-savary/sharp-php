@@ -79,8 +79,8 @@ class AbstractMapTest extends TestCase
         $this->assertFalse($dummy->has("key"));
         $this->assertEquals("B", $dummy->get("key", "B"));
 
-        $dummy->unset("inexistant-key");
-        $this->assertFalse($dummy->has("inexistant-key"));
+        $dummy->unset("inexistent-key");
+        $this->assertFalse($dummy->has("inexistent-key"));
     }
 
     public function test_toArray()
@@ -98,15 +98,15 @@ class AbstractMapTest extends TestCase
     {
         $dummy = $this->getDummyAbstractMap();
 
-        $dummy->edit("inexistant", fn($x) => $x + 5, 0);
-        $this->assertEquals(5, $dummy->get("inexistant"));
-        $dummy->edit("inexistant", fn($x) => $x + 5, 0);
-        $this->assertEquals(10, $dummy->get("inexistant"));
+        $dummy->edit("inexistent", fn($x) => $x + 5, 0);
+        $this->assertEquals(5, $dummy->get("inexistent"));
+        $dummy->edit("inexistent", fn($x) => $x + 5, 0);
+        $this->assertEquals(10, $dummy->get("inexistent"));
 
-        $dummy->set("existant", "Hello");
-        $dummy->edit("existant", fn($x) => $x . " world");
+        $dummy->set("existent", "Hello");
+        $dummy->edit("existent", fn($x) => $x . " world");
 
-        $this->assertEquals("Hello world", $dummy->get("existant"));
+        $this->assertEquals("Hello world", $dummy->get("existent"));
     }
 
     public function test_dump()

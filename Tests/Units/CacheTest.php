@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Env\Classes\CacheElement;
 use Sharp\Classes\Env\Storage;
+use Sharp\Core\Utils;
 
 class CacheTest extends TestCase
 {
@@ -121,5 +122,31 @@ class CacheTest extends TestCase
 
         $reference = 10;
         $this->assertEquals(10, $cache->get("my-key"));
+    }
+
+    public function test_getKeys()
+    {
+        $cache = $this->getDummyCache();
+
+        $cache->set("A", true);
+        $this->assertEquals(["A"], $cache->getKeys());
+
+        $cache->set("B", true);
+        $this->assertEquals(["A", "B"], $cache->getKeys());
+
+        $cache->delete("A");
+        $this->assertEquals(["B"], $cache->getKeys());
+    }
+
+    public function test_getSubCache()
+    {
+        $parent = $this->getDummyCache();
+        $child = $parent->getSubCache("sub-cache");
+
+        $this->assertInstanceOf(Cache::class, $child);
+        $this->assertEquals(
+            Utils::joinPath( $parent->getStorage()->getRoot(), "sub-cache" ),
+            $child->getStorage()->getRoot()
+        );
     }
 }

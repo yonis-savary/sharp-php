@@ -3,7 +3,9 @@
 namespace Sharp\Tests\Units;
 
 use InvalidArgumentException;
+use PHPUnit\Event\TestRunner\Configured;
 use PHPUnit\Framework\TestCase;
+use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Storage;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
@@ -97,8 +99,8 @@ class UtilsTest extends TestCase
             "b.txt",
             "dir/c.txt",
             "dir/d.txt",
-            "dir/subdir/e.txt",
-            "dir/subdir/f.txt"
+            "dir/subDirectory/e.txt",
+            "dir/subDirectory/f.txt"
         ] as $file) $storage->write($file, "text");
         return $storage;
     }
@@ -112,13 +114,13 @@ class UtilsTest extends TestCase
             "b.txt",
             "dir/c.txt",
             "dir/d.txt",
-            "dir/subdir/e.txt",
-            "dir/subdir/f.txt"
+            "dir/subDirectory/e.txt",
+            "dir/subDirectory/f.txt"
         ], $storage);
 
         $DIRS = $this->arrayOfPaths([
             "dir",
-            "dir/subdir"
+            "dir/subDirectory"
         ], $storage);
 
         $ALL = $this->arrayOfPaths([
@@ -127,9 +129,9 @@ class UtilsTest extends TestCase
             "dir",
             "dir/c.txt",
             "dir/d.txt",
-            "dir/subdir",
-            "dir/subdir/e.txt",
-            "dir/subdir/f.txt"
+            "dir/subDirectory",
+            "dir/subDirectory/e.txt",
+            "dir/subDirectory/f.txt"
         ], $storage);
 
         $this->assertEquals($ALL, Utils::exploreDirectory($storage->getRoot(), Storage::NO_FILTER));
@@ -143,7 +145,7 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($this->arrayOfPaths(["a.txt", "b.txt"], $storage), Utils::listFiles($storage->getRoot()));
         $this->assertEquals($this->arrayOfPaths(["dir/c.txt", "dir/d.txt"], $storage), Utils::listFiles($storage->path("dir")));
-        $this->assertEquals($this->arrayOfPaths(["dir/subdir/e.txt", "dir/subdir/f.txt"], $storage), Utils::listFiles($storage->path("dir/subdir")));
+        $this->assertEquals($this->arrayOfPaths(["dir/subDirectory/e.txt", "dir/subDirectory/f.txt"], $storage), Utils::listFiles($storage->path("dir/subDirectory")));
     }
 
     public function test_listDirectories()
@@ -151,7 +153,7 @@ class UtilsTest extends TestCase
         $storage = $this->getDummyStorage();
 
         $this->assertEquals($this->arrayOfPaths(["dir"], $storage), Utils::listDirectories($storage->getRoot()));
-        $this->assertEquals($this->arrayOfPaths(["dir/subdir"], $storage), Utils::listDirectories($storage->path("dir")));
+        $this->assertEquals($this->arrayOfPaths(["dir/subDirectory"], $storage), Utils::listDirectories($storage->path("dir")));
     }
 
     public function test_valueHasFlag()
@@ -188,5 +190,31 @@ class UtilsTest extends TestCase
         $this->assertEquals([5], Utils::toArray([5]));
         $this->assertEquals([["A" => 5]], Utils::toArray(["A"=>5]));
         $this->assertEquals([["A" => 5]], Utils::toArray([["A"=>5]]));
+    }
+
+    public function test_isProduction()
+    {
+        $isActuallyProduction = Configuration::getInstance()->get("env", "debug") === "production";
+
+        $this->assertEquals($isActuallyProduction, Utils::isProduction());
+
+        $configInProduction = new Configuration();
+        $configInProduction->set("env", "production");
+        $this->assertTrue(Utils::isProduction($configInProduction));
+
+        $configInDebug = new Configuration();
+        $configInDebug->set("env", "debug");
+        $this->assertFalse(Utils::isProduction($configInDebug));
+    }
+
+    public function test_isApplicationEnabled()
+    {
+        $dummyConfig = new Configuration();
+        $dummyConfig->set("applications", ["A","B","C"]);
+
+        $this->assertTrue(Utils::isApplicationEnabled("A", $dummyConfig));
+        $this->assertTrue(Utils::isApplicationEnabled("B", $dummyConfig));
+        $this->assertTrue(Utils::isApplicationEnabled("C", $dummyConfig));
+        $this->assertFalse(Utils::isApplicationEnabled("D", $dummyConfig));
     }
 }

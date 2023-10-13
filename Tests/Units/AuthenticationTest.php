@@ -15,10 +15,10 @@ class AuthenticationTest extends TestCase
         $authentication = new Authentication();
         $authentication->logout();
 
-        // Good creds
+        // Good credentials
         $this->assertTrue($authentication->attempt("admin", "admin"));
 
-        // Bad creds/password
+        // Bad credentials/password
         $this->assertFalse($authentication->attempt("root", "admin"));
         $this->assertFalse($authentication->attempt("admin", "root"));
         $this->assertFalse($authentication->attempt("root", "root"));
@@ -128,5 +128,19 @@ class AuthenticationTest extends TestCase
 
         $authentication->attempt("root", "root");
         $this->assertNull($authentication->getUser());
+    }
+
+    public function test_createUser()
+    {
+        $authentication = new Authentication();
+
+        /** @var TestUser $user */
+        $user = $authentication->createUser("admin", "clear");
+
+        $this->assertInstanceOf(TestUser::class, $user);
+
+        $this->assertEquals("admin", $user->login);
+        $this->assertIsString($user->salt);
+        $this->assertTrue(password_verify("clear" . $user->salt, $user->password));
     }
 }

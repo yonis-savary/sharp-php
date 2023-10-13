@@ -3,6 +3,7 @@
 namespace Sharp\Tests\Units;
 
 use PDO;
+use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Data\Database;
 
@@ -21,6 +22,19 @@ class DatabaseTest extends TestCase
         $this->assertTrue(
             Database::getInstance()->isConnected()
         );
+    }
+
+    public function test_getLastStatement()
+    {
+        $db = Database::getInstance();
+
+        $db->query("SELECT fk_user FROM test_user_data");
+
+        /** @var PDOStatement $statement */
+        $statement = $db->getLastStatement();
+
+        $this->assertInstanceOf(PDOStatement::class, $statement);
+        $this->assertIsInt($statement->rowCount());
     }
 
     public function test_lastInsertId()
@@ -82,9 +96,9 @@ class DatabaseTest extends TestCase
     {
         $db = Database::getInstance();
         $this->assertTrue($db->hasField("test_user", "id"));
-        $this->assertFalse($db->hasField("test_user", "inexistant"));
+        $this->assertFalse($db->hasField("test_user", "inexistent"));
         $this->assertTrue($db->hasField("test_user_data", "fk_user"));
-        $this->assertFalse($db->hasField("test_user_data", "inexistant"));
+        $this->assertFalse($db->hasField("test_user_data", "inexistent"));
         $this->assertFalse($db->hasField("test_user_favorite", "id"));
     }
 }

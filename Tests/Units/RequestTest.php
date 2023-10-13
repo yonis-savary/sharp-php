@@ -2,6 +2,7 @@
 
 namespace Sharp\Tests\Units;
 
+use CurlHandle;
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Http\Classes\UploadFile;
 use Sharp\Classes\Http\Request;
@@ -250,7 +251,7 @@ class RequestTest extends TestCase
         $this->assertEquals("value", $req->getSlug("name"));
         $this->assertNull($req->getSlug("nullKey"));
         $this->assertNull($req->getSlug("nullKey", -1));
-        $this->assertEquals(-1, $req->getSlug("inexistant", -1));
+        $this->assertEquals(-1, $req->getSlug("inexistent", -1));
     }
 
     public function test_setRoute()
@@ -283,5 +284,16 @@ class RequestTest extends TestCase
         $req->unset("A");
 
         $this->assertEquals([], $req->all());
+    }
+
+
+    public function test_getCurlHandle()
+    {
+        $req = $this->samplePostRequest();
+
+        $handle = $req->toCurlHandle();
+
+        $this->assertInstanceOf(CurlHandle::class, $handle);
+        /** @todo Find a way to test CurlHandle and fetch() method */
     }
 }

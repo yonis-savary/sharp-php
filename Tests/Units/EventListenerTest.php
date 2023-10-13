@@ -10,7 +10,6 @@ class EventListenerTest extends TestCase
 {
     public function test_events()
     {
-
         $myVar = 0;
 
         $handlerA = new EventListener();
