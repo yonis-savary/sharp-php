@@ -78,7 +78,7 @@ class Renderer
         return false !== $this->findTemplate($templateName);
     }
 
-    public function render(string $templateName, array $context=[]): Response
+    public function render(string $templateName, array $context=[]): string
     {
         if (!($path = $this->findTemplate($templateName)))
             throw new Exception("[$templateName] view not found !");
@@ -107,7 +107,7 @@ class Renderer
         $this->sections = array_merge($this->sections, $current->getAllSections());
 
         if ($parent = $current->getParentInfos())
-            $content = $this->render($parent[0], $parent[1])->getContent();
+            $content = $this->render($parent[0], $parent[1]);
 
         array_pop($this->shards);
 
@@ -119,7 +119,7 @@ class Renderer
 
         $this->current = $current;
 
-        return Response::html($content);
+        return $content;
     }
 
     public function useTemplate(string $template, array $context=[]): void

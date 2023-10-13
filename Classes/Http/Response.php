@@ -5,6 +5,7 @@ namespace Sharp\Classes\Http;
 use InvalidArgumentException;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Http\Classes\ResponseCodes;
+use Sharp\Classes\Web\Renderer;
 
 /**
  * Credit to [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) for the Status descriptions
@@ -218,6 +219,11 @@ class Response
     public static function redirect(string $location, int $responseCode=ResponseCodes::SEE_OTHER): Response
     {
         return new Response(null, $responseCode, ["Location" => $location]);
+    }
+
+    public static function render(string $template, array $context=[], int $responseCode=ResponseCodes::OK): Response
+    {
+        return self::html(Renderer::getInstance()->render($template, $context), $responseCode);
     }
 
     /**
