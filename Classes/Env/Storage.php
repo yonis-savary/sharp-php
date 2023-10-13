@@ -103,18 +103,18 @@ class Storage
      *
      * @param string $path Relative name (relative to the Storage root)
      * @param string $mode Mode for `fopen()`
-     * @param bool $autoclose If `true`, the storage will close returned stream on desctruct
+     * @param bool $autoClose If `true`, the storage will close returned stream on destruct
      * @return resource Opened resource
      * @link https://www.php.net/manual/en/function.fopen.php
      */
-    public function getStream(string $path, string $mode="r", bool $autoclose=true)
+    public function getStream(string $path, string $mode="r", bool $autoClose=true)
     {
         $path = $this->path($path);
 
         if (!($stream = fopen($path, $mode)))
             throw new RuntimeException("Could not open [$path] with mode [$mode]");
 
-        if ($autoclose)
+        if ($autoClose)
             $this->openedStreams[] = &$stream;
 
         return $stream;

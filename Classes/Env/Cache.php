@@ -75,7 +75,7 @@ class Cache
     }
 
     /**
-     * @param string $key Key to check the existance of
+     * @param string $key Key to check the existence of
      * @return bool Is the key present in the cache
      */
     public function has(string $key): bool
@@ -85,7 +85,7 @@ class Cache
 
     /**
      * @param string $key Key to retrieve
-     * @return mixed Object's content or `$default` is inexistant
+     * @return mixed Object's content or `$default` is inexistent
      */
     public function get(string $key, mixed $default=null): mixed
     {
@@ -112,7 +112,7 @@ class Cache
 
     /**
      * Alias to `get($key, false)`, can be used
-     * in assignement-conditions for better readability
+     * in assignment-conditions for better readability
      *
      * @return mixed Key value, `false` on failure
      */
@@ -136,7 +136,7 @@ class Cache
     }
 
     /**
-     * Delete the object from the cache (useful for persitent objects)
+     * Delete the object from the cache (useful for persistent objects)
      *
      * @param string $key Key to unset
      */

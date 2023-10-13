@@ -14,7 +14,7 @@ use Throwable;
 
 class Autoloader
 {
-    /** Files in this list are availables to the autoloader but not directly required */
+    /** Files in this list are available to the autoloader but not directly required */
     const AUTOLOAD = "autoload";
 
     /** Files in this list are considered as Views/Templates */
@@ -30,7 +30,7 @@ class Autoloader
     const ROUTES = "routes";
 
     /**
-     * This constant old the differents purpose of
+     * This constant old the different purpose of
      * an application directory
      */
     const DIRECTORIES_PURPOSE = [

@@ -8,8 +8,8 @@ use Sharp\Classes\Env\Storage;
 /**
  * This class purpose is to represent a cached object,
  * useful methods are :
- * - `self::fromFile($path)` create an instance from an existant file
- * - `getContent() ` return the unserialized content
+ * - `self::fromFile($path)` create an instance from an existent file
+ * - `getContent() ` return the un-serialized content
  * - `setContent()` edit the object's content
  * - `save()` save the file if needed
  */
@@ -61,7 +61,7 @@ class CacheElement
     }
 
     /**
-     * @return mixed Cache element's content (unserialized object)
+     * @return mixed Cache element's content (un-serialized object)
      */
     public function getContent(): mixed
     {

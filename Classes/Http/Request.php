@@ -13,7 +13,7 @@ use Sharp\Core\Utils;
 use Stringable;
 
 /**
- * This component purpose is to hold informations about a HTTP Request,
+ * This component purpose is to hold information about a HTTP Request,
  * a default one can be built with `Request::buildFromGlobals()`
  */
 class Request
@@ -63,7 +63,7 @@ class Request
      * when getting a `"null"`, value, we can assume it is a `null` in reality
      * (Same for `"true"` and `"false"`)
      */
-    protected static function parseDictionnaryValueTypes(array $dict)
+    protected static function parseDictionaryValueTypes(array $dict)
     {
         foreach ($dict as $_ => &$value)
         {
@@ -96,8 +96,8 @@ class Request
 
         if ($fixParametersTypes === true)
         {
-            $get = self::parseDictionnaryValueTypes($get);
-            $post = self::parseDictionnaryValueTypes($post);
+            $get = self::parseDictionaryValueTypes($get);
+            $post = self::parseDictionaryValueTypes($post);
         }
 
         $request = new self (
@@ -128,19 +128,19 @@ class Request
     {
         $cleanedUploads = [];
 
-        foreach($data as $inputName => $filedata)
+        foreach($data as $inputName => $fileData)
         {
             $toAdd = [];
-            if (!is_array($filedata["name"]))
+            if (!is_array($fileData["name"]))
             {
-                $toAdd[] = $filedata;
+                $toAdd[] = $fileData;
             }
             else
             {
-                $keys = array_keys($filedata);
-                for ($i=0; $i<count($filedata['name']); $i++)
+                $keys = array_keys($fileData);
+                for ($i=0; $i<count($fileData['name']); $i++)
                 {
-                    $values = array_map( fn($arr) => $arr[$i], $filedata);
+                    $values = array_map( fn($arr) => $arr[$i], $fileData);
                     $toAdd[] = array_combine($keys, $values);
                 }
             }
@@ -346,9 +346,9 @@ class Request
     /**
      * Build a cURL handle for the Request object
      *
-     * @param ?int $timeout Optionnal cURL timeout limit (seconds)
-     * @param ?string $userAgent Optionnal cURL user-agent header to use
-     * @return CurlHandle Instance containing every request informations
+     * @param ?int $timeout Optional cURL timeout limit (seconds)
+     * @param ?string $userAgent Optional cURL user-agent header to use
+     * @return CurlHandle Instance containing every request information
      */
     public function toCurlHandle(
         int $timeout=null,
@@ -408,8 +408,8 @@ class Request
 
     /**
      * Fetch a Request target with Curl !
-     * @param Logger $logger Optionnal Logger that can be used to log info about the request/response
-     * @param int $timeout Optionnal request timeout (seconds)
+     * @param Logger $logger Optional Logger that can be used to log info about the request/response
+     * @param int $timeout Optional request timeout (seconds)
      * @param string $userAgent User-agent to use with curl
      * @param bool $supportRedirection If `true`, `fetch()` will follow redirect responses
      * @throws \JsonException Possibly when parsing the response body if fetched JSON is incorrect

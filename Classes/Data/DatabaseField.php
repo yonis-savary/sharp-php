@@ -3,7 +3,7 @@
 namespace Sharp\Classes\Data;
 
 /**
- * This class purpose's is to modelise a database table field
+ * This class purpose's is to modelize a database table field
  */
 class DatabaseField
 {

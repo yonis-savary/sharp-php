@@ -32,7 +32,7 @@ class Help extends Command
             $maxLength["identifier"] = max($maxLength["identifier"], strlen($command->getIdentifier()));
         }
 
-        echo "Availables commands with their identifier and purposes:\n";
+        echo "Available commands with their identifier and purposes:\n";
 
         foreach ($commands as $command)
         {

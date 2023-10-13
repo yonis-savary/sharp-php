@@ -190,7 +190,7 @@ class DatabaseQuery
     /**
      * Set the limit to a non-INSERT query
      * @param int $limit Limit to the query
-     * @param int $offset Query offset (Optionnal)
+     * @param int $offset Query offset (Optional)
      */
     public function limit(int $limit, int $offset=null): self
     {
@@ -228,8 +228,8 @@ class DatabaseQuery
      *
      * @param string $field Field name/alias to compare
      * @param mixed $value Value to compare to
-     * @param string $operator Comparaison operator
-     * @param string $table (Optionnal) table specification for the compared field
+     * @param string $operator Comparison operator
+     * @param string $table (Optional) table specification for the compared field
      * @note A '= NULL' condition will be transformed to a `IS NULL`
      * @note A '<> NULL' condition will be transformed to a `IS NOT NULL`
      */
@@ -361,7 +361,7 @@ class DatabaseQuery
     public function build(): string
     {
         if (!($mode = $this->mode ?? false))
-            throw new Exception("Unconfigured query mode ! Please provide a valid DatabaseQuery mode when building");
+            throw new Exception("Un-configured query mode ! Please provide a valid DatabaseQuery mode when building");
 
         switch ($mode)
         {

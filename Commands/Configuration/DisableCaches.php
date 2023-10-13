@@ -12,7 +12,7 @@ class DisableCaches extends Command
 {
     public function getHelp(): string
     {
-        return "Disable every cachable component";
+        return "Disable every cache-able component";
     }
 
     public function __invoke(Args $args)

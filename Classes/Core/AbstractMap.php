@@ -32,7 +32,7 @@ abstract class AbstractMap
     }
 
     /**
-     * Get a value from the storage or return false if inexistant
+     * Get a value from the storage or return false if inexistent
      *
      * @param string $key Key to retrieve
      */
@@ -77,7 +77,7 @@ abstract class AbstractMap
     /**
      * Check if given keys exists all at the same time
      *
-     * @param string ...$keys Keys to check the existance
+     * @param string ...$keys Keys to check the existence
      */
     final public function has(string ...$keys): bool
     {
@@ -104,7 +104,7 @@ abstract class AbstractMap
      * Shortcut to `Utils::toArray($this->get())`
      *
      * Represent any key value as an array
-     * (If the key is inexistant, return an empty array)
+     * (If the key is inexistent, return an empty array)
      */
     final public function toArray(string $key): array
     {

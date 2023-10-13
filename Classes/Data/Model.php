@@ -170,7 +170,7 @@ trait Model
     public function __get(string $prop): mixed
     {
         if (!array_key_exists($prop, $this->data))
-            throw new InvalidArgumentException("Unknown propety [$prop]");
+            throw new InvalidArgumentException("Unknown property [$prop]");
 
         return $this->data[$prop];
     }

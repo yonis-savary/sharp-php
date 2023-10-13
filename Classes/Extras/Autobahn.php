@@ -48,13 +48,13 @@ class Autobahn
 
     public function all(
         string $model,
-        array $createMidddlewares=[],
+        array $createMiddlewares=[],
         array $readMiddlewares=[],
         array $updateMiddlewares=[],
         array $deleteMiddlewares=[]
     )
     {
-        $this->create($model, ...$createMidddlewares);
+        $this->create($model, ...$createMiddlewares);
         $this->read($model, ...$readMiddlewares);
         $this->update($model, ...$updateMiddlewares);
         $this->delete($model, ...$deleteMiddlewares);

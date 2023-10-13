@@ -108,7 +108,7 @@ class Router
     }
 
     /**
-     * Create a Group route that your can re-use whith `group()`
+     * Create a Group route that your can re-use with `group()`
      */
     public function createGroup(string|array $urlPrefix, string|array $middlewares): array
     {
@@ -128,7 +128,7 @@ class Router
 
         foreach ($group as $key => $value)
         {
-            // Warning: dictionnaries need to be merged, we cannot use Utils::toArray here
+            // Warning: dictionaries need to be merged, we cannot use Utils::toArray here
             $value = is_array($value)? $value: [$value];
 
             $this->group[$key] = array_merge(
@@ -191,7 +191,7 @@ class Router
         );
     }
 
-    protected function findFirstMathingRoute(Request $req): ?Route
+    protected function findFirstMatchingRoute(Request $req): ?Route
     {
         $this->loadRoutes();
         foreach ($this->routes as $route)
@@ -209,7 +209,7 @@ class Router
 
     public function route(Request $request): Response
     {
-        $route = $this->getCachedRouteForRequest($request) ?? $this->findFirstMathingRoute($request);
+        $route = $this->getCachedRouteForRequest($request) ?? $this->findFirstMatchingRoute($request);
 
         if (!$route)
         {

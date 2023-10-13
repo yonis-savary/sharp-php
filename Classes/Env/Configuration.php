@@ -28,7 +28,7 @@ class Configuration extends AbstractMap
 
         $filename = $this->filename = Utils::relativePath($filename);
 
-        // Info: this verification is after the previous assignement
+        // Info: this verification is after the previous assignment
         // because we can create a config from nothing then save it in a file
 
         if (!is_file($filename))

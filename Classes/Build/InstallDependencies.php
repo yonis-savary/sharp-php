@@ -29,7 +29,7 @@ class InstallDependencies extends AbstractBuildTask
         $app = new Storage($appPath);
 
         if (!is_dir($appPath))
-            return print("Cannot read [$appPath], inexistant directory");
+            return print("Cannot read [$appPath], inexistent directory");
 
         if (!$app->isFile("composer.json"))
             return print("Skipping [$appName] (no composer.json)\n");

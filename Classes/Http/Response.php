@@ -182,7 +182,7 @@ class Response
     public static function file(string $file, string $attachmentName=null): Response
     {
         if (!is_file($file))
-            throw new InvalidArgumentException("Inexistant file [$file] !");
+            throw new InvalidArgumentException("Inexistent file [$file] !");
 
         $attachmentName ??= basename($file);
 
@@ -244,7 +244,7 @@ class Response
         if (!in_array($contentType, self::ADAPT_SUPPORTED_TYPES))
         {
             Logger::getInstance()->logThrowable(new InvalidArgumentException(
-                "A reponse with an unsupported type ($contentType) was returned and cannot be adapted"
+                "A response with an unsupported type ($contentType) was returned and cannot be adapted"
             ));
             return new Response(null, 204);
         }

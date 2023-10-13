@@ -12,7 +12,7 @@ class EnableCaches extends Command
 {
     public function getHelp(): string
     {
-        return "Enable every cachable components !";
+        return "Enable every cache-able components !";
     }
 
     public function __invoke(Args $args)

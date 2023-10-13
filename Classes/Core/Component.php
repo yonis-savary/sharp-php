@@ -4,7 +4,7 @@ namespace Sharp\Classes\Core;
 
 /**
  * Components are classes that has a global instance (like a singleton)
- * but that can also be instanciated
+ * but that can also be instantiated
  *
  * When creating a component, you can implement `getDefaultInstance()`
  * which return the default instance when the singleton is initialized

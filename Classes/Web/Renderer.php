@@ -7,7 +7,6 @@ use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Core\EventListener;
-use Sharp\Classes\Http\Response;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Events\AfterViewRender;

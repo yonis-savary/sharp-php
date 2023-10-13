@@ -13,7 +13,7 @@ use Sharp\Classes\Env\Storage;
  * - `getError()`: Get the file PHP's error code
  * - `getSize()`: Get the file size (bytes)
  * - `getInputName()`: Get the file input name
- * - `getExtension()`: Get the file extension (dotless)
+ * - `getExtension()`: Get the file extension (dot-less)
  * - `getNewName()`: Get the file new basename
  * - `getNewPath()`: Get the file new path
  */
@@ -149,7 +149,7 @@ class UploadFile
     }
 
     /**
-     * @return bool Was the file successfuly moved ?
+     * @return bool Was the file successfully moved ?
      */
     public function isMoved(): bool
     {
@@ -205,7 +205,7 @@ class UploadFile
     }
 
     /**
-     * @return string File's extension (dotless)
+     * @return string File's extension (dot-less)
      */
     public function getExtension(): string
     {

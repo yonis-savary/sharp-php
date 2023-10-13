@@ -25,19 +25,19 @@ class Logger
      * Create a logger from a stream (which must be writable)
      *
      * @param resource $stream Output stream to write to
-     * @param bool $autoclose If `true`, the Logger will close the stream on destruct
+     * @param bool $autoClose If `true`, the Logger will close the stream on destruct
      */
-    public static function fromStream(mixed $stream, bool $autoclose=false): self
+    public static function fromStream(mixed $stream, bool $autoClose=false): self
     {
         $logger = new self();
-        $logger->replaceStream($stream, $autoclose);
+        $logger->replaceStream($stream, $autoClose);
 
         return $logger;
     }
 
     /**
      * @param ?string $filename File BASENAME for the Logger
-     * @param ?Storage $storage Optionnal target Storage directory (global instance if `null`)
+     * @param ?Storage $storage Optional target Storage directory (global instance if `null`)
      * @example NULL `new Logger('error.csv', new Storage('/var/log/sharp/my-app'))`
      */
     public function __construct(string $filename=null, Storage $storage=null)
@@ -81,9 +81,9 @@ class Logger
      * Replace the Logger stream with another
      *
      * @param resource $stream Output stream that replace the current one
-     * @param bool $autoclose If `true`, the Logger will close the stream on destruct
+     * @param bool $autoClose If `true`, the Logger will close the stream on destruct
      */
-    public function replaceStream(mixed $stream, bool $autoclose=false): void
+    public function replaceStream(mixed $stream, bool $autoClose=false): void
     {
         $this->closeStream();
 
@@ -91,7 +91,7 @@ class Logger
             throw new InvalidArgumentException('$stream parameter must be a resource');
 
         $this->stream = $stream;
-        $this->closeStream = $autoclose;
+        $this->closeStream = $autoClose;
     }
 
     /**
@@ -124,7 +124,7 @@ class Logger
      * Directly log a line(s) into the output stream
      *
      * @param string $level Log level, can be a custom one
-     * @param mixed ...$content Informations/Objects to log (can be of any type)
+     * @param mixed ...$content Information/Objects to log (can be of any type)
      */
     public function log(string $level, mixed ...$content): void
     {
@@ -146,7 +146,7 @@ class Logger
     }
 
     /**
-     * Log a trowable message into the output plus its trace
+     * Log a throwable message into the output plus its trace
      * (Useful to debug a trace and/or errors)
      */
     public function logThrowable(Throwable $throwable): void
@@ -158,7 +158,7 @@ class Logger
 
     /**
      * Log a "debug" level line
-     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
     public function debug(mixed ...$messages): void
     {
@@ -167,7 +167,7 @@ class Logger
 
     /**
      * Log a "info" level line
-     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
     public function info(mixed ...$messages): void
     {
@@ -176,7 +176,7 @@ class Logger
 
     /**
      * Log a "notice" level line
-     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
     public function notice(mixed ...$messages): void
     {
@@ -185,7 +185,7 @@ class Logger
 
     /**
      * Log a "warning" level line
-     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
     public function warning(mixed ...$messages): void
     {
@@ -194,7 +194,7 @@ class Logger
 
     /**
      * Log a "error" level line
-     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
     public function error(mixed ...$messages): void
     {
@@ -203,7 +203,7 @@ class Logger
 
     /**
      * Log a "critical" level line
-     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
     public function critical(mixed ...$messages): void
     {
@@ -212,7 +212,7 @@ class Logger
 
     /**
      * Log a "alert" level line
-     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
     public function alert(mixed ...$messages): void
     {
@@ -221,7 +221,7 @@ class Logger
 
     /**
      * Log a "emergency" level line
-     * @param mixed ...$messages Informations/Objects to log (can be of any type)
+     * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
     public function emergency(mixed ...$messages): void
     {

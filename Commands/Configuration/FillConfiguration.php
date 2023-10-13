@@ -12,18 +12,18 @@ class FillConfiguration extends Command
 {
     public function getHelp(): string
     {
-        return "Complete or create your configuration with the famework's default configuration";
+        return "Complete or create your configuration with the framework's default configuration";
     }
 
     public function __invoke(Args $args)
     {
-        $configurables = Autoloader::classesThatUses(Configurable::class);
+        $configurableList = Autoloader::classesThatUses(Configurable::class);
         $config = Configuration::getInstance();
 
         /**
          * @var Configurable $class
          */
-        foreach ($configurables as $class)
+        foreach ($configurableList as $class)
         {
             $configKey = $class::getConfigurationKey();
 

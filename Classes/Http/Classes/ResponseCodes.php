@@ -98,13 +98,13 @@ class ResponseCodes
     const PRECONDITION_FAILED = 412;
 
     /** Request entity is larger than limits defined by server. The server might close the connection or return an Retry-After header field. */
-    const PAYLOAD_TOO_LARGET = 413;
+    const PAYLOAD_TOO_LARGE = 413;
 
     /** The URI requested by the client is longer than the server is willing to interpret. */
     const URI_TOO_LONG = 414;
 
     /** The media format of the requested data is not supported by the server, so the server is rejecting the request. */
-    const UNSOPPORTED_MEDIA_TYPE = 415;
+    const UNSUPPORTED_MEDIA_TYPE = 415;
 
     /** The range specified by the Range header field in the request cannot be fulfilled. It's possible that the range is outside the size of the target URI's data. */
     const RANGE_NOT_SATISFIABLE = 416;
@@ -137,7 +137,7 @@ class ResponseCodes
     const TOO_MANY_REQUESTS = 429;
 
     /** The server is unwilling to process the request because its header fields are too large. The request may be resubmitted after reducing the size of the request header fields. */
-    const REQUEST_HEADER_FIELDS_TOO_LARGET = 431;
+    const REQUEST_HEADER_FIELDS_TOO_LARGE = 431;
 
     /** The user agent requested a resource that cannot legally be provided, such as a web page censored by a government. */
     const UNAVAILABLE_FOR_LEGAL_REASONS = 451;

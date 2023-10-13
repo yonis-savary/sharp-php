@@ -8,7 +8,7 @@ use Sharp\Classes\Events\UncaughtException;
 /**
  * Exception kill the request if not handled :
  * - For web users : a simple 'Internal Server Error' is displayed
- * - For CLI users : a message is displayed telling that an error occured
+ * - For CLI users : a message is displayed telling that an error occurred
  */
 set_exception_handler(function(Throwable $exception){
     try

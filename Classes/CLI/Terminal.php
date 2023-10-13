@@ -32,8 +32,8 @@ class Terminal
 
     /**
      * Make the user choose between enabled applications
-     * @note If only one application is enabled, it is choosed by default
-     * @return string Choosen App relative path (as written in configuration)
+     * @note If only one application is enabled, it is chosen by default
+     * @return string Chosen App relative path (as written in configuration)
      */
     public static function chooseApplication(): string
     {
@@ -44,12 +44,12 @@ class Terminal
 
         return self::promptList(
             $applications,
-            "This command needs you to select an appliction"
+            "This command needs you to select an application"
         );
     }
 
     /**
-     * Util function to write a string and remove excessives tabs before lines
+     * Util function to write a string and remove excessive tabs before lines
      */
     public static function stringToFile(string $content, int $d=3): string
     {

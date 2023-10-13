@@ -6,7 +6,7 @@ use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Configuration;
 
 /**
- * This class holds utilitaries statical methods that can be reused
+ * This class holds utilities statical methods that can be reused
  */
 class Utils
 {
@@ -137,18 +137,18 @@ class Utils
         $results = [];
         foreach (array_slice(scandir($path), 2) as $file)
         {
-            $fullpath = Utils::joinPath($path, $file);
+            $fullPath = Utils::joinPath($path, $file);
 
-            if (is_dir($fullpath))
+            if (is_dir($fullPath))
             {
                 if ($mode !== self::ONLY_FILES)
-                    $results[] = $fullpath;
+                    $results[] = $fullPath;
 
-                array_push($results, ...self::exploreDirectory($fullpath, $mode));
+                array_push($results, ...self::exploreDirectory($fullPath, $mode));
             }
             else if ($mode !== self::ONLY_DIRS)
             {
-                $results[] = $fullpath;
+                $results[] = $fullPath;
             }
         }
         return $results;
@@ -216,7 +216,7 @@ class Utils
      * (Can detect associative arrays)
      *
      * @example number `Utils::toArray(5) === [5]`
-     * @example existant_array `Utils::toArray(['A']) === ['A']`
+     * @example existent_array `Utils::toArray(['A']) === ['A']`
      * @example assoc `Utils::toArray(['key'=>'value']) === [['key'=>'value']]`
      */
     public static function toArray(mixed $value): array
