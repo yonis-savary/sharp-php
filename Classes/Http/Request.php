@@ -52,7 +52,7 @@ class Request
         $this->headers = array_change_key_case($this->headers, CASE_LOWER);
 
         if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
-            $this->body = json_decode($this->body, true, JSON_THROW_ON_ERROR);
+            $this->body = json_decode($this->body ?? "null", true, JSON_THROW_ON_ERROR);
 
         if ($this->body === "")
             $this->body = null;
@@ -433,12 +433,15 @@ class Request
         $resStatus = curl_getinfo($handle, CURLINFO_HTTP_CODE);
         curl_close($handle);
 
+        $logger->info(sprintf("Got [$resStatus] with [%s] bytes of data", strlen($result)));
+
         $resHeaders = substr($result, 0, $headerSize);
         $resHeaders = $this->parseHeaders($resHeaders);
         $resHeaders = array_change_key_case($resHeaders, CASE_LOWER);
 
         if ($supportRedirection && $nextURL = ($resHeaders['location'] ?? null))
         {
+            $logger->info("Got redirected to [$nextURL]");
             $request = new self("GET", $nextURL);
             return $request->fetch(
                 $logger,
@@ -453,6 +456,9 @@ class Request
         if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json'))
             $resBody = json_decode($resBody, true, flags: JSON_THROW_ON_ERROR);
 
-        return new Response($resBody, $resStatus, $resHeaders);
+        $response = new Response($resBody, $resStatus, $resHeaders);
+        $response->logSelf($logger);
+
+        return $response;
     }
 }
