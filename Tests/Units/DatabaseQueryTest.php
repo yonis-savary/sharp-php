@@ -37,7 +37,7 @@ class DatabaseQueryTest extends TestCase
         $q = new DatabaseQuery("dummy", DatabaseQuery::INSERT);
         $q->setInsertField(["A", "B", "C"]);
 
-        $this->assertBuiltQueryContains($q, "(A,B,C)");
+        $this->assertBuiltQueryContains($q, "(`A`,`B`,`C`)");
     }
 
     public function test_insertValues()

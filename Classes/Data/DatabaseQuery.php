@@ -75,7 +75,12 @@ class DatabaseQuery
 
     public function setInsertField(array $fields): self
     {
-        $this->insertFields = $fields;
+        $fields = ObjectArray::fromArray($fields);
+
+        if ($fields->any(fn($field) => str_contains($field, "`")))
+            throw new InvalidArgumentException("Fields with backticks are not yet supported");
+
+        $this->insertFields = $fields->map(fn($field) => "`$field`" )->collect();
         return $this;
     }
 
