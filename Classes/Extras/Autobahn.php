@@ -49,12 +49,14 @@ class Autobahn
     public function all(
         string $model,
         array $createMiddlewares=[],
+        array $createMultiplesMiddlewares=[],
         array $readMiddlewares=[],
         array $updateMiddlewares=[],
         array $deleteMiddlewares=[]
     )
     {
         $this->create($model, ...$createMiddlewares);
+        $this->createMultiples($model, ...$createMultiplesMiddlewares);
         $this->read($model, ...$readMiddlewares);
         $this->update($model, ...$updateMiddlewares);
         $this->delete($model, ...$deleteMiddlewares);
@@ -95,6 +97,10 @@ class Autobahn
     public function create(string $model, callable ...$middlewares): void
     {
         $this->addRoute($model, $middlewares, "createCallback", ["POST"]);
+    }
+
+    public function createMultiples(string $model, callable ...$middlewares): void
+    {
         $this->addRoute($model, $middlewares, "multipleCreateCallback", ["POST"], "/create-multiples");
     }
 
