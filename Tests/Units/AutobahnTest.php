@@ -70,7 +70,7 @@ class AutobahnTest extends TestCase
 
         list($autobahn, $router) = $this->getNewAutobahn();
         $autobahn->create(TestUserData::class);
-        $this->assertCount(2, $router->getRoutes());
+        $this->assertCount(1, $router->getRoutes());
 
         $nextId = Database::getInstance()->query("SELECT MAX(id)+1 as next FROM test_user_data")[0]["next"];
 
@@ -96,8 +96,8 @@ class AutobahnTest extends TestCase
         $this->resetTestUserDataTable();
 
         list($autobahn, $router) = $this->getNewAutobahn();
-        $autobahn->create(TestUserData::class);
-        $this->assertCount(2, $router->getRoutes());
+        $autobahn->createMultiples(TestUserData::class);
+        $this->assertCount(1, $router->getRoutes());
 
         $response = $router->route(
             new Request("POST", "/test_user_data/create-multiples", body: [
