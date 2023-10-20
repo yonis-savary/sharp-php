@@ -392,7 +392,10 @@ class Request
             );
 
         if ($timeout)
+        {
+            curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, $timeout);
             curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
+        }
 
         if ($userAgent)
             $headers['user-agent'] = $userAgent;
