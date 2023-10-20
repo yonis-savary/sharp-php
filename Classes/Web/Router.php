@@ -54,6 +54,12 @@ class Router
         if (!is_array($route->getCallback()))
             return;
 
+        foreach ($route->getMiddlewares() as $middlewares)
+        {
+            if (!is_array($middlewares))
+                return;
+        }
+
         $this->cache->set(
             $this->getCacheKey($request),
             $route
