@@ -135,8 +135,12 @@ class Utils
     public static function exploreDirectory(string $path, int $mode=self::NO_FILTER): array
     {
         $results = [];
-        foreach (array_slice(scandir($path), 2) as $file)
+        foreach (scandir($path) as $file)
         {
+            /** @todo Write test for this issue */
+            if ($file === "." || $file === "..")
+                continue;
+
             $fullPath = Utils::joinPath($path, $file);
 
             if (is_dir($fullPath))
@@ -161,7 +165,7 @@ class Utils
     public static function listFiles(string $directory): array
     {
         return ObjectArray::fromArray(scandir($directory))
-        ->slice(2)
+        ->filter(fn($x) => $x !== "." && $x !== "..")
         ->map(fn($file) => Utils::joinPath($directory, $file))
         ->filter(is_file(...))
         ->collect();
@@ -174,7 +178,7 @@ class Utils
     public static function listDirectories(string $directory): array
     {
         return ObjectArray::fromArray(scandir($directory))
-        ->slice(2)
+        ->filter(fn($x) => $x !== "." && $x !== "..")
         ->map(fn($file) => Utils::joinPath($directory, $file))
         ->filter(is_dir(...))
         ->collect();

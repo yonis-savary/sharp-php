@@ -95,6 +95,7 @@ class UtilsTest extends TestCase
     {
         $storage = Storage::getInstance()->getSubStorage(uniqid());
         foreach ([
+            "(disc 1) title.mp3",
             "a.txt",
             "b.txt",
             "dir/c.txt",
@@ -110,6 +111,7 @@ class UtilsTest extends TestCase
         $storage = $this->getDummyStorage();
 
         $FILES = $this->arrayOfPaths([
+            "(disc 1) title.mp3",
             "a.txt",
             "b.txt",
             "dir/c.txt",
@@ -124,6 +126,7 @@ class UtilsTest extends TestCase
         ], $storage);
 
         $ALL = $this->arrayOfPaths([
+            "(disc 1) title.mp3",
             "a.txt",
             "b.txt",
             "dir",
@@ -143,7 +146,7 @@ class UtilsTest extends TestCase
     {
         $storage = $this->getDummyStorage();
 
-        $this->assertEquals($this->arrayOfPaths(["a.txt", "b.txt"], $storage), Utils::listFiles($storage->getRoot()));
+        $this->assertEquals($this->arrayOfPaths(["(disc 1) title.mp3", "a.txt", "b.txt"], $storage), Utils::listFiles($storage->getRoot()));
         $this->assertEquals($this->arrayOfPaths(["dir/c.txt", "dir/d.txt"], $storage), Utils::listFiles($storage->path("dir")));
         $this->assertEquals($this->arrayOfPaths(["dir/subDirectory/e.txt", "dir/subDirectory/f.txt"], $storage), Utils::listFiles($storage->path("dir/subDirectory")));
     }
