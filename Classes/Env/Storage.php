@@ -110,6 +110,7 @@ class Storage
     public function getStream(string $path, string $mode="r", bool $autoClose=true)
     {
         $path = $this->path($path);
+        $this->makeDirectory(dirname($path));
 
         if (!($stream = fopen($path, $mode)))
             throw new RuntimeException("Could not open [$path] with mode [$mode]");
