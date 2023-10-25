@@ -22,6 +22,15 @@ class LoggerTest extends TestCase
         );
     }
 
+    public function test_construct()
+    {
+        $logger = new Logger(uniqid("log"));
+        $this->assertInstanceOf(Logger::class, $logger);
+
+        $logger = new Logger(uniqid("dir") . "/" . uniqid("log"));
+        $this->assertInstanceOf(Logger::class, $logger);
+    }
+
     public function test_log()
     {
         $this->genericLoggerTest(
