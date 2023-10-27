@@ -10,6 +10,7 @@ use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Cache;
+use Sharp\Classes\Events\RoutedRequest;
 use Sharp\Classes\Events\RouteNotFound;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
@@ -223,6 +224,8 @@ class Router
             EventListener::getInstance()->dispatch(new RouteNotFound($request, $response));
             return $response;
         }
+
+        EventListener::getInstance()->dispatch(new RoutedRequest($request, $route));
 
         return Response::adapt($route($request));
     }

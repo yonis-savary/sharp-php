@@ -54,6 +54,7 @@ Base/General events:
 - [`FailedAutoload`](../../Classes/Events/FailedAutoload.php)
 - [`LoadedFramework`](../../Classes/Events/LoadedFramework.php)
 - [`RouteNotFound`](../../Classes/Events/RouteNotFound.php)
+- [`RoutedRequest`](../../Classes/Events/RoutedRequest.php)
 - [`UncaughtException`](../../Classes/Events/UncaughtException.php)
 
 Autobahn's Events:
