@@ -55,6 +55,9 @@ class Renderer
         if (!str_ends_with($template, $ext))
             $template .= $ext;
 
+        if (!str_starts_with($template, "/"))
+            $template = "/$template";
+
         if (file_exists($template))
             return $template;
 
