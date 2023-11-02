@@ -13,6 +13,7 @@ use Sharp\Classes\Events\AfterViewRender;
 use Sharp\Classes\Events\BeforeViewRender;
 use Sharp\Classes\Web\Classes\Shard;
 use Sharp\Core\Autoloader;
+use Throwable;
 
 class Renderer
 {
@@ -101,7 +102,17 @@ class Renderer
 
         ob_start();
         $events->dispatch(new BeforeViewRender($templateName));
-        require $path;
+
+        try
+        {
+            require $path;
+        }
+        catch (Throwable $err)
+        {
+            ob_clean();
+            throw $err;
+        }
+
         $events->dispatch(new AfterViewRender($templateName));
         $current->endSection();
         $content = ob_get_clean();
