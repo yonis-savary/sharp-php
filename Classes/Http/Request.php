@@ -352,9 +352,14 @@ class Request
      */
     public function toCurlHandle(
         int $timeout=null,
-        ?string $userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0'
+        ?string $userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0',
+        Logger $logger=null
     ): CurlHandle
     {
+        $logger ??= new Logger();
+
+        $logger->info("Building CURL handle");
+
         $thisGET = $this->get() ?? [];
         $thisPOST = $this->post() ?? [];
         $thisMethod = $this->getMethod();
@@ -366,18 +371,28 @@ class Request
 
         $handle = curl_init($url);
 
-        switch ($thisMethod)
+        switch (strtoupper($thisMethod))
         {
-            case "GET": /* GET by default*/ ; break;
+            case "GET":
+                /* GET by default*/ ;
+                break;
             case "POST":
+                $logger->info("Using CURLOPT_POST");
                 curl_setopt($handle, CURLOPT_POST, true);
                 break;
             case "HEAD":
-                curl_setopt($handle, CURLOPT_NOBODY, 1);
+                $logger->info("Using CURLOPT_NOBODY");
+                curl_setopt($handle, CURLOPT_NOBODY, true);
                 break;
             case "PUT":
-            case "PATCH": curl_setopt($handle, CURLOPT_PUT, 1); break;
-            default: curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $thisMethod); break;
+            case "PATCH":
+                $logger->info("Using CURLOPT_PUT");
+                curl_setopt($handle, CURLOPT_PUT, true);
+                break;
+            default:
+                $logger->info("Setting CURLOPT_CUSTOMREQUEST to", $thisMethod);
+                curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $thisMethod);
+                break;
         }
 
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
@@ -385,26 +400,34 @@ class Request
 
 
         if (count($thisPOST))
-            curl_setopt($handle, CURLOPT_POSTFIELDS,
-                $isJSONRequest ?
-                    json_encode($thisPOST, JSON_THROW_ON_ERROR):
-                    $thisPOST
-            );
+        {
+            $postFields = $isJSONRequest ?
+                json_encode($thisPOST, JSON_THROW_ON_ERROR):
+                $thisPOST;
+
+            $logger->info("Setting CURLOPT_POSTFIELDS to", $postFields);
+            curl_setopt($handle, CURLOPT_POSTFIELDS, $postFields);
+        }
 
         if ($timeout)
         {
+            $logger->info("Setting CURLOPT_CONNECTTIMEOUT, CURLOPT_TIMEOUT to", $timeout);
             curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, $timeout);
             curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
         }
 
         if ($userAgent)
+        {
+            $logger->info("Using 'user-agent'", $userAgent);
             $headers['user-agent'] = $userAgent;
+        }
 
-        $headersString = [];
+        $headersStrings = [];
         foreach ($headers as $key => &$value)
-            $headersString[] = "$key: $value";
+            $headersStrings[] = "$key: $value";
 
-        curl_setopt($handle, CURLOPT_HTTPHEADER, $headersString);
+        $logger->info("Setting CURLOPT_HTTPHEADER to", $headersStrings);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, $headersStrings);
 
         return $handle;
     }
@@ -424,7 +447,7 @@ class Request
         bool $supportRedirection=true
     ): Response|CurlHandle
     {
-        $handle = $this->toCurlHandle($timeout, $userAgent);
+        $handle = $this->toCurlHandle($timeout, $userAgent, $logger);
 
         $logger ??= new Logger(null);
 
@@ -442,6 +465,8 @@ class Request
         $resHeaders = $this->parseHeaders($resHeaders);
         $resHeaders = array_change_key_case($resHeaders, CASE_LOWER);
 
+        $logger->info("Got Headers", $resHeaders);
+
         if ($supportRedirection && $nextURL = ($resHeaders['location'] ?? null))
         {
             $logger->info("Got redirected to [$nextURL]");
@@ -456,8 +481,13 @@ class Request
 
         $resBody = substr($result, $headerSize);
 
+        $logger->info("Got Body", $resBody);
+
         if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json'))
+        {
+            $logger->info("Decoding JSON body");
             $resBody = json_decode($resBody, true, flags: JSON_THROW_ON_ERROR);
+        }
 
         $response = new Response($resBody, $resStatus, $resHeaders);
         $response->logSelf($logger);
