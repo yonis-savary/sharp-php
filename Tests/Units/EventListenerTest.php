@@ -3,7 +3,7 @@
 namespace Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
-use Sharp\Classes\Core\CustomEvent;
+use Sharp\Classes\Events\CustomEvent;
 use Sharp\Classes\Core\EventListener;
 
 class EventListenerTest extends TestCase
