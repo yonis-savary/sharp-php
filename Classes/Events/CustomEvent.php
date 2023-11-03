@@ -1,6 +1,8 @@
 <?php
 
-namespace Sharp\Classes\Core;
+namespace Sharp\Classes\Events;
+
+use Sharp\Classes\Core\AbstractEvent;
 
 final class CustomEvent extends AbstractEvent
 {
