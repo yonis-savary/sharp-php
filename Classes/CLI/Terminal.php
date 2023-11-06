@@ -14,6 +14,14 @@ class Terminal
         return readline($question);
     }
 
+    public static function confirm(string $question): bool
+    {
+        $str = readline($question . " (y/n) : ");
+        $str = strtoupper($str);
+
+        return $str === "Y";
+    }
+
     /**
      * Display a list to the user and ask to choose an item
      * @param array $choices Choices for the user
