@@ -32,7 +32,7 @@ trait QueueHandler
         $files = $storage->listFiles();
 
         $toProcess = array_slice($files, 0, self::getQueueProcessCapacity());
-        $logger->info("Processing ". count($toProcess) ." items");
+        $logger->info(self::class, "Processing ". count($toProcess) ." items");
 
         foreach ($toProcess as $file)
         {
