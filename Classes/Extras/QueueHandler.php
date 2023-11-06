@@ -70,7 +70,7 @@ trait QueueHandler
 
     protected static function getQueueProcessingLogger(): Logger
     {
-        return new Logger();
+        return Logger::getInstance();
     }
 
     protected static function processQueueItem(array $data)
