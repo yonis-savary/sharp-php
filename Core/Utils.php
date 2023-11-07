@@ -2,8 +2,9 @@
 
 namespace Sharp\Core;
 
-use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Configuration;
+use Sharp\Classes\Env\Drivers\FileDriverInterface;
+use Sharp\Classes\Env\Drivers\LocalDiskDriver;
 
 /**
  * This class holds utilities statical methods that can be reused
@@ -122,9 +123,9 @@ class Utils
         -----------------------------
     */
 
-    const NO_FILTER = 0;
-    const ONLY_DIRS = 1;
-    const ONLY_FILES = 2;
+    const NO_FILTER = FileDriverInterface::NO_FILTER;
+    const ONLY_DIRS = FileDriverInterface::ONLY_DIRS;
+    const ONLY_FILES = FileDriverInterface::ONLY_FILES;
 
     /**
      * Explore a directory and return a list of absolutes Directory/Files paths
@@ -134,28 +135,7 @@ class Utils
      */
     public static function exploreDirectory(string $path, int $mode=self::NO_FILTER): array
     {
-        $results = [];
-        foreach (scandir($path) as $file)
-        {
-            /** @todo Write test for this issue */
-            if ($file === "." || $file === "..")
-                continue;
-
-            $fullPath = Utils::joinPath($path, $file);
-
-            if (is_dir($fullPath))
-            {
-                if ($mode !== self::ONLY_FILES)
-                    $results[] = $fullPath;
-
-                array_push($results, ...self::exploreDirectory($fullPath, $mode));
-            }
-            else if ($mode !== self::ONLY_DIRS)
-            {
-                $results[] = $fullPath;
-            }
-        }
-        return $results;
+        return (new LocalDiskDriver())->exploreDirectory($path, $mode);
     }
 
     /**
@@ -164,11 +144,7 @@ class Utils
      */
     public static function listFiles(string $directory): array
     {
-        return ObjectArray::fromArray(scandir($directory))
-        ->filter(fn($x) => $x !== "." && $x !== "..")
-        ->map(fn($file) => Utils::joinPath($directory, $file))
-        ->filter(is_file(...))
-        ->collect();
+        return (new LocalDiskDriver())->listFiles($directory);
     }
 
     /**
@@ -177,11 +153,7 @@ class Utils
      */
     public static function listDirectories(string $directory): array
     {
-        return ObjectArray::fromArray(scandir($directory))
-        ->filter(fn($x) => $x !== "." && $x !== "..")
-        ->map(fn($file) => Utils::joinPath($directory, $file))
-        ->filter(is_dir(...))
-        ->collect();
+        return (new LocalDiskDriver())->listDirectories($directory);
     }
 
     /*

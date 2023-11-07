@@ -51,3 +51,6 @@ Extras
 - [⌛️ QueueHandler Trait](./extras/queue-handler.md)
 - [🌐 Code Helpers](./core/helpers.md)
 - [💬 Q/A & Snippets](./extras/snippets.md)
+
+Miscellaneous
+- [✅ Testing the framework/apps](./misc/testing.md)

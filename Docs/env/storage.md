@@ -80,4 +80,21 @@ $storage->assertIsWritable();
 $storage->getSubStorage("MySubDir");
 ```
 
+## FTP Storage
+
+Sharp supports FTP connections ! They are made through the [FTPDriver](../../Classes/Env/Drivers/FTPDriver.php)
+class which is a basic wrapper for FTP
+
+They can be given to the `Storage` constructor
+
+```php
+$connection = new FTPDriver("somewebsite.com", "username", "password");
+$storage = new Storage("/home/root/Documents/MyAppStorage", $connection);
+```
+
+> [!IMPORTANT]
+> `$storage->openFile()` cannot be used as FTPDriver don't support stream/resources objects
+
+
+
 [< Back to summary](../home.md)

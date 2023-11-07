@@ -6,6 +6,8 @@ use Exception;
 use RuntimeException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Data\ObjectArray;
+use Sharp\Classes\Env\Drivers\FileDriverInterface;
+use Sharp\Classes\Env\Drivers\LocalDiskDriver;
 use Sharp\Core\Utils;
 
 class Storage
@@ -22,6 +24,8 @@ class Storage
     protected array $openedStreams = [];
     protected string $root;
 
+    protected FileDriverInterface $driver;
+
     public static function getDefaultInstance()
     {
         return new self(Utils::relativePath("Storage"));
@@ -30,21 +34,21 @@ class Storage
     /**
      * @param string $root Root directory of the new storage, every path will be relative to this one
      */
-    public function __construct(string $root)
+    public function __construct(string $root, FileDriverInterface $driver=null)
     {
+        $this->driver = $driver ?? new LocalDiskDriver();
+
         $this->root = $root;
+        $this->makeDirectory("/");
 
-        if (is_dir($this->root))
-            return;
-
-        if (!mkdir($this->root, recursive:true))
+        if (!$this->driver->isDirectory($this->root))
             throw new RuntimeException("Cannot create [$this->root] directory !");
     }
 
     public function assertIsWritable(string $path="/"): void
     {
         $path = $this->path($path);
-        if (!is_writable($path))
+        if (!$this->driver->isWritable($path))
             throw new RuntimeException("[$path] is not writable !");
     }
 
@@ -94,8 +98,9 @@ class Storage
     public function makeDirectory(string $path): void
     {
         $path = $this->path($path);
-        if (!is_dir($path))
-            mkdir($path, recursive: true);
+
+        if (!$this->driver->isDirectory($path))
+            $this->driver->makeDirectory($path);
     }
 
     /**
@@ -110,9 +115,9 @@ class Storage
     public function getStream(string $path, string $mode="r", bool $autoClose=true)
     {
         $path = $this->path($path);
-        $this->makeDirectory(dirname($path));
+        $this->makeDirectory($this->driver->directoryName($path));
 
-        if (!($stream = fopen($path, $mode)))
+        if (!($stream = $this->driver->openFile($path, $mode)))
             throw new RuntimeException("Could not open [$path] with mode [$mode]");
 
         if ($autoClose)
@@ -131,11 +136,11 @@ class Storage
     {
         $path = $this->path($path);
 
-        $directory = dirname($path);
+        $directory = $this->driver->directoryName($path);
         $this->makeDirectory($directory);
         $this->assertIsWritable($directory);
 
-        file_put_contents($path, $content, $flags);
+        $this->driver->filePutContents($path, $content, $flags);
     }
 
     /**
@@ -145,7 +150,7 @@ class Storage
     public function read(string $path): string
     {
         $path = $this->path($path);
-        return file_get_contents($path);
+        return $this->driver->fileGetContents($path);
     }
 
     /**
@@ -154,7 +159,7 @@ class Storage
      */
     public function isFile(string $path): bool
     {
-        return is_file($this->path($path));
+        return $this->driver->isFile($this->path($path));
     }
 
     /**
@@ -163,7 +168,7 @@ class Storage
      */
     public function isDirectory(string $path): bool
     {
-        return is_dir($this->path($path));
+        return $this->driver->isDirectory($this->path($path));
     }
 
     /**
@@ -174,7 +179,7 @@ class Storage
         if (!$this->isDirectory($path))
             throw new Exception("[$path] is not a directory");
 
-        return count(scandir($this->path($path))) == 2; // Includes only "." and ".."
+        return !count($this->driver->scanDirectory($this->path($path)));
     }
 
     /**
@@ -184,8 +189,8 @@ class Storage
     public function unlink(string $path): bool
     {
         $path = $this->path($path);
-        return is_file($path) ?
-            unlink($path):
+        return $this->driver->isFile($path) ?
+            $this->driver->removeFile($path):
             true;
     }
 
@@ -197,8 +202,8 @@ class Storage
     public function removeDirectory(string $path): bool
     {
         $path = $this->path($path);
-        return is_dir($path) ?
-            rmdir($path):
+        return $this->driver->isDirectory($path) ?
+            $this->driver->removeDirectory($path):
             true;
     }
 
@@ -211,8 +216,7 @@ class Storage
      */
     public function exploreDirectory(string $path="/", int $mode=self::NO_FILTER): array
     {
-        $path = $this->path($path);
-        return Utils::exploreDirectory($path, $mode);
+        return $this->driver->exploreDirectory($this->path($path), $mode);
     }
 
     /**
@@ -223,8 +227,7 @@ class Storage
      */
     public function listFiles(string $path="/"): array
     {
-        $path = $this->path($path);
-        return Utils::listFiles($path);
+        return $this->driver->listFiles($this->path($path));
     }
 
     /**
@@ -235,7 +238,6 @@ class Storage
      */
     public function listDirectories(string $path="/"): array
     {
-        $path = $this->path($path);
-        return Utils::listDirectories($path);
+        return $this->driver->listDirectories($this->path($path));
     }
 }

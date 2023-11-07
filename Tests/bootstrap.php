@@ -25,14 +25,17 @@ The goal is to make a good envrionment to Test (with Database, Configuration...e
 EventListener::removeInstance();
 
 $defaultStorage = Storage::getInstance();
-$defaultLogger = Logger::getInstance();
+Logger::setInstance(new Logger("test-suite.csv"));
 
 Autoloader::loadApplication("Sharp/Tests");
 
 $testStorage = new Storage(Utils::relativePath("Sharp/Tests/tmp_test_storage"));
 
 Storage::setInstance($testStorage);
-Configuration::setInstance(new Configuration(Utils::relativePath("Sharp/Tests/config.json")));
+
+$testConfig = new Configuration(Utils::relativePath("Sharp/Tests/config.json"));
+
+Configuration::getInstance()->merge($testConfig->dump());
 Cache::setInstance(new Cache($testStorage, "Cache"));
 
 $database = Database::getInstance();
