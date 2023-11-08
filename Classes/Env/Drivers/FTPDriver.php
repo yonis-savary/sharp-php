@@ -68,7 +68,6 @@ class FTPDriver implements FileDriverInterface
             return [];
 
         return ObjectArray::fromArray($res)
-        ->map(fn($x) => Utils::joinPath($path, $x))
         ->collect();
     }
 
@@ -87,6 +86,8 @@ class FTPDriver implements FileDriverInterface
         if ($flags)
             Logger::getInstance()->warning("FTP filePutContents does not support flags (got $flags)");
 
+        Storage::getInstance()->makeDirectory("tmp");
+
         $tmpFile = Storage::getInstance()->path("tmp/".uniqid("ftp-"));
         file_put_contents($tmpFile, $content);
 
@@ -99,6 +100,8 @@ class FTPDriver implements FileDriverInterface
 
     public function fileGetContents(string $path): string
     {
+        Storage::getInstance()->makeDirectory("tmp");
+
         $tmpFile = Storage::getInstance()->path("tmp/".uniqid("ftp-"));
         ftp_get($this->handler, $tmpFile, $path);
 
