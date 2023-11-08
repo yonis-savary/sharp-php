@@ -14,7 +14,7 @@ set_exception_handler(function(Throwable $exception){
     try
     {
         EventListener::getInstance()->dispatch(new UncaughtException($exception));
-        Logger::getInstance()->logThrowable($exception);
+        Logger::getInstance()->error($exception);
 
         if (php_sapi_name() === "cli")
             die(join("\n", [

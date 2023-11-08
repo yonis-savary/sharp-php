@@ -37,8 +37,10 @@ class Renderer
     {
         $this->loadConfiguration();
 
-        if ($this->isCached())
-            $this->pathCache = &Cache::getInstance()->getReference("sharp.renderer.path-cache");
+        if (!$this->isCached())
+            return;
+
+        $this->pathCache = &Cache::getInstance()->getReference("sharp.renderer.path-cache");
     }
 
     /**
@@ -93,7 +95,7 @@ class Renderer
         foreach ($current->getContext() as $name => $value)
         {
             if (isset($$name))
-                Logger::getInstance()->logThrowable(new InvalidArgumentException("Cannot redeclare [$name] while rendering"));
+                Logger::getInstance()->warning(new InvalidArgumentException("Cannot redeclare [$name] while rendering"));
             else
                 $$name = $value;
         }

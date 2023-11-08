@@ -61,7 +61,7 @@ class FTPStorageTest extends TestCase
             }
             catch (Throwable $err)
             {
-                Logger::getInstance()->logThrowable($err);
+                Logger::getInstance()->error($err);
                 $this->enabled = false;
             }
         }

@@ -57,7 +57,6 @@ class Database
         $dsn = $this->getDSN();
         $this->connection = new PDO($dsn, $user, $password);
 
-
         EventListener::getInstance()->dispatch(
             new ConnectedDatabase(
                 $this->connection,
@@ -160,7 +159,7 @@ class Database
             while (($pos = strpos($m[0], '{}', $offset)) !== false)
             {
                 $quotedPositions[] = $m[1] + $pos;
-                $offset = $pos+1;
+                $offset = $pos + 1;
             }
         }
 

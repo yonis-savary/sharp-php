@@ -22,7 +22,7 @@ $logger->alert("I'm an alert line");
 $logger->emergency("I'm an emergency line");
 
 # It can also be used to log error/traces in a more verbose way
-$logger->logThrowable(new Exception("Something went wrong"));
+$logger->info(new Exception("Something went wrong"));
 
 # Note : your can log everything that can somehow be represented as a string
 $logger->info([1,2,3]);

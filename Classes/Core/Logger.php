@@ -137,6 +137,12 @@ class Logger
 
         foreach ($content as $line)
         {
+            if ($line instanceof Throwable)
+            {
+                $this->logThrowable($level, $line);
+                continue;
+            }
+
             $line = $this->toString($line);
             $line = [$now, $ip, $method, $level, $line];
 
@@ -149,11 +155,13 @@ class Logger
      * Log a throwable message into the output plus its trace
      * (Useful to debug a trace and/or errors)
      */
-    public function logThrowable(Throwable $throwable): void
+    protected function logThrowable(string $level, Throwable $throwable): void
     {
-        $this->error("Got an [". $throwable::class ."] Throwable: ". $throwable->getMessage());
-        $this->error(sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()));
-        $this->error(...explode("\n", $throwable->getTraceAsString()));
+        $this->log($level,
+            "Got an [". $throwable::class ."] Throwable: ". $throwable->getMessage(),
+            sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()),
+            ...explode("\n", $throwable->getTraceAsString())
+        );
     }
 
     /**

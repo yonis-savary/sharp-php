@@ -303,7 +303,7 @@ class DatabaseQuery
     protected function buildEssentials(): string
     {
         if ($this->offset && is_null($this->limit))
-            Logger::getInstance()->logThrowable(new Exception("DatabaseQuery: setting an offset without a limit does not have any effect on the query"));
+            Logger::getInstance()->warning(new Exception("DatabaseQuery: setting an offset without a limit does not have any effect on the query"));
 
         $essentials = "";
 
