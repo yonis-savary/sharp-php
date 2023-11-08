@@ -44,8 +44,7 @@ trait QueueHandler
             }
             catch(Throwable $err)
             {
-                $logger->error("Could not unserialize data [$file]", $rawData);
-                $logger->logThrowable($err);
+                $logger->error("Could not unserialize data [$file]", $rawData, $err);
                 continue;
             }
 
@@ -56,8 +55,7 @@ trait QueueHandler
             }
             catch (Throwable $err)
             {
-                $logger->info("Could not process queue item !", $data);
-                $logger->logThrowable($err);
+                $logger->info("Could not process queue item !", $data, $err);
                 continue;
             }
         }
@@ -73,8 +71,5 @@ trait QueueHandler
         return Logger::getInstance();
     }
 
-    protected static function processQueueItem(array $data)
-    {
-
-    }
+    protected abstract static function processQueueItem(array $data);
 }

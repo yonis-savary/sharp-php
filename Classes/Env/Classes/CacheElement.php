@@ -43,7 +43,11 @@ class CacheElement
      */
     public static function fromFile(string $path): null|self
     {
-        list($creationDate, $timeToLive, $key) = explode("_", basename($path), 3);
+        $basename = basename($path);
+        if (!preg_match("/^\d+_\d+_.+$/", $basename))
+            return null;
+
+        list($creationDate, $timeToLive, $key) = explode("_", $basename, 3);
 
         $creationDate = intval($creationDate);
         $timeToLive = intval($timeToLive);
@@ -89,6 +93,16 @@ class CacheElement
             $this->getContent();
 
         return $this->content;
+    }
+
+    public function getCreationDate(): int
+    {
+        return $this->creationDate;
+    }
+
+    public function getTimeToLive(): int
+    {
+        return $this->timeToLive;
     }
 
     /**
