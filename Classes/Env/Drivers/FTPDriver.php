@@ -58,7 +58,6 @@ class FTPDriver implements FileDriverInterface
 
     public function makeDirectory(string $directory)
     {
-        Logger::getInstance()->debug($directory);
         ftp_mkdir($this->handler, $directory);
     }
 
@@ -67,8 +66,7 @@ class FTPDriver implements FileDriverInterface
         if (!$res = ftp_nlist($this->handler, $path))
             return [];
 
-        return ObjectArray::fromArray($res)
-        ->collect();
+        return $res;
     }
 
     public function directoryName(string $path): string

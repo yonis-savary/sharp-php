@@ -116,14 +116,14 @@ class Args implements \Countable
         $arguments = &$this->arguments;
 
         if (!str_starts_with($short, "-"))
-            $shortName = "-$short";
+            $short = "-$short";
         if (!str_starts_with($long, "--"))
-            $longName = "--$long";
+            $long = "--$long";
 
-        if (array_key_exists($longName, $arguments))
-            return $arguments[$longName];
-        if (array_key_exists($shortName, $arguments))
-            return $arguments[$shortName];
+        if (array_key_exists($long, $arguments))
+            return $arguments[$long];
+        if (array_key_exists($short, $arguments))
+            return $arguments[$short];
 
         if (in_array($short, $this->shortOptions))
             return null;

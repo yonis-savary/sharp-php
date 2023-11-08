@@ -87,9 +87,9 @@ class Request
      */
     public static function buildFromGlobals(bool $fixParametersTypes=true): Request
     {
-        $headers = [];
-        if (function_exists('getallheaders'))
-            $headers = getallheaders();
+        $headers = function_exists("getallheaders") ?
+            getallheaders() :
+            [];
 
         $get = $_GET;
         $post = $_POST;
@@ -121,7 +121,7 @@ class Request
     public function logSelf(Logger $logger=null): void
     {
         $logger ??= Logger::getInstance();
-        $logger->info(sprintf("Request: %s %s", $this->getMethod(), $this->getPath()));
+        $logger->info("Request: ". $this->getMethod() . " " . $this->getPath());
     }
 
     protected function getCleanUploadData(array $data): array
@@ -269,12 +269,12 @@ class Request
      */
     public function getUploads(string $name=null): array
     {
-        $uploads = new ObjectArray($this->uploads);
+        if (!$name)
+            return $this->uploads;
 
-        if ($name)
-            $uploads = $uploads->filter(fn(UploadFile $file) => $file->getInputName() === $name);
-
-        return $uploads->collect();
+        return (new ObjectArray($this->uploads))
+        ->filter(fn(UploadFile $file) => $file->getInputName() === $name)
+        ->collect();
     }
 
     /**

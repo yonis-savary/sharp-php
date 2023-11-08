@@ -9,6 +9,11 @@ use Sharp\Classes\Extras\QueueHandler;
 
 class ProcessQueues extends Command
 {
+    public function getHelp(): string
+    {
+        return "Tell your applications queues to process one batch of items";
+    }
+
     public function __invoke(Args $args)
     {
         $this->log("Processing application queues");

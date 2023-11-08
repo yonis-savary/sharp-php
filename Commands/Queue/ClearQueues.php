@@ -10,6 +10,11 @@ use Sharp\Core\Autoloader;
 
 class ClearQueues extends Command
 {
+    public function getHelp(): string
+    {
+        return "Delete every files from your application queues";
+    }
+
     public function __invoke(Args $args)
     {
         if (!Terminal::confirm("This action will delete every queue item in your application, process ?"))
