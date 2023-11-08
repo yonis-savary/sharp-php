@@ -164,7 +164,7 @@ class Response
             $toDisplay = $callback($this->content);
 
         if ($toDisplay)
-            echo "$toDisplay";
+            echo (string)$toDisplay;
     }
 
     /**
@@ -243,7 +243,7 @@ class Response
         $contentType = gettype($content);
         if (!in_array($contentType, self::ADAPT_SUPPORTED_TYPES))
         {
-            Logger::getInstance()->logThrowable(new InvalidArgumentException(
+            Logger::getInstance()->warning(new InvalidArgumentException(
                 "A response with an unsupported type ($contentType) was returned and cannot be adapted"
             ));
             return new Response(null, 204);
