@@ -8,6 +8,7 @@ use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Http\Request;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Web\Route;
+use Sharp\Classes\Web\Router;
 use Sharp\Core\Autoloader;
 
 class AssetServer
@@ -41,8 +42,10 @@ class AssetServer
     {
         $this->loadConfiguration();
 
-        if ($this->isCached())
-            $this->cacheIndex = Cache::getInstance()->getReference("sharp.asset-server");
+        if (!$this->isCached())
+            return;
+
+        $this->cacheIndex = &Cache::getInstance()->getReference("sharp.asset-server");
     }
 
     public function handleIfEnabled(): void
@@ -92,7 +95,9 @@ class AssetServer
         $middlewares = $this->configuration["middlewares"];
         $selfRoute = Route::get($routePath, fn($req) => $this->serve($req), $middlewares);
 
-        if (!$selfRoute->match($req))
+        $dummyRouter = new Router();
+
+        if (!$dummyRouter->match($selfRoute, $req))
             return false;
 
         $response = Response::adapt($selfRoute($req));
