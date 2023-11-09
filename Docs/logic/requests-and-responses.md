@@ -155,9 +155,31 @@ to customize its behavior
 $request->fetch(
     Logger $logger=null,
     int $timeout=null,
-    string $userAgent='...',
-    bool $supportRedirection=true
+    ?string $userAgent='...',
+    bool $supportRedirection=true,
+    int $logFlags=self::DEBUG_ESSENTIALS
 );
+```
+
+### fetch debugging
+
+Different log flags can be given to `fetch`, you can use them to choose which information you want to trace
+
+| Flag                     | Purpose                |
+| -------------------------|------------------------|
+| `DEBUG_REQUEST_CURL`     | Log infos on every `curl_setopt` call |
+| `DEBUG_REQUEST_HEADERS`  | Log infos on the Request's headers |
+| `DEBUG_REQUEST_BODY`     | Log Request's GET, POST and body data |
+| `DEBUG_REQUEST`          | Log both Request's header and data |
+| `DEBUG_RESPONSE_HEADERS` | Log the Response's headers |
+| `DEBUG_RESPONSE_BODY`    | Log the Response's raw body |
+| `DEBUG_RESPONSE`         | Log everything about the response |
+| `DEBUG_ESSENTIALS`       | `DEBUG_REQUEST_HEADERS` + `DEBUG_RESPONSE_HEADERS`; |
+| `DEBUG_ALL`              | Log everything above |
+
+Example:
+```php
+$request->fetch(..., logFlags: Request::DEBUG_REQUEST_HEADERS | Request::DEBUG_RESPONSE_BODY);
 ```
 
 ## Request Configuration

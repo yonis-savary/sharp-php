@@ -23,6 +23,18 @@ class Request
     protected array $slugs = [];
     protected ?Route $route = null;
 
+    const DEBUG_REQUEST_CURL     = 0b0000_0001;
+    const DEBUG_REQUEST_HEADERS  = 0b0000_0010;
+    const DEBUG_REQUEST_BODY     = 0b0000_0100;
+    const DEBUG_REQUEST          = 0b0000_1111;
+
+    const DEBUG_RESPONSE_HEADERS = 0b0001_0000;
+    const DEBUG_RESPONSE_BODY    = 0b0010_0000;
+    const DEBUG_RESPONSE         = 0b1111_0000;
+
+    const DEBUG_ESSENTIALS        = self::DEBUG_REQUEST_HEADERS | self::DEBUG_RESPONSE_HEADERS;
+    const DEBUG_ALL              = 0b1111_1111;
+
     public static function getDefaultConfiguration(): array
     {
         return ["typed-parameters" => true];
@@ -338,7 +350,8 @@ class Request
         ->filter(fn($line) => str_contains($line, ":"))
         ->combine(function($line){
             $line = preg_replace("/\r$/", '', $line);
-            return explode(':', $line, 2);
+            list($headerName, $headerValue) = explode(':', $line, 2);
+            return [trim($headerName), trim($headerValue)];
         });
     }
 
@@ -353,10 +366,13 @@ class Request
     public function toCurlHandle(
         int $timeout=null,
         ?string $userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0',
-        Logger $logger=null
+        Logger $logger=null,
+        int $logFlags=self::DEBUG_ALL
     ): CurlHandle
     {
         $logger ??= new Logger();
+        if (!Utils::valueHasFlag($logFlags, self::DEBUG_REQUEST_CURL))
+            $logger = new Logger(); // replace potential logger with null logger
 
         $logger->info("Building CURL handle");
 
@@ -444,14 +460,27 @@ class Request
         Logger $logger=null,
         int $timeout=null,
         ?string $userAgent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0',
-        bool $supportRedirection=true
+        bool $supportRedirection=true,
+        int $logFlags=self::DEBUG_ESSENTIALS
     ): Response|CurlHandle
     {
-        $handle = $this->toCurlHandle($timeout, $userAgent, $logger);
+        $handle = $this->toCurlHandle($timeout, $userAgent, $logger, $logFlags);
 
         $logger ??= new Logger(null);
 
-        $this->logSelf($logger);
+        if (Utils::valueHasFlag($logFlags, self::DEBUG_REQUEST_HEADERS))
+        {
+            $this->logSelf($logger);
+            $logger->info($this->getHeaders());
+        }
+
+        if (Utils::valueHasFlag($logFlags, self::DEBUG_REQUEST_BODY))
+            $logger->info(
+                "GET", $this->get(),
+                "POST", $this->post(),
+                "BODY", $this->body()
+            );
+
         if (!($result = curl_exec($handle)))
             throw new RuntimeException(sprintf("Curl error %s: %s", curl_errno($handle), curl_error($handle)));
 
@@ -459,13 +488,15 @@ class Request
         $resStatus = curl_getinfo($handle, CURLINFO_HTTP_CODE);
         curl_close($handle);
 
-        $logger->info(sprintf("Got [$resStatus] with [%s] bytes of data", strlen($result)));
+        if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_HEADERS))
+            $logger->info(sprintf("Got [$resStatus] with [%s] bytes of data", strlen($result)));
 
         $resHeaders = substr($result, 0, $headerSize);
         $resHeaders = $this->parseHeaders($resHeaders);
         $resHeaders = array_change_key_case($resHeaders, CASE_LOWER);
 
-        $logger->info("Got Headers", $resHeaders);
+        if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_HEADERS))
+            $logger->info("Got Headers", $resHeaders);
 
         if ($supportRedirection && $nextURL = ($resHeaders['location'] ?? null))
         {
@@ -481,17 +512,18 @@ class Request
 
         $resBody = substr($result, $headerSize);
 
-        $logger->info("Got Body", $resBody);
+
+        if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
+            $logger->info("Got Body", $resBody);
 
         if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json'))
         {
-            $logger->info("Decoding JSON body");
+            if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
+                $logger->info("Decoding JSON body");
+
             $resBody = json_decode($resBody, true, flags: JSON_THROW_ON_ERROR);
         }
 
-        $response = new Response($resBody, $resStatus, $resHeaders);
-        $response->logSelf($logger);
-
-        return $response;
+        return new Response($resBody, $resStatus, $resHeaders);
     }
 }
