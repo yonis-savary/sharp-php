@@ -9,7 +9,6 @@ class QueueHandlerTest extends TestCase
 {
     public function test_processQueueItem()
     {
-
         $handler = new class {
             use QueueHandler;
 
@@ -21,11 +20,12 @@ class QueueHandlerTest extends TestCase
                 self::pushQueueItem(["number" => $number]);
             }
 
-            protected static function processQueueItem(array $data)
+            protected static function processQueueItem(array $data): bool
             {
                 $n = $data["number"];
                 self::$lastProcessed = $n;
                 self::$acc += $n;
+                return true;
             }
         };
 

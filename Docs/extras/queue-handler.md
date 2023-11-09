@@ -10,7 +10,7 @@ With this class, we can compose simple queues in our application (to send mail f
 
 To use this trait :
 - put `use QueueHandler` to your class
-- implements `protected static function processQueueItem(array $data)` in your class, this method purpose is to process ONE item of your queue data
+- implements `protected static function processQueueItem(array $data): bool` in your class, this method purpose is to process ONE item of your queue data (return true if processed, false is skipped)
 - use `self::pushQueueItem(array $data)` in your base class to push an item to the queue
 
 To process your queue items you can
@@ -31,16 +31,45 @@ class MailController
         ]));
     }
 
-    protected static function processQueueItem(array $data)
+    protected static function processQueueItem(array $data): bool
     {
         $email = $data["email"];
         $subject = $data["subject"];
         $body = $data["body"];
 
         /* Send mail */
+        return true;
     }
 }
 ```
+
+
+## Properties
+
+The purpose of the `QueueHandler` trait is to process `n` items (defined by `getQueueProcessCapacity()`) each calling,
+if `processQueueItem()` returns `false`, it means that the given item was skipped (or "did not count"), in this case
+the first item is not counted in the processing
+
+With this method, we can be sure that we are processing `n` "true" items each calling
+
+
+With `n=5`
+```
+Item 0 - Skipped
+✓ Item 1 - Processed i=1
+Item 2 - Skipped
+Item 3 - Skipped
+✓ Item 4 - Processed i=2
+Item 5 - Skipped
+✓ Item 6 - Processed i=3
+✓ Item 7 - Processed i=4
+✓ Item 8 - Processed i=5, stops here
+- Item 9
+```
+
+Items `0,2,3` were skipped, but `1,4,6,7,8` were processed, which means that we DID processed `n` items
+
+(If the number of items is insufficient, the processing is stopped the same way as `n` was reached)
 
 ## Advanced usage
 
@@ -49,7 +78,7 @@ class MailController
 MyClass::getQueueStorage();
 ```
 
-By default, `processQueue()` will process 10 items in your queue storage,but you can edit this number by re-implementing `getQueueProcessCapacity`
+By default, `processQueue()` will process 10 items in your queue storage, but you can edit this number by re-implementing `getQueueProcessCapacity`
 ```php
 public static function getQueueProcessCapacity(): int
 {
@@ -57,7 +86,7 @@ public static function getQueueProcessCapacity(): int
 }
 ```
 
-By default, `QueueHandler` classes log information in the default `Logger` instance, but it can be replaced by re-implementing `getQueueProcessingLogger()`
+By default, `QueueHandler` classes logs information in the default `Logger` instance, but it can be replaced by re-implementing `getQueueProcessingLogger()`
 
 ```php
 protected static function getQueueProcessingLogger(): Logger
@@ -66,7 +95,6 @@ protected static function getQueueProcessingLogger(): Logger
 }
 ```
 
-
-You can also launch `php do clear-queues` to clear your queue directories
+You can also launch `php do clear-queues` to clear your queue directories, and `php do list-queues -l` to list each queues items
 
 [< Back to Summary](../home.md)

@@ -3,7 +3,9 @@
 namespace Sharp\Classes\Extras;
 
 use Sharp\Classes\Core\Logger;
+use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Storage;
+use Sharp\Core\Utils;
 use Throwable;
 
 trait QueueHandler
@@ -27,16 +29,30 @@ trait QueueHandler
     final public static function processQueue(): void
     {
         $storage = self::getQueueStorage();
+        if ($storage->isEmpty())
+            return;
+
         $logger = self::getQueueProcessingLogger();
+        $capacity = self::getQueueProcessCapacity();
 
-        $files = $storage->listFiles();
+        $logger->info("Processing [".self::class."] queue items");
 
-        $toProcess = array_slice($files, 0, self::getQueueProcessCapacity());
-        $logger->info(self::class, "Processing ". count($toProcess) ." items");
-
-        foreach ($toProcess as $file)
+        $count = 0;
+        while ($count < $capacity)
         {
-            $rawData = file_get_contents($file);
+            $files = ObjectArray::fromArray($storage->listFiles())
+            ->filter(fn($file) => !str_starts_with(basename($file), "#~"))
+            ->collect();
+
+            if (!count($files))
+                break;
+
+            $file = $files[0];
+
+            $newFileName = Utils::joinPath(dirname($file), "#~" . basename($file));
+            rename($file, $newFileName);
+
+            $rawData = file_get_contents($newFileName);
 
             try
             {
@@ -45,18 +61,21 @@ trait QueueHandler
             catch(Throwable $err)
             {
                 $logger->error("Could not unserialize data [$file]", $rawData, $err);
+                unlink($newFileName);
                 continue;
             }
 
             try
             {
-                self::processQueueItem($data);
-                unlink($file);
+                $count += self::processQueueItem($data) === true ? 1:0;
             }
             catch (Throwable $err)
             {
                 $logger->info("Could not process queue item !", $data, $err);
-                continue;
+            }
+            finally
+            {
+                unlink($newFileName);
             }
         }
     }
@@ -71,5 +90,10 @@ trait QueueHandler
         return Logger::getInstance();
     }
 
-    protected abstract static function processQueueItem(array $data);
+    /**
+     * Process ONE item of the queue
+     * - returning `true` means that the item was successfully processed
+     * - returning `false` means that the item was skipped and that the class can handle another one instead
+     */
+    protected abstract static function processQueueItem(array $data): bool;
 }
