@@ -75,7 +75,7 @@ class Response
      */
     protected function headerName(string $original): string
     {
-        return strtolower($original);
+        return trim(strtolower($original));
     }
 
     /**
