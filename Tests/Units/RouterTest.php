@@ -199,6 +199,8 @@ class RouterTest extends TestCase
         "date"     => "/2023-07-16",
         "time"     => "/16:20:00",
         "datetime" => "/2000-10-01 15:00:00",
+        "hex"      => "/e4ae73fb11fd",
+        "uuid"     => "/123e4567-e89b-12d3-a456-426655440000"
     ];
 
     protected function genericSlugFormatTest(
@@ -230,12 +232,14 @@ class RouterTest extends TestCase
             return array_values($copy);
         };
 
-        $this->genericSlugFormatTest("/{int:x}",      $samples["int"],  $samplesWithout(["int"]));
-        $this->genericSlugFormatTest("/{float:x}",    $samples["float"],  $samplesWithout(["float", "int"]));
-        $this->genericSlugFormatTest("/{any:x}",      $samples["any"],  []);
-        $this->genericSlugFormatTest("/{date:x}",     $samples["date"],  $samplesWithout(["date"]));
-        $this->genericSlugFormatTest("/{time:x}",     $samples["time"],  $samplesWithout(["time"]));
-        $this->genericSlugFormatTest("/{datetime:x}", $samples["datetime"],  $samplesWithout(["datetime"]));
+        $this->genericSlugFormatTest("/{int:x}",      $samples["int"],      $samplesWithout(["int"]));
+        $this->genericSlugFormatTest("/{float:x}",    $samples["float"],    $samplesWithout(["float", "int"]));
+        $this->genericSlugFormatTest("/{any:x}",      $samples["any"],      []);
+        $this->genericSlugFormatTest("/{date:x}",     $samples["date"],     $samplesWithout(["date"]));
+        $this->genericSlugFormatTest("/{time:x}",     $samples["time"],     $samplesWithout(["time"]));
+        $this->genericSlugFormatTest("/{datetime:x}", $samples["datetime"], $samplesWithout(["datetime"]));
+        $this->genericSlugFormatTest("/{hex:x}",      $samples["hex"],      $samplesWithout(["hex", "int"]));
+        $this->genericSlugFormatTest("/{uuid:x}",     $samples["uuid"],     $samplesWithout(["uuid"]));
     }
 
 }
