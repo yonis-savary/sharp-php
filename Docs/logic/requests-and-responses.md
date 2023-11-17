@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 📨 Requests and Responses
 
@@ -201,4 +201,4 @@ When this parameter is enabled `Request` tried to interpret Boolean & Null value
 | `"false"`, `"FALSE"`, `"False"`, ... | `false` (boolean) |
 | `"null"`, `"NULL"`, `"Null"`, ...    | `null`            |
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

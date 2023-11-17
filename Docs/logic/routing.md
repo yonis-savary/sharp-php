@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 🛣️ Routing
 
@@ -153,14 +153,16 @@ Route::get("/binary/{[01]+:number}", function($req, $number) {
 
 Here are the formats that are currently supported
 
-| Slug Keyword | Regex                                     |
-|--------------|-------------------------------------------|
-| `int`        | `\d+`                                     |
-| `float`      | `\d+(?:\.\d+)?`                           |
-| `date`       | `\d{4}\-\d{2}\-\d{2}`                     |
-| `time`       | `\d{2}\:\d{2}\:\d{2}`                     |
-| `datetime`   | `\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}` |
-| `any`        | `.+`                                      |
+| Slug Keyword | Regex                                                                         |
+|--------------|-------------------------------------------------------------------------------|
+| `int`        | `\d+`                                                                         |
+| `float`      | `\d+(?:\.\d+)?`                                                               |
+| `date`       | `\d{4}\-\d{2}\-\d{2}`                                                         |
+| `time`       | `\d{2}\:\d{2}\:\d{2}`                                                         |
+| `datetime`   | `\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}`                                     |
+| `hex`        | `[0-9a-fA-F]+`                                                                |
+| `uuid`       | `[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}` |
+| `any`        | `.+`                                                                          |
 
 
 > [!IMPORTANT]
@@ -176,4 +178,4 @@ Here are the formats that are currently supported
 - The `Route::redirect()` method can be used to create a redirection to another URL
 
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

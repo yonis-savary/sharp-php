@@ -9,7 +9,7 @@ The goal is to have a good balance between abstraction and concrete objects
 
 ## 📚 Documentation and Tutorials
 
-You can find resources to work/learn with Sharp in the [Docs directory](./Docs/home.md)
+You can find resources to work/learn with Sharp in the [Docs directory](./Docs)
 
 ## 📦 Create a project
 
@@ -46,30 +46,36 @@ Your directory will look like
 
 ## Release's features
 
+- 🟢 - tested feature
+- 🔵 - tested feature (some edge-case tests may be missing)
+- 🟡 - untested feature
+
 🤖 Core
-- [x] JSON Configuration
-- [x] Caching
-- [x] Logging
-- [x] Events
-- [x] CLI Commands
-- [x] Tests
-- [x] Utilities commands
+- [x] 🟢 Configuration (JSON)
+- [x] 🟢 Caching
+- [x] 🟢 Logging
+- [x] 🟢 Events
+- [x] 🔵 CLI Commands (Base utilities commands)
+- [x] 🟢 Tests
+
 
 🌐 Web
-- [x] Session
-- [x] Request / Responses
-- [x] Controllers
-- [x] Renderer
-- [x] Routing / Middlewares
+- [x] 🔵 Session
+- [x] 🟢 Request / Responses
+- [x] 🟢 Controllers
+- [x] 🔵 Renderer
+- [x] 🟢 Routing / Middlewares
 
 💾 Data
-- [x] Database
-- [x] Models
+- [x] 🟢 Database
+- [x] 🟢 Models
+- [x] 🟢 FTP Support (🌟 New !)
+- [x] 🟢 Queues support (🌟 New !)
 
 🔐 Security
-- [x] Authentication
-- [x] CSRF
+- [x] 🟢 Authentication
+- [x] 🟢 CSRF
 
 🎉 Extras
-- [x] Asset serving
-- [x] Model CRUD API
+- [x] 🟢 Asset serving
+- [x] 🟢 Model CRUD API

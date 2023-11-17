@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 🚘 Automatic CRUD API
 
@@ -209,4 +209,4 @@ If you decide to use one, the only step required is to specify it in the configu
 }
 ```
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

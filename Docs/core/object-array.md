@@ -1,4 +1,4 @@
-[< Back to Summary](../home.md)
+[< Back to Summary](../README.md)
 
 # 🚃 ObjectArray class
 
@@ -94,4 +94,4 @@ $users->sortByKey(fn($user) => $user["score"]);
 $users->sortByKey(fn($user) => $user["score"], true);
 ```
 
-[< Back to Summary](../home.md)
+[< Back to Summary](../README.md)

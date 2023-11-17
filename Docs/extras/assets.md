@@ -1,6 +1,6 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
-# Asset Serving
+# 🎨 Asset Serving
 
 The `AssetServer` component is here to help you serve your assets (CSS/JS/IMG...etc.)
 
@@ -87,4 +87,4 @@ To address this, your can be more precise when giving an asset name
 script("contact/creation.js")
 ```
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

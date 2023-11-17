@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 💻 CLI Commands
 
@@ -60,4 +60,4 @@ public function getOption(string $short, string $long);
 $args->getOption("r", "replace")
 ```
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

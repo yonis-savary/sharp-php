@@ -1,4 +1,4 @@
-[< Back to Summary](../home.md)
+[< Back to Summary](../README.md)
 
 # 🖌️ View Rendering
 
@@ -65,7 +65,7 @@ First, we make our parent view, which can use variables and `section()` helper
 
 Then we can use it by using `template()` and `start()/stop()` :
 - `template()` tells `Renderer` that we want to use a parent view
-- `start($sectionName)/stop()` tells `Renderer` that we are filling a section content that can be retrieve with `section()`
+- `start($sectionName)/stop()` tells `Renderer` that we are filling a section content that can be retrieved with `section()`
 
 ```php
 <?= template("common", ["title" => "Article list"]) ?>
@@ -75,4 +75,4 @@ Then we can use it by using `template()` and `start()/stop()` :
     <?= render("articles/list") ?>
 ```
 
-[< Back to Summary](../home.md)
+[< Back to Summary](../README.md)

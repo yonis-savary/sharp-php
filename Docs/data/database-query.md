@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.mdmd)
 
 # 📜 Database Queries
 
@@ -137,4 +137,4 @@ $sql = $query->build();
 }
 ```
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.mdmd)

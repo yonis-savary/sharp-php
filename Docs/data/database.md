@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 📚 Database and models
 
@@ -129,7 +129,8 @@ User::delete(); // Return a DatabaseQuery object ready to delete from user table
 $users = User::select()
 ->where("fk_country", 14)
 ->whereSQL("creation_date > DATESUB(NOW(), INTERVAL 3 MONTH)")
-->limit(5)->fetch();
+->limit(5)
+->fetch();
 
 $someUser = User::select()
 ->where("id", 168)
@@ -151,4 +152,4 @@ User::delete()
 
 To know more on `DatabaseQuery`, you can read [its documentation](./database-query.md)
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

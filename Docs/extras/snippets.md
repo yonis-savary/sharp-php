@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 💬 Q/A & Snippets
 
@@ -83,4 +83,4 @@ render(/*...*/);
 <p>Hello <?= $name ?> </p>
 ```
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

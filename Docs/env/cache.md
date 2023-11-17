@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 🔥 Cache
 
@@ -75,4 +75,14 @@ $myCache->getKeys();
 $myCache->getSubCache();
 ```
 
-[< Back to summary](../home.md)
+### Clearing the Cache
+
+We have two way to clear the cache :
+- Manually deleting the cache files (stored in `Storage/Cache`)
+- Launching the `clear-cache` command
+
+Launching `php do clear-cache` will delete every cache item BUT NOT the permanent ones,
+to delete them too, launch `php do clear-cache --all`
+
+
+[< Back to summary](../README.md)

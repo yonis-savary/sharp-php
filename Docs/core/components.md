@@ -1,12 +1,11 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 🧩 Sharp components
 
 Some classes need to be accessed globally from your application (like `Configuration`, `Logger`...etc)
 to resolve this, the [`Component`](../../Classes/Core/Component.php) trait was created.
 
-To be clear: **This trait's purpose is to be a [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that
-does not limit itself to one instance**
+To be clear: **This trait's purpose is to be a [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that does not limit itself to one instance**
 
 One main instance exists, and can be retrieved with `getInstance()`,
 but you can still create other instances of your classes, which can be very useful
@@ -94,4 +93,4 @@ $debugPrinter = new MagicOrderPrinter(
 $debugPrinter->printOrder(209409);
 ```
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

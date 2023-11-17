@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 🔐 Authentication
 
@@ -102,7 +102,8 @@ class AuthController
     {
         Router::getInstance()->addRoutes(
             Route::view("/login", "user/login"),
-            Route::post("/login", [self::class, "handleLogin"])
+            Route::post("/login", [self::class, "handleLogin"]),
+            Route::get("/logout", [self::class, "handleLogout"]),
         );
     }
 
@@ -115,6 +116,12 @@ class AuthController
             return Response::redirect("/");
 
         return Response::redirect("/?error=bad_login");
+    }
+
+    public static function handleLogout(): Response
+    {
+        Authentication::getInstance()->logout();
+        return Response::redirect("/login");
     }
 }
 ```
@@ -150,4 +157,4 @@ Router::getInstance()->addGroup(
 );
 ```
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

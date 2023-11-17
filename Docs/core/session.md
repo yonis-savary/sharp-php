@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 🔏 Session Management
 
@@ -37,6 +37,7 @@ $session->merge([
 ```
 
 > [!NOTE]
-> `Session` class is bound to `$_SESSION` by reference ! Which mean that you can edit `$_SESSION` and still get your data with the `Session` component
+> `Session` class is bound to `$_SESSION` by reference !
+> Which mean that you can edit `$_SESSION` and still get your data with the `Session` component
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

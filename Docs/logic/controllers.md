@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # ⚙️ Controllers
 
@@ -56,4 +56,4 @@ class MyController
 
 This structure allows you to organize your code by feature or business domain
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

@@ -1,4 +1,4 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
 # 🥤 Session Straw
 
@@ -48,4 +48,4 @@ php do create-straw
 php do create-straw UserId UserPermissions
 ```
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)

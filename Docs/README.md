@@ -1,7 +1,7 @@
 # 📚 Sharp-PHP Documentation
 
 The goals behind Sharp are :
-1. Make a clean code that is intuitive
+1. Write some intuitive clean code
 2. Remove unnecessary abstraction layers
 3. Don't hide the code behind Facades objects
 4. Make a Framework that doesn't break your IDE
@@ -17,11 +17,15 @@ or in GitHub directly
 Even though this documentation should be enough to get started, don't hesitate to checkout the framework source code, it is a good way to learn about it too
 
 Core
-- [📦 App directory & Configuration](./core/config.md)
+- [📦 Setup & Configuration](./core/config.md)
 - [🧩 Understanding Sharp components](./core/components.md)
 - [💻 CLI command](./core/commands.md)
 - [📃 Logging](./core/logging.md)
+- [📁 Storage](./env/storage.md)
 - [🔏 Session](./core/session.md)
+- [🔥 Cache](./env/cache.md)
+- [🪝 Events](./core/events.md)
+- [🚃 ObjectArray class](./core/object-array.md)
 
 Routing & Logic
 - [🛣️ Routing](./logic/routing.md)
@@ -30,11 +34,6 @@ Routing & Logic
 - [📨 Requests & Responses](./logic/requests-and-responses.md)
 - [🖌️ View Rendering](./logic/rendering.md)
 
-Core (Advanced)
-- [📁 Storage](./env/storage.md)
-- [🔥 Cache](./env/cache.md)
-- [🪝 Events](./core/events.md)
-- [🚃 ObjectArray class](./core/object-array.md)
 
 Database
 - [📚 Database and Models](./data/database.md)
@@ -44,7 +43,7 @@ Business Logic
 - [🥤 Session Straw](./extras/session-straw.md)
 
 Extras
-- [⭐️ Serving assets](./extras/assets.md)
+- [🎨 Serving assets](./extras/assets.md)
 - [🚘 Automatic CRUD API](./extras/autobahn.md)
 - [🔐 Authentication](./security/authentication.md)
 - [✅ CSRF](./security/csrf.md)

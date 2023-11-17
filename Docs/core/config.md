@@ -1,6 +1,6 @@
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
 
-# 📦 App Directory & Configuration
+# 📦 Setup & Configuration
 
 ## Application Directory
 
@@ -19,7 +19,7 @@ One application is made of those directories (All of them are optional):
 - Views
 
 > [!NOTE]
-> Files in `Helpers` and `Others` are recursively included with `require_once`
+> Files in `Helpers` and `Others` are recursively loaded with `require_once`
 
 ## Configuration
 
@@ -85,8 +85,7 @@ php do enable-application ShippingApp/Modules/*
 
 > [!IMPORTANT]
 > Applications are loaded in the order they're written in your configuration
->
-> Beware of dependencies !
+> (Beware of dependencies !)
 
 
 
@@ -138,4 +137,4 @@ require [`Sharp/bootstrap.php`](../bootstrap.php) in your script
     - Others
 
 
-[< Back to summary](../home.md)
+[< Back to summary](../README.md)
