@@ -163,8 +163,7 @@ class Response
         if ($callback = $this->responseTransformer)
             $toDisplay = $callback($this->content);
 
-        if ($toDisplay)
-            echo (string)$toDisplay;
+        echo (string)$toDisplay;
     }
 
     /**
