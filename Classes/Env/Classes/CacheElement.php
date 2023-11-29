@@ -111,7 +111,7 @@ class CacheElement
     public function wasEdited(): bool
     {
         return $this->baseMD5 ?
-            $this->baseMD5 === md5(serialize($this->content)) :
+            $this->baseMD5 !== md5(serialize($this->content)) :
             true;
     }
 
