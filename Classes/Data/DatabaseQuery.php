@@ -165,7 +165,7 @@ class DatabaseQuery
             if (count($this->joins) == $this->configuration["join-limit"])
                 return;
 
-            foreach ($model::getFields() as $_ => $field)
+            foreach ($model::getFields() as $fieldName => $field)
             {
                 $this->addField($targetAcc, $field->name, null, $field->type);
 
@@ -175,6 +175,9 @@ class DatabaseQuery
                 $nextTarget = $ref[0];
 
                 if (in_array($nextTarget, $tableAcc))
+                    continue;
+
+                if (in_array("$targetAcc&$fieldName", $foreignKeyIgnores))
                     continue;
 
                 $tableAcc[] = $nextTarget;
@@ -189,7 +192,7 @@ class DatabaseQuery
         }
 
         if (count($nextReferences))
-            $this->exploreReferences($nextReferences);
+            $this->exploreReferences($nextReferences, $foreignKeyIgnores);
     }
 
     /**
