@@ -22,10 +22,10 @@ class Authentication
     const USER_DATA = "sharp.authentication.user_data";
     const IS_LOGGED = "sharp.authentication.is_logged";
 
-    protected $model;
-    protected string $loginField;
-    protected string $passwordField;
-    protected ?string $saltField;
+    public readonly string $model;
+    public readonly string $loginField;
+    public readonly string $passwordField;
+    public readonly ?string $saltField;
 
     protected Session $session;
 
