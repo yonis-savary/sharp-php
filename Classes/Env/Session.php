@@ -6,6 +6,7 @@ use Exception;
 use RuntimeException;
 use Sharp\Classes\Core\AbstractMap;
 use Sharp\Classes\Core\Component;
+use Sharp\Core\Autoloader;
 
 class Session extends AbstractMap
 {
@@ -21,7 +22,13 @@ class Session extends AbstractMap
             $storage = Storage::getInstance()->getSubStorage("Sharp/Sessions");
             $storage->assertIsWritable();
 
-            if (!session_start(["save_path" => $storage->getRoot()]))
+            // Setting the session_name has two big advantages to it !
+            // - Avoid sessions collision between two apps that are on different ports of the same host
+            // - PHP Still clear session files (which is disabled if a custom session path is used)
+            // This way, two applications that don't have the same root will have different sessions
+            session_name(md5(Autoloader::projectRoot()));
+
+            if (!session_start())
                 throw new RuntimeException("Cannot start session !");
         }
 
