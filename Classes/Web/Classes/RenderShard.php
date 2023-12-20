@@ -2,7 +2,7 @@
 
 namespace Sharp\Classes\Web\Classes;
 
-class Shard
+class RenderShard
 {
     protected string $file;
     protected array $context;
@@ -13,7 +13,7 @@ class Shard
     protected ?string $currentSection = null;
     protected array $sectionContent = [];
 
-    public function __construct(string $file, array $context=[], Shard $parent=null)
+    public function __construct(string $file, array $context=[], RenderShard $parent=null)
     {
         $this->parentContext = $parent ? $parent->getContext() : [];
         $this->file = $file;

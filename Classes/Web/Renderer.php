@@ -11,7 +11,7 @@ use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Events\AfterViewRender;
 use Sharp\Classes\Events\BeforeViewRender;
-use Sharp\Classes\Web\Classes\Shard;
+use Sharp\Classes\Web\Classes\RenderShard;
 use Sharp\Core\Autoloader;
 use Throwable;
 
@@ -22,7 +22,7 @@ class Renderer
     protected array $pathCache = [];
 
     protected array $shards = [];
-    protected ?Shard $current = null;
+    protected ?RenderShard $current = null;
     protected array $sections = [];
 
     public static function getDefaultConfiguration() : array
@@ -88,8 +88,8 @@ class Renderer
         if (!($path = $this->findTemplate($templateName)))
             throw new Exception("[$templateName] view not found !");
 
-        $newShard = new Shard($path, $context, $this->current);
-        $currentIndex = array_push($this->shards, $newShard)-1;
+        $newRenderShard = new RenderShard($path, $context, $this->current);
+        $currentIndex = array_push($this->shards, $newRenderShard)-1;
         $current = $this->current = &$this->shards[$currentIndex];
 
         foreach ($current->getContext() as $name => $value)
@@ -102,7 +102,9 @@ class Renderer
 
         $events = EventListener::getInstance();
 
-        ob_start();
+        if (!ob_start())
+            throw new Exception("Could not start a new output buffering");
+
         $events->dispatch(new BeforeViewRender($templateName));
 
         try
@@ -111,7 +113,7 @@ class Renderer
         }
         catch (Throwable $err)
         {
-            ob_clean();
+            ob_end_clean();
             throw $err;
         }
 
