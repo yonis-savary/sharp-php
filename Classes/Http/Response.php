@@ -7,9 +7,6 @@ use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Http\Classes\ResponseCodes;
 use Sharp\Classes\Web\Renderer;
 
-/**
- * Credit to [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) for the Status descriptions
- */
 class Response
 {
     /**
@@ -132,7 +129,8 @@ class Response
      */
     public function getHeader(string $headerName): ?string
     {
-        return $this->headers[$this->headerName($headerName)] ?? null;
+        $headerName = $this->headerName($headerName);
+        return $this->headers[$headerName] ?? null;
     }
 
     /**
@@ -163,11 +161,12 @@ class Response
         if ($callback = $this->responseTransformer)
             $toDisplay = $callback($this->content);
 
-        echo (string)$toDisplay;
+        echo "$toDisplay";
     }
 
     /**
-     * Return a new HTML response
+     * @param string HTML Content
+     * @param int $responseCode HTTP response code
      */
     public static function html(string $content, int $responseCode=ResponseCodes::OK): Response
     {
@@ -177,35 +176,60 @@ class Response
     /**
      * Return a new download response
      * @param string $file File PATH
+     * @param string $attachmentName If given, the `Content-Disposition` header with the attachment name is set
+     * @param int $responseCode HTTP response code
      */
-    public static function file(string $file, string $attachmentName=null): Response
+    public static function file(string $file, string $attachmentName=null, int $responseCode=ResponseCodes::OK): Response
     {
         if (!is_file($file))
             throw new InvalidArgumentException("Inexistent file [$file] !");
 
-        $attachmentName ??= basename($file);
+        $headers = [
+            "Content-Type" => "application/octet-stream",
+            "Expires" => "0",
+            "Cache-Control" => "must-revalidate",
+            "Pragma" => "public",
+            "Content-Length" => filesize($file),
+        ];
+
+        if ($attachmentName)
+            $headers["Content-Disposition"] = "attachment; filename=$attachmentName";
 
         return new Response(
             $file,
-            ResponseCodes::OK,
-            [
-                "Content-Description" => "File Transfer",
-                "Content-Type" => "application/octet-stream",
-                "Content-Disposition" => "attachment; filename=$attachmentName",
-                "Expires" => "0",
-                "Cache-Control" => "must-revalidate",
-                "Pragma" => "public",
-                "Content-Length" => filesize($file),
-            ],
-            function() use ($file){
-                readfile($file);
-            }
+            $responseCode,
+            $headers,
+            function() use ($file){ readfile($file); }
         );
+    }
+
+    /**
+     * Send raw content to the client
+     * @note To send a file, you should use `Response::file` as it has a better use of memory
+     * @param mixed $content Raw content
+     * @param string $attachmentName If given, the `Content-Disposition` header with the attachment name is set
+     * @param int $responseCode HTTP response code
+     */
+    public static function octetStream(mixed $content, string $attachmentName=null, int $responseCode=ResponseCodes::OK): Response
+    {
+        $headers = [
+            "Content-Type"   => "application/octet-stream",
+            "Expires"        => "0",
+            "Cache-Control"  => "must-revalidate",
+            "Pragma"         => "public",
+            "Content-Length" => strlen($content),
+        ];
+
+        if ($attachmentName)
+            $headers["Content-Disposition"] = "attachment; filename=$attachmentName";
+
+        return new Response($content, $responseCode, $headers);
     }
 
     /**
      * Build a JSON response
      * @param mixed $content Raw content, don't transform it into string before calling this function
+     * @param int $responseCode HTTP response code
      */
     public static function json(mixed $content, int $responseCode=ResponseCodes::OK): Response
     {
@@ -214,15 +238,38 @@ class Response
 
     /**
      * Build a response that redirect the user
+     *
+     * @param string $location Next URL
+     * @param int $responseCode HTTP response code
      */
     public static function redirect(string $location, int $responseCode=ResponseCodes::SEE_OTHER): Response
     {
         return new Response(null, $responseCode, ["Location" => $location]);
     }
 
-    public static function render(string $template, array $context=[], int $responseCode=ResponseCodes::OK): Response
+    /**
+     * Build an HTML response with a rendered view inside
+     *
+     * @param string $template Template name
+     * @param array $context Context variable for the view
+     * @param int $responseCode HTTP response code
+     */
+    public static function view(string $template, array $context=[], int $responseCode=ResponseCodes::OK): Response
     {
         return self::html(Renderer::getInstance()->render($template, $context), $responseCode);
+    }
+
+    /**
+     * Build an HTML response with a rendered view inside
+     *
+     * @deprecated Please use `Response::view` instead
+     * @param string $template Template name
+     * @param array $context Context variable for the view
+     * @param int $responseCode HTTP response code
+     */
+    public static function render(string $template, array $context=[], int $responseCode=ResponseCodes::OK): Response
+    {
+        return self::view($template, $context, $responseCode);
     }
 
     /**
