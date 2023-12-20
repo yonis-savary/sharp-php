@@ -32,7 +32,7 @@ class Request
     const DEBUG_RESPONSE_BODY    = 0b0010_0000;
     const DEBUG_RESPONSE         = 0b1111_0000;
 
-    const DEBUG_ESSENTIALS        = self::DEBUG_REQUEST_HEADERS | self::DEBUG_RESPONSE_HEADERS;
+    const DEBUG_ESSENTIALS       = self::DEBUG_REQUEST_HEADERS | self::DEBUG_RESPONSE_HEADERS;
     const DEBUG_ALL              = 0b1111_1111;
 
     public static function getDefaultConfiguration(): array
@@ -348,7 +348,7 @@ class Request
     {
         return ObjectArray::fromExplode("\n", $headers)
         ->filter(fn($line) => str_contains($line, ":"))
-        ->combine(function($line){
+        ->toAssociative(function($line){
             $line = preg_replace("/\r$/", '', $line);
             list($headerName, $headerValue) = explode(':', $line, 2);
             return [trim($headerName), trim($headerValue)];

@@ -7,9 +7,9 @@ namespace Sharp\Classes\Data;
  */
 class DatabaseField
 {
-    const STRING = 0;
+    const STRING  = 0;
     const INTEGER = 1;
-    const FLOAT = 2;
+    const FLOAT   = 2;
     const BOOLEAN = 3;
     const DECIMAL = 4;
 

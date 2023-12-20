@@ -2,6 +2,9 @@
 
 namespace Sharp\Classes\Http\Classes;
 
+/**
+ * Thanks to [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) for the codes !
+ */
 class ResponseCodes
 {
     /**

@@ -10,22 +10,24 @@ use Sharp\Classes\Events\UncaughtException;
  * - For web users : a simple 'Internal Server Error' is displayed
  * - For CLI users : a message is displayed telling that an error occurred
  */
-set_exception_handler(function(Throwable $exception){
+set_exception_handler(function(Throwable $exception)
+{
+    ob_end_clean();
+
     try
     {
         EventListener::getInstance()->dispatch(new UncaughtException($exception));
         Logger::getInstance()->error($exception);
 
         if (php_sapi_name() === "cli")
-            die(join("\n", [
-                "\n",
-                "_____________________________________________",
-                "Got an exception/error, please read your logs",
-                "(".$exception->getMessage()." at ".$exception->getFile().":".$exception->getLine().")"
-            ]));
+            die(print(
+                "\n".
+                "_____________________________________________ \n".
+                "Got an exception/error, please read your logs \n".
+                $exception->getMessage()." at ".$exception->getFile().":".$exception->getLine() . "\n"
+            ));
 
-        (new Response("Internal Server Error", 500, ["Content-Type" => "text/plain"]))
-        ->display();
+        (new Response("Internal Server Error", 500, ["Content-Type" => "text/plain"]))->display();
         die;
     }
     catch (Throwable $err)
