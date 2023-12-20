@@ -220,12 +220,12 @@ class ObjectArray
     }
 
     /**
-     * Combine returned values into a new associative array
+     * Combine returned pairs into a new associative array
      *
      * @param callable $entriesMaker This callback must return an array of two, the first element is the key, the second is the value
      * @return array Associative array made of returned pair values
      */
-    public function combine(callable $entriesMaker): array
+    public function toAssociative(callable $entriesMaker): array
     {
         $newData = [];
 
@@ -238,6 +238,18 @@ class ObjectArray
             $newData[$key] = $value;
         }
         return $newData;
+    }
+
+    /**
+     * Combine returned values into a new associative array
+     *
+     * @param callable $entriesMaker This callback must return an array of two, the first element is the key, the second is the value
+     * @return array Associative array made of returned pair values
+     * @deprecated renamed, use `toAssociative()` instead
+     */
+    public function combine(callable $entriesMaker): array
+    {
+        return $this->toAssociative($entriesMaker);
     }
 
     public function reduce(callable $callback, mixed $initial=null): mixed

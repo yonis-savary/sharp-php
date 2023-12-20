@@ -190,13 +190,13 @@ class ObjectArrayTest extends TestCase
         $this->assertNull($arr->find(fn($x) => $x["name"] === "Hugo"));
     }
 
-    public function test_combine()
+    public function test_toAssociative()
     {
         $letters = ["A", "B", "C"];
 
         $arr = new ObjectArray($letters);
 
-        $results = $arr->combine(fn($value) => [$value, "$value-$value"]);
+        $results = $arr->toAssociative(fn($value) => [$value, "$value-$value"]);
 
         $this->assertEquals([
             "A" => "A-A",

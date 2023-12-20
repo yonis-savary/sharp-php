@@ -83,7 +83,7 @@ $myArray->reduce(fn($acc, $cur) => $acc + $cur, 0);
 
 // Make an associative array from returned pairs
 $alphabet = range('A', 'Z');
-$myArray->combine(fn($value) => [$alphabet[$i], $i]);
+$myArray->toAssociative(fn($value) => [$alphabet[$i], $i]);
 // return ['A'=>0, 'B'=>1, 'C'=>2, 'D'=>3, 'E'=>4, 'F'=>5]
 
 
