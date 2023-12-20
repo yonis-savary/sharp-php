@@ -172,4 +172,20 @@ class ModelTest extends TestCase
         $this->assertIsArray(TestUser::findId(1));
         $this->assertNull(TestUser::findId(1309809));
     }
+
+    public function test_updateId()
+    {
+        TestUser::updateId(1)->set("login", "testupdate")->fetch();
+        $this->assertEquals("testupdate", TestUser::findId(1)["data"]["login"]);
+    }
+
+    public function test_deleteId()
+    {
+        TestUser::insertArray(["login" => "dummy", "password" => "any", "salt" => "any"]);
+        $id = Database::getInstance()->lastInsertId();
+
+        $this->assertIsArray(TestUser::findId($id));
+        TestUser::deleteId($id);
+        $this->assertNull(TestUser::findId($id));
+    }
 }

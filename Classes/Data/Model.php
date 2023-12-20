@@ -148,12 +148,33 @@ trait Model
     /**
      * Select a row where the primary key is the one given
      *
-     * @param int $id Id to select
+     * @param mixed $id Id to select
      * @return ?array Matching row or `null` otherwise
      */
     public static function findId(mixed $id): ?array
     {
         return self::select()->where(self::getPrimaryKey(), $id)->first();
+    }
+
+    /**
+     * Return a new `DatabaseQuery` to update a specific row
+     *
+     * @param mixed $id Id to select
+     * @return DatabaseQuery Base query to work with
+     */
+    public static function updateId(mixed $id): DatabaseQuery
+    {
+        return self::update()->where(self::getPrimaryKey(), $id);
+    }
+
+    /**
+     * Delete specific row following the primary key
+     *
+     * @param mixed $id Id/primary key to select
+     */
+    public static function deleteId(mixed $id): void
+    {
+        self::delete()->where(self::getPrimaryKey(), $id)->fetch();
     }
 
     public static function validate(array $data=null): bool
