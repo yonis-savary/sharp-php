@@ -179,6 +179,14 @@ class ModelTest extends TestCase
         $this->assertEquals("testupdate", TestUser::findId(1)["data"]["login"]);
     }
 
+    public function test_updateRow()
+    {
+        TestUser::updateRow(1, [
+            "login" => "testupdaterow"
+        ]);
+        $this->assertEquals("testupdaterow", TestUser::findId(1)["data"]["login"]);
+    }
+
     public function test_deleteId()
     {
         TestUser::insertArray(["login" => "dummy", "password" => "any", "salt" => "any"]);

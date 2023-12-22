@@ -168,6 +168,22 @@ trait Model
     }
 
     /**
+     * Directly update a row in the model table
+     *
+     * @param mixed $id Unique value of the primary key field
+     * @param array $columns Updated columns, associative array as `field => new value`
+     */
+    public static function updateRow(mixed $id, array $columns): void
+    {
+        $query = self::updateId($id);
+
+        foreach ($columns as $field => $value)
+            $query->set($field, $value);
+
+        $query->fetch();
+    }
+
+    /**
      * Delete specific row following the primary key
      *
      * @param mixed $id Id/primary key to select
