@@ -12,7 +12,8 @@ use Sharp\Classes\Events\UncaughtException;
  */
 set_exception_handler(function(Throwable $exception)
 {
-    ob_end_clean();
+    while (ob_get_level())
+        ob_end_clean();
 
     try
     {
