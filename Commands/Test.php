@@ -38,7 +38,12 @@ class Test extends Command
             $this->executeInDir(function() use ($application) {
 
                 $start = hrtime(true);
-                $output = shell_exec("./vendor/bin/phpunit --colors=never --display-warnings");
+
+                $command = "./vendor/bin/phpunit";
+                if (str_starts_with(PHP_OS, "WIN"))
+                    $command = ".\\vendor\\bin\\phpunit";
+
+                $output = shell_exec("$command --colors=never --display-warnings") ?? "";
                 $duration = hrtime(true) - $start;
 
                 $durationMilliseconds = $duration/1_000_000;
