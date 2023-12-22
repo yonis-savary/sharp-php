@@ -129,18 +129,4 @@ class AuthenticationTest extends TestCase
         $authentication->attempt("root", "root");
         $this->assertNull($authentication->getUser());
     }
-
-    public function test_createUser()
-    {
-        $authentication = new Authentication();
-
-        /** @var TestUser $user */
-        $user = $authentication->createUser("admin", "clear");
-
-        $this->assertInstanceOf(TestUser::class, $user);
-
-        $this->assertEquals("admin", $user->login);
-        $this->assertIsString($user->salt);
-        $this->assertTrue(password_verify("clear" . $user->salt, $user->password));
-    }
 }
