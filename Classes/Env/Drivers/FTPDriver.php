@@ -23,6 +23,7 @@ class FTPDriver implements FileDriverInterface
         if (!ftp_login($this->handler, $username, $password))
             throw new RuntimeException("Could not login to [$url:$port] as [$username]");
 
+        ftp_raw($this->handler, 'OPTS UTF8 ON');
         ftp_pasv($this->handler, $passiveMode);
     }
 
@@ -65,6 +66,9 @@ class FTPDriver implements FileDriverInterface
     {
         if (!$res = ftp_nlist($this->handler, $path))
             return [];
+
+
+        debug($res);
 
         return $res;
     }
