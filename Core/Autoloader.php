@@ -191,7 +191,7 @@ class Autoloader
      */
     public static function getClassesList(bool $forceReload=false): array
     {
-        if ((!$forceReload) && self::$cachedClassList)
+        if (self::$cachedClassList && !$forceReload)
             return self::$cachedClassList;
 
         $files = self::getListFiles(self::AUTOLOAD);

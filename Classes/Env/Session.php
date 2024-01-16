@@ -19,9 +19,6 @@ class Session extends AbstractMap
 
         if (session_status() === PHP_SESSION_NONE)
         {
-            $storage = Storage::getInstance()->getSubStorage("Sharp/Sessions");
-            $storage->assertIsWritable();
-
             // Setting the session_name has two big advantages to it !
             // - Avoid sessions collision between two apps that are on different ports of the same host
             // - PHP Still clear session files (which is disabled if a custom session path is used)

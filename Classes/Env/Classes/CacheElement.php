@@ -52,11 +52,10 @@ class CacheElement
         $creationDate = intval($creationDate);
         $timeToLive = intval($timeToLive);
 
-        if ($timeToLive == Cache::PERMANENT)
-            return new self($key, $timeToLive, $creationDate, $path);
-
-        if ($creationDate + $timeToLive <= time())
-        {
+        if (
+            ($timeToLive !== Cache::PERMANENT) &&
+            ($creationDate + $timeToLive <= time())
+        ) {
             unlink($path);
             return null;
         }
@@ -126,7 +125,7 @@ class CacheElement
             return null;
 
         if (!$this->wasEdited())
-            return null;
+            return $this->file;
 
         $oldFilename = $this->file;
         $filename = join("_", [$this->creationDate, $this->timeToLive, $this->key]);

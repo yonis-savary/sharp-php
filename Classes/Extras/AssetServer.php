@@ -42,10 +42,8 @@ class AssetServer
     {
         $this->loadConfiguration();
 
-        if (!$this->isCached())
-            return;
-
-        $this->cacheIndex = &Cache::getInstance()->getReference("sharp.asset-server");
+        if ($this->isCached())
+            $this->cacheIndex = &Cache::getInstance()->getReference("sharp.asset-server");
     }
 
     public function handleIfEnabled(): void
@@ -84,9 +82,9 @@ class AssetServer
      */
     public function getURL(string $assetName): string
     {
-        $assetName = urlencode($assetName);
+        $encodedAssetName = urlencode($assetName);
         $routePath = $this->configuration["url"];
-        return "$routePath?file=$assetName";
+        return "$routePath?file=$encodedAssetName";
     }
 
     public function handleRequest(Request $req, bool $returnResponse=false): Response|false
@@ -100,7 +98,7 @@ class AssetServer
         if (!$dummyRouter->match($selfRoute, $req))
             return false;
 
-        $response = Response::adapt($selfRoute($req));
+        $response = $selfRoute($req);
 
         if ($returnResponse)
             return $response;

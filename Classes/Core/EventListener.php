@@ -5,7 +5,6 @@ namespace Sharp\Classes\Core;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Events\DispatchedEvent;
 use Sharp\Classes\Data\ObjectArray;
-use Sharp\Core\Utils;
 
 class EventListener
 {

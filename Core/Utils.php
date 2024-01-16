@@ -86,13 +86,14 @@ class Utils
      * Make an absolute path from given path/file parts
      * @note Given path can be absolute, it will not be altered
      */
-    public static function relativePath(...$parts): string
+    public static function relativePath(string $path, string $relativeTo=null): string
     {
-        $relative = self::joinPath(...$parts);
-        if (str_contains($relative, Autoloader::projectRoot()))
-            return $relative;
+        $relativeTo ??= Autoloader::projectRoot();
 
-        return self::joinPath(Autoloader::projectRoot(), $relative);
+        return str_contains($path, $relativeTo) ?
+            $path:
+            self::joinPath($relativeTo, $path)
+        ;
     }
 
     /**
@@ -215,6 +216,7 @@ class Utils
     {
         $configuration ??= Configuration::getInstance();
         $env = $configuration->get("env", "debug");
+
         return strtolower($env) === "production";
     }
 
@@ -225,6 +227,7 @@ class Utils
     {
         $configuration ??= Configuration::getInstance();
         $enabled = $configuration->toArray("applications");
+
         return in_array($application, $enabled);
     }
 }

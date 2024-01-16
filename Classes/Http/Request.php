@@ -427,7 +427,7 @@ class Request
 
         if ($timeout)
         {
-            $logger->info("Setting CURLOPT_CONNECTTIMEOUT, CURLOPT_TIMEOUT to", $timeout);
+            $logger->info("Setting CURLOPT_CONNECTTIMEOUT, CURLOPT_TIMEOUT to " . $timeout);
             curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, $timeout);
             curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
         }
@@ -511,7 +511,6 @@ class Request
         }
 
         $resBody = substr($result, $headerSize);
-
 
         if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
             $logger->info("Got Body", $resBody);

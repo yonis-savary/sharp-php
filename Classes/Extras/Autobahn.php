@@ -41,7 +41,7 @@ class Autobahn
     public function throwOnInvalidModel(string $model)
     {
         if (!Utils::uses($model, Model::class))
-            throw new InvalidArgumentException("[$model] does not use the Model trait !");
+            throw new InvalidArgumentException("[$model] does not use the ". Model::class ." trait !");
 
         return $model;
     }

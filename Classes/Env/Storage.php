@@ -84,10 +84,7 @@ class Storage
      */
     public function path(string $path): string
     {
-        if (str_contains($path, $this->root))
-            return $path;
-
-        return Utils::joinPath($this->root, $path);
+        return Utils::relativePath($path, $this->root);
     }
 
     /**

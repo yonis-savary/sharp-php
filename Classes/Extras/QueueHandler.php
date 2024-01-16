@@ -2,6 +2,7 @@
 
 namespace Sharp\Classes\Extras;
 
+use InvalidArgumentException;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Storage;
@@ -12,10 +13,19 @@ trait QueueHandler
 {
     final protected static function pushQueueItem(array $data): string
     {
+        try
+        {
+            $serializedData = serialize($data);
+        }
+        catch (Throwable)
+        {
+            throw new InvalidArgumentException("Given data is not serializable !");
+        }
+
         $filename = uniqid(time() . "-");
 
         $storage = self::getQueueStorage();
-        $storage->write($filename, serialize($data));
+        $storage->write($filename, $serializedData);
 
         return $storage->path($filename);
     }
@@ -37,33 +47,26 @@ trait QueueHandler
 
         $logger->info("Processing [".self::class."] queue items");
 
+        # "Reserved" item are renamed, "#~" is put before their original name
+        # A filename begining with "#~" must be ignored as it can be processed in another process
+        # We can almost be sure that we are avoiding renaming collision by waiting a random period
+        usleep(random_int(0, 1000));
+
         $count = 0;
         while ($count < $capacity)
         {
+
             $files = ObjectArray::fromArray($storage->listFiles())
             ->filter(fn($file) => !str_starts_with(basename($file), "#~"))
             ->collect();
 
-            if (!count($files))
+            if (!($file = $files[0] ?? false))
                 break;
-
-            $file = $files[0];
 
             $newFileName = Utils::joinPath(dirname($file), "#~" . basename($file));
             rename($file, $newFileName);
 
-            $rawData = file_get_contents($newFileName);
-
-            try
-            {
-                $data = unserialize($rawData);
-            }
-            catch(Throwable $err)
-            {
-                $logger->error("Could not unserialize data [$file]", $rawData, $err);
-                unlink($newFileName);
-                continue;
-            }
+            $data = unserialize(file_get_contents($newFileName));
 
             try
             {

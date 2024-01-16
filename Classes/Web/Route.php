@@ -68,7 +68,7 @@ class Route
     {
         $extras = $request->getRoute()->getExtras();
 
-        return Response::render(
+        return Response::view(
             $extras["template"],
             [
                 ...($extras["context"] ?? []),

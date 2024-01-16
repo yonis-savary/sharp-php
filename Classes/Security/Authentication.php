@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use Sharp\Classes\Core\Component;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Core\EventListener;
-use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Session;
 use Sharp\Core\Utils;
@@ -17,10 +16,10 @@ class Authentication
 {
     use Component, Configurable;
 
-    const ATTEMPTS_NUMBER = "sharp.authentication.failed-attempt-number";
+    const ATTEMPTS_NUMBER     = "sharp.authentication.failed-attempt-number";
     const SESSION_EXPIRE_TIME = "sharp.authentication.session-expire-time";
-    const USER_DATA = "sharp.authentication.user_data";
-    const IS_LOGGED = "sharp.authentication.is_logged";
+    const USER_DATA           = "sharp.authentication.user-data";
+    const IS_LOGGED           = "sharp.authentication.is-logged";
 
     public readonly string $model;
     public readonly string $loginField;

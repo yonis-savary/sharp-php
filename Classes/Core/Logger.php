@@ -54,16 +54,8 @@ class Logger
         $this->filename = $storage->path($filename);
         $this->stream = $storage->getStream($filename, "a", false);
 
-        if ($exists)
-            return;
-
-        fputcsv($this->stream, [
-            "DateTime",
-            "IP",
-            "Method",
-            "Level",
-            "Message"
-        ], "\t");
+        if (!$exists)
+            fputcsv($this->stream, ["DateTime", "IP", "Method", "Level", "Message"], "\t");
     }
 
     public function __destruct()
@@ -85,11 +77,10 @@ class Logger
      */
     public function replaceStream(mixed $stream, bool $autoClose=false): void
     {
-        $this->closeStream();
-
         if (!is_resource($stream))
             throw new InvalidArgumentException('$stream parameter must be a resource');
 
+        $this->closeStream();
         $this->stream = $stream;
         $this->closeStream = $autoClose;
     }
@@ -131,7 +122,7 @@ class Logger
         if (!$this->stream)
             return;
 
-        $ip = $_SERVER['REMOTE_ADDR'] ?? "unknown";
+        $ip = $_SERVER['REMOTE_ADDR'] ?? "0.0.0.0";
         $method = $_SERVER['REQUEST_METHOD'] ?? php_sapi_name();
         $now = date('Y-m-d H:i:s');
 
@@ -143,11 +134,8 @@ class Logger
                 continue;
             }
 
-            $line = $this->toString($line);
-            $line = [$now, $ip, $method, $level, $line];
-
-            if ($this->stream)
-                fputcsv($this->stream, $line, "\t");
+            $lineString = $this->toString($line);
+            fputcsv($this->stream, [$now, $ip, $method, $level, $lineString], "\t");
         }
     }
 
