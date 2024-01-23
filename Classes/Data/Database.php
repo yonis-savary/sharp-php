@@ -192,7 +192,10 @@ class Database
         $statement = $this->connection->query($queryWithContext);
         $this->lastStatement = $statement;
 
-        return $statement->fetchAll($fetchMode);
+        $results = $statement->fetchAll($fetchMode);
+        $statement->closeCursor();
+
+        return $results;
     }
 
     /**
