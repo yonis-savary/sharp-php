@@ -18,3 +18,18 @@ CREATE TABLE test_user_data (
     fk_user INTEGER NOT NULL REFERENCES test_user(id) ON DELETE CASCADE,
     data VARCHAR(200)
 );
+
+
+CREATE TABLE test_sample_data (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    birth_year INT NOT NULL
+);
+
+INSERT INTO test_sample_data (name, birth_year)
+VALUES
+('Alfred', 1899),
+('Francis', 1939 ),
+('Martin', 1942 ),
+('Quentin', 1963 ),
+('Steven', 1946 );

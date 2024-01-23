@@ -34,10 +34,28 @@ class ObjectArray
      * @param string $string `explode()` $string parameter
      * @param int $limit `explode()` $limit parameter
      */
-    public static function fromExplode(string $separator, string $string, int $limit=PHP_INT_MAX)
+    public static function fromExplode(string $separator, string $string, int $limit=PHP_INT_MAX): self
     {
         $data = explode($separator, $string, $limit);
         return new self($data);
+    }
+
+
+    /**
+     * Create an array of values from a SQL query
+     * The values will be reduced to the first selected column
+     *
+     * @example base `fromQuery("SELECT first_name FROM user LIMIT 10") => array of 10 first_name values`
+     */
+    public static function fromQuery(string $query, array $context=[]): self
+    {
+        $results = Database::getInstance()->query($query, $context);
+
+        if (! $sample = $results[0] ?? false)
+            return new self([]);
+
+        $key = array_keys($sample)[0];
+        return (new self($results))->map(fn($x) => $x[$key]);
     }
 
     /**

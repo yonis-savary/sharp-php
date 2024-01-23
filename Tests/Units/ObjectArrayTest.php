@@ -22,6 +22,19 @@ class ObjectArrayTest extends TestCase
         $this->assertEquals(["1","2","3"], ObjectArray::fromExplode(",", "1,2,3")->collect());
     }
 
+    public function test_fromQuery()
+    {
+        $this->assertEquals(
+            ['Alfred', 'Francis', 'Martin', 'Quentin', 'Steven'],
+            ObjectArray::fromQuery("SELECT name, birth_date FROM test_sample_data")->collect()
+        );
+
+        $this->assertEquals(
+            [1899, 1939, 1942, 1963, 1946],
+            ObjectArray::fromQuery("SELECT birth_date, name FROM test_sample_data")->collect()
+        );
+    }
+
     public function test_push()
     {
         $arr = new ObjectArray();
