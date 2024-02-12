@@ -111,10 +111,17 @@ class BaseDriver implements DriverInterface
 
         $doJoin = ($request->params("_join") ?? true) == true;
         $ignores = Utils::toArray($request->params("_ignores") ?? []);
-        $request->unset(["_ignores", "_join"]);
+        list($limit, $offset) = $request->list("_limit", "_offset");
+        $request->unset(["_ignores", "_join", "_limit", "_offset"]);
 
         $query = new DatabaseQuery($model::getTable(), DatabaseQuery::SELECT);
         $query->exploreModel($model, $doJoin, $ignores);
+
+        if ($limit)
+            $query->limit($limit);
+
+        if ($offset)
+            $query->offset($offset);
 
         foreach ($request->all() as $key => $value)
             $query->where($key, $value);
