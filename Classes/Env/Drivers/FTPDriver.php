@@ -67,9 +67,6 @@ class FTPDriver implements FileDriverInterface
         if (!$res = ftp_nlist($this->handler, $path))
             return [];
 
-
-        debug($res);
-
         return $res;
     }
 
