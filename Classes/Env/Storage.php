@@ -38,7 +38,7 @@ class Storage
     {
         $this->driver = $driver ?? new LocalDiskDriver();
 
-        $this->root = $root;
+        $this->root = Utils::normalizePath($root);
         $this->makeDirectory("/");
 
         if (!$this->driver->isDirectory($this->root))
