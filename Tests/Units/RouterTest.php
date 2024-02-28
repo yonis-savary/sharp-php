@@ -189,6 +189,15 @@ class RouterTest extends TestCase
         $postRoute = new Route("/A", $dummyCallback, ["POST"]);
         $this->assertFalse($router->match($postRoute, new Request("GET", "/A")));
         $this->assertTrue($router->match($postRoute, new Request("POST", "/A")));
+
+
+        // Support for end-slash...
+        $endSlashRoute = new Route("/A/", $dummyCallback);
+        $this->assertTrue($router->match($endSlashRoute, new Request("GET", "/A")));
+        $this->assertTrue($router->match($endSlashRoute, new Request("GET", "/A/")));
+
+        $route = new Route("/A", $dummyCallback);
+        $this->assertTrue($router->match($route, new Request("GET", "/A/")));
     }
 
 

@@ -274,7 +274,7 @@ class Router
             $part = "($expression)";
         }
 
-        $regex = "/^". join("\\/", $parts) ."$/";
+        $regex = "/^". join("\\/", $parts) ."\\/?$/";
 
         if (!preg_match($regex, $request->getPath(), $slugs))
             return false;

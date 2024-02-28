@@ -101,14 +101,11 @@ class Route
         array $middlewares=[],
         ?array $extras=[]
     ) {
-        $this->path = $path;
+        $this->setPath($path);
         $this->methods = $methods ?? [];
         $this->extras = $extras ?? [];
         $this->callback = $callback;
         $this->setMiddlewares($middlewares);
-
-        if (!str_starts_with($this->path, "/"))
-            $this->path = "/" . $this->path;
     }
 
     public function getPath(): string
@@ -118,6 +115,12 @@ class Route
 
     public function setPath(string $path): void
     {
+        if (!str_starts_with($path, "/"))
+            $path = "/" . $path;
+
+        if (str_ends_with($path, "/"))
+            $path = substr($path, 0, strlen($path)-1);
+
         $this->path = $path;
     }
 

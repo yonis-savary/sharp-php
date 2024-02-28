@@ -63,6 +63,9 @@ class Request
 
         $this->headers = array_change_key_case($this->headers, CASE_LOWER);
 
+        if (str_ends_with($this->path, "/"))
+            $this->path = substr($this->path, 0, strlen($this->path)-1);
+
         if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
             $this->body = json_decode($this->body ?? "null", true, JSON_THROW_ON_ERROR);
 
