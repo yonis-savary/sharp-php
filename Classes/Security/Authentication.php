@@ -16,10 +16,10 @@ class Authentication
 {
     use Component, Configurable;
 
-    const ATTEMPTS_NUMBER     = "sharp.authentication.failed-attempt-number";
-    const SESSION_EXPIRE_TIME = "sharp.authentication.session-expire-time";
-    const USER_DATA           = "sharp.authentication.user-data";
-    const IS_LOGGED           = "sharp.authentication.is-logged";
+    const ATTEMPTS_NUMBER     = "failed-attempt-number";
+    const SESSION_EXPIRE_TIME = "session-expire-time";
+    const USER_DATA           = "user-data";
+    const IS_LOGGED           = "is-logged";
 
     public readonly string $model;
     public readonly string $loginField;
@@ -37,6 +37,15 @@ class Authentication
             "salt-field" => null,
             "session-duration" => 3600
         ];
+    }
+
+    public function sessionKey(string $key)
+    {
+        return "sharp.authentication." . md5(
+            $this->model.
+            $this->loginField.
+            $this->passwordField
+        ) . $key;
     }
 
     public function __construct(Session $session=null, Configuration $config=null)
@@ -66,7 +75,7 @@ class Authentication
         if (!$this->isLogged())
             return;
 
-        $expireTime = $this->session->get(self::SESSION_EXPIRE_TIME);
+        $expireTime = $this->session->get($this->sessionKey(self::SESSION_EXPIRE_TIME));
 
         if (time() >= $expireTime)
             $this->logout();
@@ -100,9 +109,9 @@ class Authentication
     public function login(array $userData): void
     {
         $this->session->merge([
-            self::IS_LOGGED => true,
-            self::USER_DATA => $userData,
-            self::ATTEMPTS_NUMBER => 0,
+            $this->sessionKey(self::IS_LOGGED) => true,
+            $this->sessionKey(self::USER_DATA) => $userData,
+            $this->sessionKey(self::ATTEMPTS_NUMBER) => 0,
         ]);
         $this->refreshExpireTime();
 
@@ -112,7 +121,10 @@ class Authentication
     protected function failAttempt(): bool
     {
         $this->logout();
-        $this->session->edit(self::ATTEMPTS_NUMBER, fn($x=0) => $x+1);
+        $this->session->edit(
+            $this->sessionKey(self::ATTEMPTS_NUMBER),
+            fn($x=0) => $x+1
+        );
 
         return false;
     }
@@ -120,29 +132,32 @@ class Authentication
     protected function refreshExpireTime(): void
     {
         $sessionDuration = intval($this->configuration["session-duration"]);
-        $this->session->set(self::SESSION_EXPIRE_TIME, time() + $sessionDuration);
+        $this->session->set(
+            $this->sessionKey(self::SESSION_EXPIRE_TIME),
+            time() + $sessionDuration
+        );
     }
 
     public function logout(): void
     {
         $this->session->unset(
-            self::IS_LOGGED,
-            self::USER_DATA
+            $this->sessionKey(self::IS_LOGGED),
+            $this->sessionKey(self::USER_DATA)
         );
     }
 
     public function isLogged(): bool
     {
-        return boolval($this->session->get(self::IS_LOGGED, false));
+        return boolval($this->session->get($this->sessionKey(self::IS_LOGGED), false));
     }
 
     public function attemptNumber(): int
     {
-        return $this->session->get(self::ATTEMPTS_NUMBER, 0);
+        return $this->session->get($this->sessionKey(self::ATTEMPTS_NUMBER), 0);
     }
 
     public function getUser(): ?array
     {
-        return $this->session->get(self::USER_DATA);
+        return $this->session->get($this->sessionKey(self::USER_DATA));
     }
 }
