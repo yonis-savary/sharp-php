@@ -26,12 +26,12 @@ class ObjectArrayTest extends TestCase
     {
         $this->assertEquals(
             ['Alfred', 'Francis', 'Martin', 'Quentin', 'Steven'],
-            ObjectArray::fromQuery("SELECT name, birth_date FROM test_sample_data")->collect()
+            ObjectArray::fromQuery("SELECT name, birth_year FROM test_sample_data")->collect()
         );
 
         $this->assertEquals(
             [1899, 1939, 1942, 1963, 1946],
-            ObjectArray::fromQuery("SELECT birth_date, name FROM test_sample_data")->collect()
+            ObjectArray::fromQuery("SELECT birth_year, name FROM test_sample_data")->collect()
         );
     }
 
