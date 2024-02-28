@@ -46,10 +46,10 @@ class Database
     public function __construct(
         public string $driver,
         public ?string $database,
-        public ?string $host,
-        public ?int $port,
-        public ?string $user,
-        protected ?string $password
+        public ?string $host=null,
+        public ?int $port=null,
+        public ?string $user=null,
+        protected ?string $password=null
     )
     {
         $this->loadConfiguration();
