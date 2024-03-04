@@ -2,6 +2,8 @@
 
 namespace Sharp\Classes\Data;
 
+use ErrorException;
+use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -26,7 +28,8 @@ class Database
             "host" => "localhost",
             "port" => 3306,
             "user" => "root",
-            "password" => null
+            "password" => null,
+            "charset" => "utf8"
         ];
     }
 
@@ -39,7 +42,8 @@ class Database
             $configuration["host"],
             $configuration["port"],
             $configuration["user"],
-            $configuration["password"]
+            $configuration["password"],
+            $configuration["charset"]
         );
     }
 
@@ -49,13 +53,27 @@ class Database
         public ?string $host=null,
         public ?int $port=null,
         public ?string $user=null,
-        protected ?string $password=null
+        protected ?string $password=null,
+        public string $charset="utf8"
     )
     {
         $this->loadConfiguration();
 
         $dsn = $this->getDSN();
         $this->connection = new PDO($dsn, $user, $password);
+
+        // Ensure the configuration charset is used
+        $charset = $this->charset;
+        switch ($this->driver)
+        {
+            case "sqlite":
+                $this->query("PRAGMA encoding={}", [$charset]);
+                break;
+            default :
+                $this->query("SET NAMES $charset");
+                break;
+        }
+
 
         EventListener::getInstance()->dispatch(
             new ConnectedDatabase(
