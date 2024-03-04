@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Http\Classes\ResponseCodes;
 use Sharp\Classes\Web\Renderer;
+use Sharp\Core\Utils;
 
 class Response
 {
@@ -14,11 +15,15 @@ class Response
      */
     const ADAPT_SUPPORTED_TYPES = ['boolean', 'integer', 'double', 'string', 'array', 'object'];
 
+    /** Putting this flag ensure that the target file is deleted after being read */
+    const FLAG_DELETE_FILE = 0b0000_0001;
+
     protected $content;
     protected int $responseCode = ResponseCodes::OK;
     protected array $headers=[];
     protected array $headersToRemove = [];
     protected $responseTransformer = null;
+    protected int $flags = 0;
 
     /**
      * @note The content value should not be altered
@@ -31,12 +36,14 @@ class Response
         mixed $content=null,
         int $responseCode=ResponseCodes::NO_CONTENT,
         array $headers=[],
-        callable $responseTransformer=null
+        callable $responseTransformer=null,
+        int $flags = 0
     ) {
         $this->content = $content;
         $this->responseCode = $responseCode;
         $this->withHeaders($headers);
         $this->responseTransformer = $responseTransformer;
+        $this->flags = $flags;
     }
 
     /**
@@ -121,6 +128,11 @@ class Response
         return $this->headers;
     }
 
+    public function gotFlag(int $flag): bool
+    {
+        return Utils::valueHasFlag($this->flags, $flag);
+    }
+
     /**
      * Get a header value from its name
      *
@@ -159,7 +171,7 @@ class Response
             $toDisplay = json_encode($toDisplay, JSON_THROW_ON_ERROR);
 
         if ($callback = $this->responseTransformer)
-            $toDisplay = $callback($this->content);
+            $toDisplay = $callback($this, $this->content);
 
         echo "$toDisplay";
     }
@@ -179,7 +191,7 @@ class Response
      * @param string $attachmentName If given, the `Content-Disposition` header with the attachment name is set
      * @param int $responseCode HTTP response code
      */
-    public static function file(string $file, string $attachmentName=null, int $responseCode=ResponseCodes::OK): Response
+    public static function file(string $file, string $attachmentName=null, int $responseCode=ResponseCodes::OK, bool $deleteFile=false): Response
     {
         if (!is_file($file))
             throw new InvalidArgumentException("Inexistent file [$file] !");
@@ -199,7 +211,13 @@ class Response
             $file,
             $responseCode,
             $headers,
-            function() use ($file){ readfile($file); }
+            function(Response $response) use ($file){
+                readfile($file);
+
+                if ($response->gotFlag(self::FLAG_DELETE_FILE))
+                    unlink($file);
+            },
+            $deleteFile ? self::FLAG_DELETE_FILE: 0
         );
     }
 
