@@ -26,6 +26,8 @@ class Authentication
     public readonly string $passwordField;
     public readonly ?string $saltField;
 
+    public readonly string $sessionNamespace;
+
     protected Session $session;
 
     public static function getDefaultConfiguration(): array
@@ -41,11 +43,7 @@ class Authentication
 
     public function sessionKey(string $key)
     {
-        return "sharp.authentication." . md5(
-            $this->model.
-            $this->loginField.
-            $this->passwordField
-        ) . $key;
+        return "sharp.authentication." . $this->sessionNamespace . "." . $key;
     }
 
     public function __construct(Session $session=null, Configuration $config=null)
@@ -58,6 +56,12 @@ class Authentication
         $loginField    = $this->loginField    = $this->configuration["login-field"];
         $passwordField = $this->passwordField = $this->configuration["password-field"];
         $saltField     = $this->saltField     = $this->configuration["salt-field"];
+
+        $this->sessionNamespace = $this->configuration["session-namespace"] ?? md5(
+            $this->model.
+            $this->loginField.
+            $this->passwordField
+        );
 
         if (!class_exists($model))
             throw new InvalidArgumentException("[$model] class does not exists");
@@ -115,7 +119,13 @@ class Authentication
         ]);
         $this->refreshExpireTime();
 
-        EventListener::getInstance()->dispatch(new AuthenticatedUser($userData, $this->model));
+        EventListener::getInstance()->dispatch(new AuthenticatedUser(
+            $userData,
+            $this->model,
+            $this->loginField,
+            $this->passwordField,
+            $this->saltField
+        ));
     }
 
     protected function failAttempt(): bool

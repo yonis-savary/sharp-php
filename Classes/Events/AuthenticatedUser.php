@@ -11,6 +11,9 @@ class AuthenticatedUser extends AbstractEvent
 {
     public function __construct(
         public array $user,
-        public string $model
+        public string $model,
+        public string $loginField,
+        public string $passwordField,
+        public ?string $saltField
     ){}
 }
