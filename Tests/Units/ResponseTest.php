@@ -143,14 +143,24 @@ class ResponseTest extends TestCase
         $storage = Storage::getInstance();
         $storage->write("output.txt", "Hello");
 
-        $response = Response::file($storage->path("output.txt"));
+        $filePath = $storage->path("output.txt");
+
+        $response = Response::file($filePath);
         $this->assertInstanceOf(Response::class, $response);
 
         ob_start();
         $response->display(false);
         $output = ob_get_clean();
-
         $this->assertEquals("Hello", $output);
+
+
+        $response = Response::file($filePath, deleteFile:true);
+
+        ob_start();
+        $response->display(false);
+        $output = ob_get_clean();
+        $this->assertEquals("Hello", $output);
+        $this->assertFalse(is_file($filePath));
     }
 
     public function test_json()
@@ -167,9 +177,9 @@ class ResponseTest extends TestCase
         $this->assertEquals("/another-one", $response->getHeaders()["location"]);
     }
 
-    public function test_render()
+    public function test_view()
     {
-        $response = Response::render("sharp-tests/sharp-tests-child.php", ["variable" => "VARIABLE"]);
+        $response = Response::view("sharp-tests/sharp-tests-child.php", ["variable" => "VARIABLE"]);
         $content = $response->getContent();
 
         $this->assertTrue(substr_count($content, "CHILD") == 1);
