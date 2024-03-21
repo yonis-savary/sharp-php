@@ -14,7 +14,6 @@ class AutobahnCreateAfter extends AbstractEvent
         public string $model,
         public array $fields,
         public array &$values,
-        public DatabaseQuery &$query,
         public ?int $insertedId
     ){}
 }

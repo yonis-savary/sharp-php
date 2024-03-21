@@ -78,12 +78,25 @@ class AutobahnTest extends TestCase
             new Request("POST", "/test_user_data", [], ["fk_user" => 1, "data" => "NEW!"])
         );
 
-        $this->assertEquals($nextId, $response->getContent()["insertedId"]);
+        $this->assertEquals($nextId, $response->getContent()["insertedId"][0]);
 
         $this->assertTableCount(4);
 
         $this->assertTrue($dispatchedBeforeEvent);
         $this->assertTrue($dispatchedAfterEvent);
+
+
+        $response = $router->route(
+            new Request("POST", "/test_user_data",
+            headers: ["content-type" => "application/json"],
+            body: "[
+                {\"fk_user\": 1, \"data\": \"NEW!\"},
+                {\"fk_user\": 1, \"data\": \"AGAIN!\"}
+            ]")
+        );
+
+        $this->assertTableCount(6);
+
     }
 
     public function test_multipleCreate()

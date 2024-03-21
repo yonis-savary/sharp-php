@@ -22,6 +22,7 @@ use Sharp\Classes\Events\AutobahnEvents\AutobahnReadAfter;
 use Sharp\Classes\Events\AutobahnEvents\AutobahnReadBefore;
 use Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateAfter;
 use Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateBefore;
+use Sharp\Classes\Data\Model;
 
 class BaseDriver implements DriverInterface
 {
@@ -43,27 +44,38 @@ class BaseDriver implements DriverInterface
 
     public static function createCallback(Request $request): Response
     {
+        /** @var Model|string $model */
         list($model, $middlewares) = self::extractRouteData($request);
 
-        $params = $request->all();
-        foreach ($middlewares as $middleware)
-            $middleware($params);
+        $rows = $request->isJSON() ?
+            $request->body():
+            $request->post();
 
-        $fields = array_keys($params);
-        $values = array_values($params);
+        if (Utils::isAssoc($rows))
+            $rows = [$rows];
 
-        $events = EventListener::getInstance();
-        $events->dispatch(new AutobahnCreateBefore($model, $fields, $values));
+        $insertedIds = [];
 
-        $query = new DatabaseQuery($model::getTable(), DatabaseQuery::INSERT);
-        $query->setInsertField($fields);
-        $query->insertValues($values);
-        $query->fetch();
-        $inserted = Database::getInstance()->lastInsertId();
+        foreach ($rows as $row)
+        {
+            foreach ($middlewares as $middleware)
+                $middleware($row);
 
-        $events->dispatch(new AutobahnCreateAfter($model, $fields, $values, $query, $inserted));
+            $fields = array_keys($row);
+            $values = array_values($row);
 
-        return Response::json(["insertedId"=>$inserted], ResponseCodes::CREATED);
+            $events = EventListener::getInstance();
+            $events->dispatch(new AutobahnCreateBefore($model, $fields, $values));
+
+            $model::insertArray($row);
+
+            $inserted = Database::getInstance()->lastInsertId();
+            $insertedIds[] = $inserted;
+
+            $events->dispatch(new AutobahnCreateAfter($model, $fields, $values, $inserted));
+        }
+
+        return Response::json(["insertedId"=>$insertedIds], ResponseCodes::CREATED);
     }
 
     public static function multipleCreateCallback(Request $request): Response
