@@ -149,11 +149,23 @@ trait Model
      * Select a row where the primary key is the one given
      *
      * @param mixed $id Id to select
-     * @return ?array Matching row or `null` otherwise
+     * @return ?array Matching row or `null`
      */
     public static function findId(mixed $id): ?array
     {
-        return self::select()->where(self::getPrimaryKey(), $id)->first();
+        return self::find(self::getPrimaryKey(), $id);
+    }
+
+    /**
+     * Select the first row where `$column` equal `$value`
+     *
+     * @param mixed $column Filter column
+     * @param mixed $value Value to match
+     * @return ?array Matching row or `null`
+     */
+    public static function find(string $column, mixed $value): ?array
+    {
+        return self::select()->where($column, $value, table: self::getTable())->first();
     }
 
     /**

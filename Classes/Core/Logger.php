@@ -145,7 +145,8 @@ class Logger
      */
     protected function logThrowable(string $level, Throwable $throwable): void
     {
-        $this->log($level,
+        $this->log(
+            $level,
             "Got an [". $throwable::class ."] Throwable: ". $throwable->getMessage(),
             sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()),
             ...explode("\n", $throwable->getTraceAsString())

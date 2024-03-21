@@ -9,4 +9,5 @@ to be initialized when a request is handled
 
 use Sharp\Classes\Extras\AssetServer;
 
-AssetServer::initialize();
+// Create a global instance, if enabled, handle the request
+AssetServer::getInstance();

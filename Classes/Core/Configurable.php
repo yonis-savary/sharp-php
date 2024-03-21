@@ -95,13 +95,22 @@ trait Configurable
     }
 
     /**
+     * @param string $key Key to check
+     * @return bool Is the key `true` ?
+     */
+    final public function is(string $key): bool
+    {
+        return boolval($this->getConfiguration()[$key] ?? false);
+    }
+
+    /**
      * Default method that return `true` or `false` depending on the `enabled` key
      *
      * @return bool Is the class/component enabled ?
      */
     final public function isEnabled(): bool
     {
-        return boolval($this->getConfiguration()["enabled"] ?? false);
+        return $this->is("enabled");
     }
 
     /**
@@ -111,6 +120,6 @@ trait Configurable
      */
     final public function isCached(): bool
     {
-        return boolval($this->getConfiguration()["cached"] ?? false);
+        return $this->is("cached");
     }
 }

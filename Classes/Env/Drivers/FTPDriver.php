@@ -99,14 +99,9 @@ class FTPDriver implements FileDriverInterface
 
     public function fileGetContents(string $path): string
     {
-        Storage::getInstance()->makeDirectory("tmp");
-
-        $tmpFile = Storage::getInstance()->path("tmp/".uniqid("ftp-"));
-        ftp_get($this->handler, $tmpFile, $path);
-
-        $content = file_get_contents($tmpFile);
-        unlink($tmpFile);
-        return $content;
+        ob_start();
+        ftp_get($this->handler, "php://output", $path);
+        return ob_get_clean();
     }
 
     public function removeFile(string $path): bool

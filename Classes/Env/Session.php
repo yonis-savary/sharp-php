@@ -12,8 +12,10 @@ class Session extends AbstractMap
 {
     use Component;
 
-    public function __construct()
+    public function __construct(string $sessionName=null)
     {
+        $sessionName ??= md5(Autoloader::projectRoot());
+
         if (session_status() === PHP_SESSION_DISABLED)
             throw new Exception("Cannot use Session when sessions are disabled !");
 
@@ -23,7 +25,7 @@ class Session extends AbstractMap
             // - Avoid sessions collision between two apps that are on different ports of the same host
             // - PHP Still clear session files (which is disabled if a custom session path is used)
             // This way, two applications that don't have the same root will have different sessions
-            session_name(md5(Autoloader::projectRoot()));
+            session_name($sessionName);
 
             if (!session_start())
                 throw new RuntimeException("Cannot start session !");

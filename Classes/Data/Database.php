@@ -2,8 +2,6 @@
 
 namespace Sharp\Classes\Data;
 
-use ErrorException;
-use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -68,12 +66,12 @@ class Database
         {
             case "sqlite":
                 $this->query("PRAGMA encoding={}", [$charset]);
+                $this->query("PRAGMA foreign_keys=ON"); // Manually enable foreign keys constraints
                 break;
             default :
                 $this->query("SET NAMES $charset");
                 break;
         }
-
 
         EventListener::getInstance()->dispatch(
             new ConnectedDatabase(

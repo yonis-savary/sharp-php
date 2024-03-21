@@ -33,23 +33,15 @@ class AssetServer
         ];
     }
 
-    public static function initialize()
-    {
-        self::getInstance()->handleIfEnabled();
-    }
-
     public function __construct()
     {
         $this->loadConfiguration();
 
-        if ($this->isCached())
-            $this->cacheIndex = &Cache::getInstance()->getReference("sharp.asset-server");
-    }
-
-    public function handleIfEnabled(): void
-    {
         if (!$this->isEnabled())
             return;
+
+        if ($this->isCached())
+            $this->cacheIndex = &Cache::getInstance()->getReference("sharp.asset-server");
 
         $req = Request::buildFromGlobals();
         $this->handleRequest($req);

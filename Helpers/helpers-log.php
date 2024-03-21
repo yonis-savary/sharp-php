@@ -4,10 +4,7 @@ use Sharp\Classes\Core\Logger;
 
 /**
  * Shortcut to `Logger::getInstance()->debug()`
- *
- * Used to log informations with a `debug` level
- *
- * @param mixed ...$messages Informations to log (Not necessary a string)
+ * @param mixed ...$messages Informations/Data to log
  */
 function debug(mixed ...$messages)
 {
@@ -16,10 +13,7 @@ function debug(mixed ...$messages)
 
 /**
  * Shortcut to `Logger::getInstance()->info()`
- *
- * Used to log informations with a `info` level
- *
- * @param mixed ...$messages Informations to log (Not necessary a string)
+ * @param mixed ...$messages Informations/Data to log
  */
 function info(mixed ...$messages)
 {
@@ -28,10 +22,7 @@ function info(mixed ...$messages)
 
 /**
  * Shortcut to `Logger::getInstance()->notice()`
- *
- * Used to log informations with a `notice` level
- *
- * @param mixed ...$messages Informations to log (Not necessary a string)
+ * @param mixed ...$messages Informations/Data to log
  */
 function notice(mixed ...$messages)
 {
@@ -40,10 +31,7 @@ function notice(mixed ...$messages)
 
 /**
  * Shortcut to `Logger::getInstance()->warning()`
- *
- * Used to log informations with a `warning` level
- *
- * @param mixed ...$messages Informations to log (Not necessary a string)
+ * @param mixed ...$messages Informations/Data to log
  */
 function warning(mixed ...$messages)
 {
@@ -52,10 +40,7 @@ function warning(mixed ...$messages)
 
 /**
  * Shortcut to `Logger::getInstance()->error()`
- *
- * Used to log informations with a `error` level
- *
- * @param mixed ...$messages Informations to log (Not necessary a string)
+ * @param mixed ...$messages Informations/Data to log
  */
 function error(mixed ...$messages)
 {
@@ -64,10 +49,7 @@ function error(mixed ...$messages)
 
 /**
  * Shortcut to `Logger::getInstance()->critical()`
- *
- * Used to log informations with a `critical` level
- *
- * @param mixed ...$messages Informations to log (Not necessary a string)
+ * @param mixed ...$messages Informations/Data to log
  */
 function critical(mixed ...$messages)
 {
@@ -76,10 +58,7 @@ function critical(mixed ...$messages)
 
 /**
  * Shortcut to `Logger::getInstance()->alert()`
- *
- * Used to log informations with a `alert` level
- *
- * @param mixed ...$messages Informations to log (Not necessary a string)
+ * @param mixed ...$messages Informations/Data to log
  */
 function alert(mixed ...$messages)
 {
@@ -88,10 +67,7 @@ function alert(mixed ...$messages)
 
 /**
  * Shortcut to `Logger::getInstance()->emergency()`
- *
- * Used to log informations with a `emergency` level
- *
- * @param mixed ...$messages Informations to log (Not necessary a string)
+ * @param mixed ...$messages Informations/Data to log
  */
 function emergency(mixed ...$messages)
 {

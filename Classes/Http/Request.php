@@ -60,13 +60,14 @@ class Request
     {
         $this->path = preg_replace("/\?.*/", "", $this->path);
         $this->uploads = $this->getCleanUploadData($uploads);
+        $this->body = $body;
 
         $this->headers = array_change_key_case($this->headers, CASE_LOWER);
 
         if (str_ends_with($this->path, "/"))
             $this->path = substr($this->path, 0, strlen($this->path)-1);
 
-        if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
+        if ($this->isJSON())
             $this->body = json_decode($this->body ?? "null", true, JSON_THROW_ON_ERROR);
 
         if ($this->body === "")
@@ -358,6 +359,10 @@ class Request
         });
     }
 
+    public function isJSON(): bool
+    {
+        return str_starts_with($this->headers["content-type"] ?? "", "application/json");
+    }
 
     /**
      * Build a cURL handle for the Request object
@@ -383,7 +388,7 @@ class Request
         $thisPOST = $this->post() ?? [];
         $thisMethod = $this->getMethod();
         $headers = $this->getHeaders();
-        $isJSONRequest = str_starts_with($headers["content-type"] ?? "", "application/json");
+        $isJSONRequest = $this->isJSON();
 
         $getParams = count($thisGET) ? http_build_query($this->get(), "?", ";") : "";
         $url = trim($this->getPath() . $getParams);

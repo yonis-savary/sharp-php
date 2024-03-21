@@ -104,11 +104,12 @@ class ObjectArray
      * Execute a function for every array's items
      *
      * @param callable $callback Callback to execute
+     * @param mixed $arg [optional] If the optional userdata parameter is supplied, it will be passed as the third parameter to the callback funcname.
      */
-    public function forEach(callable $callback): self
+    public function forEach(callable $callback, mixed $arg=null): self
     {
         $data = $this->collect();
-        array_walk($data, $callback);
+        array_walk($data, $callback, $arg);
         return $this;
     }
 

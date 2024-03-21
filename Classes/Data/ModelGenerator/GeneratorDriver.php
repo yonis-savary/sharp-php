@@ -15,7 +15,7 @@ abstract class GeneratorDriver
     }
 
     /**
-     * snake_case to PascalCase converted
+     * snake_case to PascalCase converter
      */
     protected function sqlToPHPName(string $name): string
     {
