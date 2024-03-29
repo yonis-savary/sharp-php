@@ -24,17 +24,6 @@ class Router
 {
     use Component, Configurable;
 
-    const SLUG_FORMATS = [
-        "int"      => "\d+",
-        "float"    => "\d+(?:\.\d+)?",
-        "any"      => ".+",
-        "date"     => "\d{4}\-\d{2}\-\d{2}",
-        "time"     => "\d{2}\:\d{2}\:\d{2}",
-        "datetime" => "\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}",
-        "hex"      => "[0-9a-fA-F]+",
-        "uuid"     => "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
-    ];
-
     protected array $group = [];
 
     /** @var array<Route> $routes Set of registered routes */
@@ -87,7 +76,7 @@ class Router
         if ($cachedRoute = $this->cache->try($key))
         {
             // useful to register slug values for cached routes
-            $this->match($cachedRoute, $request);
+            $cachedRoute->match($request);
             return $cachedRoute;
         }
 
@@ -214,7 +203,7 @@ class Router
         $this->loadRoutes();
         foreach ($this->routes as $route)
         {
-            if (!$this->match($route, $req))
+            if (!$route->match($req))
                 continue;
 
             if ($this->isCached())
@@ -227,7 +216,8 @@ class Router
 
     public function route(Request $request): Response
     {
-        $route = $this->getCachedRouteForRequest($request) ?? $this->findFirstMatchingRoute($request);
+        $route = $this->getCachedRouteForRequest($request)
+              ?? $this->findFirstMatchingRoute($request);
 
         if (!$route)
         {
@@ -249,61 +239,11 @@ class Router
         return $this->routes;
     }
 
-    protected function matchPathRegex(Route $route, Request $request): string
-    {
-        $regexMap = [];
-        $parts = explode("/", $route->getPath());
-
-        foreach ($parts as &$part)
-        {
-            if (!preg_match("/^\{.+\}$/", $part))
-                continue;
-
-            $part = substr($part, 1, strlen($part)-2);
-
-            $name = $part;
-            $expression = "[^\\/]+";
-
-            if (str_contains($part, ":"))
-            {
-                list($type, $name) = explode(":", $part, 2);
-                $expression = self::SLUG_FORMATS[$type] ?? $type;
-            }
-
-            $regexMap[] = $name;
-            $part = "($expression)";
-        }
-
-        $regex = "/^". join("\\/", $parts) ."\\/?$/";
-
-        if (!preg_match($regex, $request->getPath(), $slugs))
-            return false;
-
-        $namedSlugs = [];
-        array_shift($slugs);
-        for ($i=0; $i<count($slugs); $i++)
-            $namedSlugs[$regexMap[$i]] = urldecode($slugs[$i]);
-
-        $request->setSlugs($namedSlugs);
-        return true;
-    }
-
+    /**
+     * @deprecated Use Route->match instead
+     */
     public function match(Route $route, Request $request): bool
     {
-        if (count($route->getMethods()))
-        {
-            if (!in_array($request->getMethod(), $route->getMethods()))
-                return false;
-        }
-
-        $routePath = $route->getPath();
-        $requestPath = $request->getPath();
-
-        // Little optimization: if the route has no slug
-        // we can just compare strings, no need to process anything
-        if (!str_contains($routePath, "{"))
-            return $routePath === $requestPath;
-
-        return $this->matchPathRegex($route, $request);
+        return $route->match($request);
     }
 }

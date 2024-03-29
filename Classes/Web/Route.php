@@ -10,6 +10,17 @@ use Sharp\Core\Utils;
 
 class Route
 {
+    const SLUG_FORMATS = [
+        "int"      => "\d+",
+        "float"    => "\d+(?:\.\d+)?",
+        "any"      => ".+",
+        "date"     => "\d{4}\-\d{2}\-\d{2}",
+        "time"     => "\d{2}\:\d{2}\:\d{2}",
+        "datetime" => "\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}",
+        "hex"      => "[0-9a-fA-F]+",
+        "uuid"     => "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    ];
+
     protected $callback;
 
     protected string $path;
@@ -67,12 +78,15 @@ class Route
     public static function renderViewCallback(Request $request): Response
     {
         $extras = $request->getRoute()->getExtras();
+        $slugs = $request->getSlugs();
 
         return Response::view(
             $extras["template"],
             [
                 ...($extras["context"] ?? []),
-                "request" => $request
+                ...$slugs,
+                "request" => $request,
+                "slugs" => $slugs
             ]
         );
     }
@@ -173,6 +187,64 @@ class Route
                 throw new Exception("Cannot use [$middleware] as middleware (must implements [".MiddlewareInterface::class."])");
         }
         array_push($this->middlewares, ...$middlewares);
+    }
+
+    protected function matchPathRegex(Request $request): string
+    {
+        $regexMap = [];
+        $parts = explode("/", $this->getPath());
+
+        foreach ($parts as &$part)
+        {
+            if (!preg_match("/^\{.+\}$/", $part))
+                continue;
+
+            $part = substr($part, 1, strlen($part)-2);
+
+            $name = $part;
+            $expression = "[^\\/]+";
+
+            if (str_contains($part, ":"))
+            {
+                list($type, $name) = explode(":", $part, 2);
+                $expression = self::SLUG_FORMATS[$type] ?? $type;
+            }
+
+            $regexMap[] = $name;
+            $part = "($expression)";
+        }
+
+        $regex = "/^". join("\\/", $parts) ."\\/?$/";
+
+        if (!preg_match($regex, $request->getPath(), $slugs))
+            return false;
+
+        $namedSlugs = [];
+        array_shift($slugs);
+        for ($i=0; $i<count($slugs); $i++)
+            $namedSlugs[$regexMap[$i]] = urldecode($slugs[$i]);
+
+        $request->setSlugs($namedSlugs);
+        return true;
+    }
+
+    public function match(Request $request): bool
+    {
+        if (count($this->getMethods()))
+        {
+            if (!in_array($request->getMethod(), $this->getMethods()))
+                return false;
+        }
+
+        $routePath = $this->getPath();
+        $requestPath = $request->getPath();
+
+        // Little optimization: if the route has no slug
+        // we can just compare strings, no need to process anything
+        if (!str_contains($routePath, "{"))
+            return $routePath === $requestPath;
+
+        return $this->matchPathRegex($request);
     }
 
     public function __invoke(Request $request): mixed

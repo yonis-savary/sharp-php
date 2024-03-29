@@ -39,6 +39,17 @@ class Configuration extends AbstractMap
     }
 
     /**
+     * Create a new Configuration object from an array(assoc) of data
+     */
+    public static function fromArray(array $data): Configuration
+    {
+        $config = new self(null);
+        $config->merge($data);
+
+        return $config;
+    }
+
+    /**
      * @param string $path This parameter can be used as a "Save As..." feature to copy a configuration, if `null`, the current path is used
      */
     public function save(string $path=null): void

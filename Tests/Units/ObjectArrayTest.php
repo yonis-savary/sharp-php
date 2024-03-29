@@ -2,6 +2,7 @@
 
 namespace Sharp\Tests\Units;
 
+use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Data\ObjectArray;
 
@@ -185,7 +186,7 @@ class ObjectArrayTest extends TestCase
         $this->assertEquals(3, $arr->length());
     }
 
-    public function test_find()
+    public function test_find_and_findIndex()
     {
         $persons = [
             ["name" => "Vincent", "age" => 18],
@@ -201,6 +202,22 @@ class ObjectArrayTest extends TestCase
         $vincent = $arr->find(fn($x) => $x["age"] === 18);
         $this->assertEquals($persons[0], $vincent);
         $this->assertNull($arr->find(fn($x) => $x["name"] === "Hugo"));
+
+        $this->assertEquals(0,  $arr->findIndex(fn($x) => $x["name"] === "Vincent"));
+        $this->assertEquals(5,  $arr->findIndex(fn($x) => $x["age"] === 56));
+        $this->assertEquals(-1, $arr->findIndex(fn($x) => $x["name"] === "Bob"));
+    }
+
+    public function test_getIndex()
+    {
+        $arr = new ObjectArray([0,1,2,3]);
+
+        $this->expectException(OutOfRangeException::class);
+        $arr->getIndex(-1);
+        $arr->getIndex(12);
+
+        for ($i=0; $i<=3; $i++)
+            $this->assertEquals($i, $arr->getIndex($i));
     }
 
     public function test_toAssociative()

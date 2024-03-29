@@ -46,9 +46,22 @@ class Authentication
         return "sharp.authentication." . $this->sessionNamespace . "." . $key;
     }
 
-    public function __construct(Session $session=null, Configuration $config=null)
+    protected function getSessionKey(string $key, mixed $defaultValue=null): mixed
+    {
+        return $this->session->get($this->sessionKey($key), $defaultValue);
+    }
+
+    protected function setSessionKey(string $key, mixed $value): void
+    {
+        $this->session->set($this->sessionKey($key), $value);
+    }
+
+    public function __construct(Session $session=null, Configuration|array $config=null)
     {
         $this->session = $session ?? Session::getInstance();
+
+        if (is_array($config))
+            $config = Configuration::fromArray($config);
 
         $this->loadConfiguration($config);
 
@@ -57,11 +70,10 @@ class Authentication
         $passwordField = $this->passwordField = $this->configuration["password-field"];
         $saltField     = $this->saltField     = $this->configuration["salt-field"];
 
-        $this->sessionNamespace = $this->configuration["session-namespace"] ?? md5(
-            $this->model.
-            $this->loginField.
-            $this->passwordField
-        );
+        $this->sessionNamespace =
+            $this->configuration["session-namespace"] ??
+            md5($this->model . $this->loginField . $this->passwordField)
+        ;
 
         if (!class_exists($model))
             throw new InvalidArgumentException("[$model] class does not exists");
@@ -79,7 +91,7 @@ class Authentication
         if (!$this->isLogged())
             return;
 
-        $expireTime = $this->session->get($this->sessionKey(self::SESSION_EXPIRE_TIME));
+        $expireTime = $this->getSessionKey(self::SESSION_EXPIRE_TIME);
 
         if (time() >= $expireTime)
             $this->logout();
@@ -112,11 +124,10 @@ class Authentication
      */
     public function login(array $userData): void
     {
-        $this->session->merge([
-            $this->sessionKey(self::IS_LOGGED) => true,
-            $this->sessionKey(self::USER_DATA) => $userData,
-            $this->sessionKey(self::ATTEMPTS_NUMBER) => 0,
-        ]);
+        $this->setSessionKey(self::IS_LOGGED, true);
+        $this->setSessionKey(self::USER_DATA, $userData);
+        $this->setSessionKey(self::ATTEMPTS_NUMBER, 0);
+
         $this->refreshExpireTime();
 
         EventListener::getInstance()->dispatch(new AuthenticatedUser(
@@ -142,10 +153,7 @@ class Authentication
     protected function refreshExpireTime(): void
     {
         $sessionDuration = intval($this->configuration["session-duration"]);
-        $this->session->set(
-            $this->sessionKey(self::SESSION_EXPIRE_TIME),
-            time() + $sessionDuration
-        );
+        $this->setSessionKey(self::SESSION_EXPIRE_TIME, time() + $sessionDuration);
     }
 
     public function logout(): void
@@ -158,16 +166,16 @@ class Authentication
 
     public function isLogged(): bool
     {
-        return boolval($this->session->get($this->sessionKey(self::IS_LOGGED), false));
+        return boolval($this->getSessionKey(self::IS_LOGGED, false));
     }
 
     public function attemptNumber(): int
     {
-        return $this->session->get($this->sessionKey(self::ATTEMPTS_NUMBER), 0);
+        return $this->getSessionKey(self::ATTEMPTS_NUMBER, 0);
     }
 
     public function getUser(): ?array
     {
-        return $this->session->get($this->sessionKey(self::USER_DATA));
+        return $this->getSessionKey(self::USER_DATA);
     }
 }

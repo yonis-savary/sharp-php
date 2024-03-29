@@ -85,6 +85,8 @@ class Utils
     /**
      * Make an absolute path from given path/file parts
      * @note Given path can be absolute, it will not be altered
+     * @param string $path Relative part of the path
+     * @param ?string $relativeTo Base path to be relative to (if not given, project's root is used)
      */
     public static function relativePath(string $path, string $relativeTo=null): string
     {

@@ -149,11 +149,12 @@ trait Model
      * Select a row where the primary key is the one given
      *
      * @param mixed $id Id to select
+     * @param bool $explore Explore foreign keys to fetch references
      * @return ?array Matching row or `null`
      */
-    public static function findId(mixed $id): ?array
+    public static function findId(mixed $id, bool $explore=true): ?array
     {
-        return self::find(self::getPrimaryKey(), $id);
+        return self::find(self::getPrimaryKey(), $id, $explore);
     }
 
     /**
@@ -161,11 +162,12 @@ trait Model
      *
      * @param mixed $column Filter column
      * @param mixed $value Value to match
+     * @param bool $explore Explore foreign keys to fetch references
      * @return ?array Matching row or `null`
      */
-    public static function find(string $column, mixed $value): ?array
+    public static function find(string $column, mixed $value, bool $explore=true): ?array
     {
-        return self::select()->where($column, $value, table: self::getTable())->first();
+        return self::select($explore)->where($column, $value, table: self::getTable())->first();
     }
 
     /**

@@ -26,7 +26,7 @@ class AssetServer
     {
         return [
             "enabled"     => true,
-            "cached"      => false,
+            "cached"      => true,
             "url"         => "/assets",
             "middlewares" => [],
             "max-age"     => false
@@ -85,9 +85,7 @@ class AssetServer
         $middlewares = $this->configuration["middlewares"];
         $selfRoute = Route::get($routePath, fn($req) => $this->serve($req), $middlewares);
 
-        $dummyRouter = new Router();
-
-        if (!$dummyRouter->match($selfRoute, $req))
+        if (!$selfRoute->match($req))
             return false;
 
         $response = $selfRoute($req);

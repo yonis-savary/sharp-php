@@ -15,13 +15,13 @@ class Storage
     use Component;
 
     /** Used for `exploreDirectory()` to return both directories and files */
-    const NO_FILTER = Utils::NO_FILTER;
+    const NO_FILTER = FileDriverInterface::NO_FILTER;
     /** Used for `exploreDirectory()` to only return directories */
-    const ONLY_DIRS = Utils::ONLY_DIRS;
+    const ONLY_DIRS = FileDriverInterface::ONLY_DIRS;
     /** Used for `exploreDirectory()` to only return files */
-    const ONLY_FILES = Utils::ONLY_FILES;
+    const ONLY_FILES = FileDriverInterface::ONLY_FILES;
 
-    protected array $openedStreams = [];
+    protected array $openedStreamsToClose = [];
     protected string $root;
 
     protected FileDriverInterface $driver;
@@ -54,7 +54,7 @@ class Storage
 
     public function __destruct()
     {
-        ObjectArray::fromArray($this->openedStreams)
+        ObjectArray::fromArray($this->openedStreamsToClose)
         ->filter()
         ->foreach(fn($stream) => fclose($stream));
     }
@@ -114,11 +114,11 @@ class Storage
         $path = $this->path($path);
         $this->makeDirectory($this->driver->directoryName($path));
 
-        if (!($stream = $this->driver->openFile($path, $mode)))
+        if (! $stream = $this->driver->openFile($path, $mode))
             throw new RuntimeException("Could not open [$path] with mode [$mode]");
 
         if ($autoClose)
-            $this->openedStreams[] = &$stream;
+            $this->openedStreamsToClose[] = &$stream;
 
         return $stream;
     }
@@ -176,7 +176,10 @@ class Storage
         if (!$this->isDirectory($path))
             throw new Exception("[$path] is not a directory");
 
-        return !count($this->driver->scanDirectory($this->path($path)));
+        $path = $this->path($path);
+        $content = $this->driver->scanDirectory($path);
+
+        return count($content) === 0;
     }
 
     /**

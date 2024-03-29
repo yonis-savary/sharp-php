@@ -62,6 +62,7 @@ function style(string $target, bool $inject=false): string
  * @param array $vars Context for the template
  * @example base `render("contact/creation", ["title"=>"New Contact"])`
  *          renders `.../contact/creation.php` and make `$title` available in your view
+ * @return string Rendered view as string
  */
 function render(string $templateName, array $vars=[]) : string
 {

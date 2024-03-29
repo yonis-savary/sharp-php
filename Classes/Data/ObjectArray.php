@@ -2,6 +2,8 @@
 
 namespace Sharp\Classes\Data;
 
+use OutOfRangeException;
+
 class ObjectArray
 {
     protected array $transformers = [];
@@ -59,7 +61,9 @@ class ObjectArray
     }
 
     /**
-     * Return a copy of the ObjectArray instance
+     * Return a copy of the ObjectArray instance with a new transformer callback
+     * @param callable $callback Callback capable of transforming an array
+     * @param bool $takeResultAsData Do we take the callback results as new values ? (Ex: should be false for by-reference callbacks)
      */
     protected function withTransformers(callable $callback=null, bool $takeResultAsData=false): self
     {
@@ -193,6 +197,9 @@ class ObjectArray
      */
     public function collect(): array
     {
+        if (!count($this->transformers))
+            return $this->data;
+
         $data = $this->data;
 
         foreach ($this->transformers as [$callback, $takeResultAsData])
@@ -202,6 +209,12 @@ class ObjectArray
             else
                 $callback($data);
         }
+
+        # Optimization : setting processed data as data and emptying transformers
+        # allow us to process those data only one time
+        # if we call length() then collect(), the data shall be processed only one time
+        $this->data = $data;
+        $this->transformers = [];
 
         return $data;
     }
@@ -230,12 +243,41 @@ class ObjectArray
      */
     public function find(callable $filter): mixed
     {
+        $index = $this->findIndex($filter);
+        if ($index === -1)
+            return null;
+
+        return $this->getIndex($index);
+    }
+
+    /**
+     * Return the index of the first element that respect a callback
+     *
+     * @param callable $filter Filter is a callback, each element is given to it, must return a boolean
+     * @return mixed|null Return the index (0+) or -1 if not found
+     */
+    public function findIndex(callable $filter): int
+    {
+        $i = 0;
         foreach ($this->collect() as $element)
         {
             if ($filter($element) === true)
-                return $element;
+                return $i;
+            $i++;
         }
-        return null;
+        return -1;
+    }
+
+    /**
+     * Get data element at a specified index
+     */
+    public function getIndex(int $index): mixed
+    {
+        $data = $this->collect();
+        if ( $index<0 || (count($data) < ($index+1)))
+            throw new OutOfRangeException("Index $index does not exists");
+
+        return $data[$index];
     }
 
     /**

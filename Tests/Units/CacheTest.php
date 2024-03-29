@@ -97,7 +97,7 @@ class CacheTest extends TestCase
         $storage = Storage::getInstance();
 
         $element = new CacheElement("my-key");
-        $element->setContent("Hello", 1);
+        $element->setContent("Hello", 2);
         $filename = $element->save($storage);
 
         $this->assertIsString($filename);

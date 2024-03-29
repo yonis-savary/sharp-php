@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Storage;
 
-class ConfigTest extends TestCase
+class ConfigurationTest extends TestCase
 {
     // Most of Configuration feature are tested by [./AbstractMapTest.php]
 
@@ -35,5 +35,19 @@ class ConfigTest extends TestCase
 
         $fromFile = new Configuration($file);
         $this->assertEquals("A", $fromFile->get("key"));
+    }
+
+    public function test_fromArray()
+    {
+        $config = Configuration::fromArray([
+            "A" => 1,
+            "B" => 2,
+            "C" => 3,
+        ]);
+
+        $this->assertEquals(1, $config->get("A"));
+        $this->assertEquals(2, $config->get("B"));
+        $this->assertEquals(3, $config->get("C"));
+        $this->assertNull($config->get("D"));
     }
 }

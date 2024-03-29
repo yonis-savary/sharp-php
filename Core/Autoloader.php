@@ -7,6 +7,7 @@ use RuntimeException;
 use Sharp\Classes\CLI\Terminal;
 use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Data\ObjectArray;
+use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Events\FailedAutoload;
 use Sharp\Classes\Events\LoadedFramework;
@@ -45,7 +46,7 @@ class Autoloader
         "Helpers"     => self::REQUIRE,
     ];
 
-    const CACHE_FILE = "Storage/Cache/autoload.php.cache";
+    const CACHE_FILE = "autoload.php.cache";
 
     /**
      * Hold the absolute path to the project root
@@ -243,14 +244,16 @@ class Autoloader
 
     public static function loadAutoloadCache(): bool
     {
-        if (!is_file(self::CACHE_FILE))
+        $cacheFile = Cache::getInstance()->getStorage()->path(self::CACHE_FILE);
+
+        if (!is_file($cacheFile))
             return false;
 
         list(
             self::$lists,
             self::$listsCache,
             self::$cachedClassList
-        ) = include(self::CACHE_FILE);
+        ) = include($cacheFile);
 
         return true;
     }
@@ -275,7 +278,8 @@ class Autoloader
         foreach (array_keys(self::$lists) as $key)
             self::getListFiles($key);
 
-        file_put_contents(self::CACHE_FILE, Terminal::stringToFile(
+        $cacheFile = Cache::getInstance()->getStorage()->path(self::CACHE_FILE);
+        file_put_contents($cacheFile, Terminal::stringToFile(
         "<?php
 
         return [".join(",", [

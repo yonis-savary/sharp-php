@@ -4,10 +4,11 @@ use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Http\Response;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Events\UncaughtException;
+use Sharp\Core\Utils;
 
 /**
  * Exception kill the request if not handled :
- * - For web users : a simple 'Internal Server Error' is displayed
+ * - For web users : a simple 'Internal Server Error' is displayed (+ An error message in a debug environment)
  * - For CLI users : a message is displayed telling that an error occurred
  */
 set_exception_handler(function(Throwable $exception)
@@ -28,7 +29,15 @@ set_exception_handler(function(Throwable $exception)
                 $exception->getMessage()." at ".$exception->getFile().":".$exception->getLine() . "\n"
             );
 
-        (new Response("Internal Server Error", 500, ["Content-Type" => "text/plain"]))->display();
+        $errorMessage = "Internal Server Error";
+
+        if (!Utils::isProduction())
+        {
+            $errorMessage .= "\n\n" . $exception->getMessage();
+            $errorMessage .= "\n" . $exception->getTraceAsString();
+        }
+
+        (new Response($errorMessage, 500, ["Content-Type" => "text/plain"]))->display();
         die;
     }
     catch (Throwable $err)
@@ -36,7 +45,7 @@ set_exception_handler(function(Throwable $exception)
         // In case everything went wrong even logging/events !
 
         http_response_code(500);
-        echo "Internal Server Error <hr>";
+        echo "Internal Server Error";
         echo $err->getMessage();
         die;
     }

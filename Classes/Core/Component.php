@@ -29,7 +29,7 @@ trait Component
      * Get the singleton instance of the called class
      * (Initialize a new instance with `getDefaultInstance()` if needed)
      */
-    final public static function getInstance(): static
+    final public static function &getInstance(): static
     {
         if (!self::$instance)
             self::setInstance(self::getDefaultInstance());
