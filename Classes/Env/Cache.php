@@ -4,6 +4,7 @@ namespace Sharp\Classes\Env;
 
 use RuntimeException;
 use Sharp\Classes\Core\Component;
+use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Env\Classes\CacheElement;
 
 /**
@@ -46,7 +47,10 @@ class Cache
 
             $key = $element->key;
             if ($this->has($key))
-                throw new RuntimeException("Duplicate key in cache directory [$key]");
+            {
+                Logger::getInstance()->warning("Duplicate key in cache directory [$key]");
+                $this->index[$key]->delete();
+            }
 
             $this->index[$key] = $element;
         }
