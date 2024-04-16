@@ -25,7 +25,7 @@ The goal is to make a good envrionment to Test (with Database, Configuration...e
 EventListener::removeInstance();
 
 $defaultStorage = Storage::getInstance();
-Logger::setInstance(new Logger("test-suite.csv"));
+Logger::setInstance(new Logger("test-suite.csv", $defaultStorage->getSubStorage("Logs")));
 
 Autoloader::loadApplication("Sharp/Tests");
 

@@ -18,7 +18,7 @@ class Logger
 
     public static function getDefaultInstance()
     {
-        return new self("sharp.csv");
+        return new self("sharp.csv", Storage::getInstance()->getSubStorage("Logs"));
     }
 
     /**
