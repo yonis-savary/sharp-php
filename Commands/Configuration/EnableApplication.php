@@ -7,6 +7,7 @@ use Sharp\Classes\CLI\Command;
 use Sharp\Classes\CLI\Terminal;
 use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Configuration;
+use Sharp\Commands\Build;
 
 class EnableApplication extends Command
 {
@@ -29,15 +30,24 @@ class EnableApplication extends Command
 
             print("Skipping, [$app] is not a directory)\n");
             return false;
-        });
+        })->collect();
 
         print("Enabling new applications\n");
 
         $config = Configuration::getInstance();
+
         $config->edit("applications", function($applications) use ($values) {
-            array_push($applications, ...$values->collect());
-            return array_values(array_unique($applications));
+            return ObjectArray::fromArray($applications)
+            ->push(...$values)
+            ->unique()
+            ->collect();
         }, []);
+
         $config->save();
+
+
+
+        $build = new Build();
+        $build(new Args());
     }
 }
