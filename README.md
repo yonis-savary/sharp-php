@@ -50,32 +50,34 @@ Your directory will look like
 - 🔵 - tested feature (some edge-case tests may be missing)
 - 🟡 - untested feature
 
-🤖 Core
-- [x] 🟢 Configuration (JSON)
-- [x] 🟢 Caching
-- [x] 🟢 Logging
-- [x] 🟢 Events
-- [x] 🔵 CLI Commands (Base utilities commands)
-- [x] 🟢 Tests
-
+🫀 Core
+- 🟢 Configuration (JSON Format)
+- 🟢 Caching
+- 🟢 Logging
+- 🟢 Events
+- 🟢 CLI Commands (With base utilities commands)
+- 🟢 Tests
 
 🌐 Web
-- [x] 🔵 Session
-- [x] 🟢 Request / Responses
-- [x] 🟢 Controllers
-- [x] 🔵 Renderer
-- [x] 🟢 Routing / Middlewares
+- 🟢 Session
+- 🟢 Request / Responses
+- 🔵 Request Fetch (CURL)
+- 🟢 Controllers
+- 🔵 Renderer
+- 🟢 Routing / Middlewares
 
-💾 Data
-- [x] 🟢 Database
-- [x] 🟢 Models
-- [x] 🟢 FTP Support (🌟 New !)
-- [x] 🟢 Queues support (🌟 New !)
+📁 Data
+- 🟢 Database (With SQLite support)
+- 🟢 Models
+- 🟢 FTP Directory
+- 🟢 Queues support
 
 🔐 Security
-- [x] 🟢 Authentication
-- [x] 🟢 CSRF
+- 🟢 Authentication
+- 🟢 CSRF
 
-🎉 Extras
-- [x] 🟢 Asset serving
-- [x] 🟢 Model CRUD API
+🚀 Extras
+- 🟢 Asset serving
+- 🟢 Automatic CRUD API for Models
+
+...and more ! The [`SharpExtension`](https://github.com/yonis-savary/sharp-extensions) repository got some additionnal features that can be used to make development faster
