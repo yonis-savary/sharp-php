@@ -23,10 +23,10 @@ Here is the default configuration for `AssetServer`
 }
 ```
 
-- setting `enabled` to `true` make sure the component analyze any incoming request
+- setting `enabled` to `true` make sure the component analyze any incoming request, you can set it to `false` to disable the component
 - `url` define with URL is used to serve assets
-- `middlewares` is used to add security layers to your assets (example: you can make them only accessible for authenticated user)
-- setting `max-age` to an integer allow your assets to be cached by the browser (example: 3600 cache the resource for 1 hour)
+- `middlewares` is used to add security layers to your assets (example: you can make them only accessible to authenticated user)
+- setting `max-age` to an integer allows your assets to be cached by the browser (example: 3600 = 1 hour of cache time to live)
 
 ## Serving
 
@@ -65,7 +65,7 @@ To address this, the [`helper-web.php`](../../Helpers/helpers-web.php) got three
 <?= style("shipping.css", true) ?>
 
 <!-- The asset() function can be used to get an URL -->
-<link rel="stylesheet" href="<?= asset($x) ?>">
+<link rel="stylesheet" href="<?= asset("myStyle.css") ?>">
 
 ```
 

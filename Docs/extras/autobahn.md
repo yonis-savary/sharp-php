@@ -144,13 +144,14 @@ DELETE FROM user WHERE `login` IN ('mike', 'bob')
 $autobahn->all(User::class);
 // Routes are "/user"
 
-Router::getInstance()->groupCallback([
-    "path" => "api"
-], function($router){
-    $autobahn = Autobahn::getInstance();
-    $autobahn->all(User::class);
-    // Routes are "/api/user"
-});
+Router::getInstance()->groupCallback(
+    ["path" => "api"],
+    function($router){
+        $autobahn = Autobahn::getInstance();
+        $autobahn->all(User::class);
+        // Routes are "/api/user"
+    }
+);
 ```
 
 ### Autobahn Middlewares

@@ -19,7 +19,7 @@ One application is made of those directories (All of them are optional):
 - Views
 
 > [!NOTE]
-> Files in `Helpers` and `Others` are recursively loaded with `require_once`
+> Files in `Helpers` and `Others` are recursively included with `require_once`
 
 ## Configuration
 
@@ -36,7 +36,7 @@ The configuration is written as
 ```
 
 > [!NOTE]
-> Every component's configuration is described in its respective page
+> Every component's configuration is described in their respective documentation
 
 If your configuration is missing some keys, or if you want to create one from nothing, you can execute
 
@@ -44,6 +44,7 @@ If your configuration is missing some keys, or if you want to create one from no
 php do fill-configuration
 ```
 
+This will complete your actual configuration with every possible default configuration
 
 
 
@@ -112,10 +113,11 @@ App\Controllers\Provider\Order
 > It is very important to respect this rule as the Autoloader cannot load a file with a bad formatted namespace
 
 
-## Making custom scripts that uses Sharp
+## Making custom script that uses Sharp
 
-If you want to use Sharp in a PHP script, you can just
-require [`Sharp/bootstrap.php`](../bootstrap.php) in your script
+If you want to use Sharp in a PHP script, you can just require [`Sharp/bootstrap.php`](../bootstrap.php) in your script
+
+Including this script will load the components without doing anything else
 
 ## Additional properties
 

@@ -19,6 +19,7 @@ Even though this documentation should be enough to get started, don't hesitate t
 Core
 - [📦 Setup & Configuration](./core/config.md)
 - [🧩 Understanding Sharp components](./core/components.md)
+- [⚗️ Utils](./core/utils.md)
 - [💻 CLI command](./core/commands.md)
 - [📃 Logging](./core/logging.md)
 - [📁 Storage](./env/storage.md)

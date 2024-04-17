@@ -14,13 +14,13 @@ but you can still create other instances of your classes, which can be very usef
 
 Every Component got those methods :
 ```php
-/* Can be modified, gives a default instance of your class when getInstance is called the first time */
+/* Can be edited, gives a default instance of your class when getInstance() is called the for first time */
 public static function getDefaultInstance();
 
-/* Return the global instance of the class, create one with getDefaultInstance if needed */
+/* Return the global instance of the class, create one with getDefaultInstance() if needed */
 final public static function getInstance();
 
-/* Replace the global instance with another */
+/* Replace the global instance with another one */
 final public static function setInstance(self $newInstance);
 
 /* Remove the global instance if needed (useful to call the destructor) */
@@ -28,7 +28,7 @@ final public static function removeInstance();
 ```
 
 > [!NOTE]
-> Apart from edge case, the only method you should use from this trait is `getInstance()`
+> Apart of some edge case, the only method you should use from this trait is `getInstance()`
 
 ## ✅ Tutorial: Creating a Component
 

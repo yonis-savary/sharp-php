@@ -2,8 +2,7 @@
 
 # 🥤 Session Straw
 
-We all know it, using global variables is quite a bad habit,
-still, you sometimes have to work with a piece of data that you need in all your business code
+We all know it, using global variables is quite a bad habit, still, you sometimes have to work with a piece of data that you need in all your business code
 
 Let's say you want to store your user permissions and access it any time,
 one of the first solutions that comes to mind is to use the session to store it
@@ -38,7 +37,7 @@ This way, you have a global variable that is stored in the session
 
 To create a straw, you have two choices
 - Manually, by creating a file then writing the class
-- Using the `create-straw` command
+- Using the `create-straw` command, which is quite faster
 
 ```bash
 # The command will prompt you to type a straw name

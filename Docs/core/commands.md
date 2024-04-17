@@ -7,9 +7,7 @@ which is a launcher for any [`Command`](../../Classes/CLI/Command.php) classes
 
 ## Create a command
 
-Creating a command is very simple, all you have to do is to create a file
-in your application (Preferably in a `Commands` directory) and create a class
-that extends `Command`
+Creating a command is very simple, all you have to do is to create a file in your application (Preferably in a `Commands` directory) and create a class that extends [`Command`](../../Classes/CLI/Command.php)
 
 `SuperApp/Commands/ClearCaches.php`:
 ```php
@@ -38,8 +36,8 @@ php do super-app@clear-caches
 And voilà !
 
 > [!NOTE]
-> - you may have noticed, the classname was transformed into a snake-case equivalent, this is automatically made by the class
-> - you can also implements the `getHelp()` method which should display a help menu/documentation when calling `php do help`
+> - you may have noticed, the class name was transformed into a snake-case equivalent, this is automatically made by the class
+> - you can also implements the `getHelp()` method which return a string that is displayed when calling `php do help`
 
 ## Args object
 
@@ -48,15 +46,14 @@ The args object represent the arguments given to your command through the cli (l
 [`Args`](../../Classes/CLI/Args.php) most useful methods are :
 ```php
 # Return the parameter value or null if absent
-public function get(string $short, string $long);
+# public function get(string $short, string $long);
 $args->get("n", "number");
 
-public function isPresent(string $short, string $long);
+# public function isPresent(string $short, string $long);
 $args->isPresent("v", "verbose")
 
-# Return the value of the parameter, `null` if the parameter is present
-# but has no value, `false` is the parameter is present
-public function getOption(string $short, string $long);
+# Return the value of the parameter, `null` if the parameter is present but has no value, `false` is the parameter is not present
+# public function getOption(string $short, string $long);
 $args->getOption("r", "replace")
 ```
 

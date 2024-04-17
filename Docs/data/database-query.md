@@ -17,7 +17,7 @@ The only type of insert that is supported is `INSERT INTO ... VALUES ...`
 ```php
 $query = new DatabaseQuery("user_data", DatabaseQuery::INSERT);
 $query->setInsertField(["fk_user", "data"]);
-$query->insertValues([1, "one-row"])->insertValues([2, "another-one"]);
+$query->insertValues([1, "one-row"], [2, "another-one"]);
 
 $res = $query->fetch();
 $sql = $query->build();
@@ -26,12 +26,17 @@ $sql = $query->build();
 ## SELECT query
 
 ```php
-$query = new DatabaseQuery("user", DatabaseQuery::SELECT);
+# First Solution (with a model)
+$query = User::select();
 
+# Second solution
+$query = new DatabaseQuery("user", DatabaseQuery::SELECT);
 $query->exploreModel(User::class);
 
+
+# Manipulation
 $query->where("my_field", 5) ;
-$query->where("my_field", null, "<>"); // "=" and "<>" comparison with NULL is supported
+$query->where("my_field", null, "<>");
 $query->whereSQL("creation_date > {}", ['2023-01-01']);
 $query->order('user', 'creation_date', 'DESC');
 $query->limit(1000);
@@ -41,6 +46,9 @@ $first = $query->first();
 $res = $query->fetch();
 $sql = $query->build();
 ```
+
+Tips:
+- The `where` method support "=" and "<>" comparison with `NULL` (converted to `IS` and `IS NOT`)
 
 ### Select query return format
 
@@ -76,6 +84,14 @@ Let's say you have a `User` model, which points to the `Person` model through `f
 ]
 ```
 
+It can seem quite hard to use at first, but it is really simple:
+- use a foreign key name to access a foreign table
+- use `data.[key-name]` on specified table to access data
+
+Example: to access our user's phone number, we can access
+
+`user.fk_person.fk_phone.data.number`
+
 ### Bottleneck model exploration
 
 Using those prototypes
@@ -102,7 +118,7 @@ $query->set("created_this_year", true)
 $query->set("active", false)
 
 $query->where("my_field", 5) ;
-$query->where("my_field", null, "<>"); // "=" and "<>" comparison with NULL is supported
+$query->where("my_field", null, "<>");
 $query->whereSQL("creation_date > {}", ['2023-01-01']);
 $query->order('user', 'creation_date', 'DESC');
 $query->limit(1000);
@@ -117,7 +133,7 @@ $sql = $query->build();
 $query = new DatabaseQuery("user", DatabaseQuery::DELETE);
 
 $query->where("my_field", 5) ;
-$query->where("my_field", null, "<>"); // "=" and "<>" comparison with NULL is supported
+$query->where("my_field", null, "<>");
 $query->whereSQL("creation_date > {}", ['2023-01-01']);
 $query->order('user', 'creation_date', 'DESC');
 $query->limit(1000);
@@ -137,4 +153,4 @@ $sql = $query->build();
 }
 ```
 
-[< Back to summary](../README.mdmd)
+[< Back to summary](../README.md)

@@ -4,12 +4,11 @@
 
 Sharp got some helpers files that are included when the framework is loaded.
 
-Those files contains shortcuts to basic framework operation (like adding a route, logging information... etc.)
+Those files contains shortcuts to basic framework operations (like adding a route, logging information... etc.)
 
 ## Files
 
-This list will describe which file contains which function,
-you can click on any file name to see its content
+This list will describe which file contains which function, you can click on any file name to see its content
 
 ### [`helpers.php`](../../Helpers/helpers.php)
 ```php

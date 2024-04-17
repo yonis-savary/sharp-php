@@ -3,7 +3,7 @@
 # 🛣️ Routing
 
 Routing in Sharp is made through two classes :
-- [`Route`](../../Classes/Web/Route.php), which hold information about **one** specific route
+- [`Route`](../../Classes/Web/Route.php), which hold information about one route
 - [`Router`](../../Classes/Web/Router.php), which hold a set of `Route` objects and is able to route a [`Request`](../../Classes/Http/Request.php) object
 
 ## Routes creation
@@ -23,6 +23,7 @@ through its statical shortucts used to define which HTTP method the route allow
 new Route("/", function(){ /* Functions can be used too ! */ });
 
 # Using shortcuts (which make them more readable)
+Route::any("/", [MyClass::class, "greets"]);
 Route::get("/", [MyClass::class, "greets"]);
 Route::post("/", [MyClass::class, "greets"]);
 Route::patch("/", [MyClass::class, "greets"]);
@@ -107,11 +108,11 @@ $router->addRoutes(
 
 ```php
 # A really bad (but working) usage !
-$router->groupCallback($myGroup, function(Router $router){
+$router->groupCallback($groupA, function(Router $router){
     $router->addGroup(
-        $group,
+        $groupB,
         ...$router->group(
-            $group,
+            $groupC,
             Route::get(/* ... */),
             Route::get(/* ... */),
         )
@@ -172,10 +173,10 @@ Here are the formats that are currently supported
 
 ## Additional features
 
-- Any router got `getRoutes()` method to retrieve added routes them
-- The `Route::view()` method can be used to create a route that render a view when called
-- The `Route::file()` method can be used to create a route that simply serve a file
-- The `Route::redirect()` method can be used to create a redirection to another URL
+- Any `Router` got `getRoutes()` method to retrieve added routes them
+- The `Route::view()` function can be used to create a route that render a view when called
+- The `Route::file()` function can be used to create a route that simply serve a file
+- The `Route::redirect()` function can be used to create a redirection to another URL
 
 
 [< Back to summary](../README.md)

@@ -2,26 +2,26 @@
 
 # 🚦 Middlewares
 
-Middlewares are classes that are called just before your routes callback,
-they tell if a [`Request`](../../Classes/Http/Request.php) can access your route
+Middlewares are classes that are called just before your routes callback, they can tell if a [`Request`](../../Classes/Http/Request.php) can access your route
 
 A middleware is a class that implements [`MiddlewareInterface`](../../Classes/Web/MiddlewareInterface.php),
-which got this method :
+which got this function :
 
 ```php
 public static function handle(Request $request) : Request|Response;
 ```
 
-- Returning a [`Request`](../../Classes/Http/Request.php) mean that your middleware assume the given request has access to the route.
+- Returning a [`Request`](../../Classes/Http/Request.php) mean that the given request has access to the route.
 - Returning a [`Response`](../../Classes/Http/Response.php) mean that the access is forbidden and the response is displayed to the user
 
 When creating a route, use the `middlewares` parameter to set which middlewares are applied to the route
 
 ```php
-Route::get("/my-admin-page", [AdminController:class, "dashboard"], middlewares: [
-    AuthMiddleware::class
-    AdminMiddleware::class
-]);
+Route::get(
+    "/my-admin-page",
+    [AdminController:class, "dashboard"],
+    middlewares: [AuthMiddleware::class, AdminMiddleware::class]
+);
 ```
 
 You can also use them in route grouping

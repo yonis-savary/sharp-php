@@ -96,6 +96,9 @@ $response = Response::redirect("/another/url");
 // Try to make a JSON Response of whatever is given to it
 $response = Response::adapt($anyObject);
 
+// Render a view (with optionnal context) and return a HTML Response
+$response = Response::view("myView", $contextData);
+
 // Manually create a Response
 new Response(
     mixed $content=null, // Raw content, can be an object a string, an array...etc
@@ -112,25 +115,48 @@ new Response(
 ### Response interaction
 
 ```php
-// Get raw content object
+# Get raw content object
 $content = $response->getContent();
 
-// Log the response code and content type to any Logger
-// The global instance is used by default
+# Log the response code and content type to any Logger
+# The global instance is used by default
 $response->logSelf($logger);
 
-// Add/Overwrite headers into the Response
+# Add/Overwrite headers into the Response
 $response->withHeaders(["Content-Type" => "text/html"]);
-// Get an associative headers array
+# Get an associative headers array
 $response->getHeaders();
+# Header value or null
+$response->getHeader('content-type');
 
-// Display the response to the client
+# Display the response to the client
 $response->display();
-// Only display the content, skip the headers
+# Only display the content, skip the headers
 $response->display(false);
 ```
 
-## Advanced Request Usage (Curl !)
+
+## Request Configuration
+
+Here is the default configuration for `Request`
+
+```json
+"request": {
+    "typed-parameters": true
+}
+```
+
+`typed-parameters` means that every `GET` parameters that comes as a string will be interpreted.
+When this parameter is enabled `Request` tried to interpret Boolean & Null values coming from `$_GET`
+
+| Origin                               | Transformed       |
+|--------------------------------------|-------------------|
+| `"true"`, `"TRUE"`, `"True"`, ...    | `true` (boolean)  |
+| `"false"`, `"FALSE"`, `"False"`, ... | `false` (boolean) |
+| `"null"`, `"NULL"`, `"Null"`, ...    | `null`            |
+
+
+## Advanced Request Usage (cURL !)
 
 The request class got the `fetch` method, which can be
 used to fetch content with the `curl` extension !
@@ -151,7 +177,8 @@ to customize its behavior
 // $logger: A Logger can be given to log debug information
 // $timeout: If given, will given the CURL handler a max timeout
 // $userAgent: The default userAgent can be overwritten too
-// $supportRedirection: If `true`, fetch() will follow 3XX response and return the last response
+// $supportRedirection: If `true`, fetch() will follow 3XX response and return the final response
+
 $request->fetch(
     Logger $logger=null,
     int $timeout=null,
@@ -181,24 +208,5 @@ Example:
 ```php
 $request->fetch(..., logFlags: Request::DEBUG_REQUEST_HEADERS | Request::DEBUG_RESPONSE_BODY);
 ```
-
-## Request Configuration
-
-Here is the default configuration for `Request`
-
-```json
-"request": {
-    "typed-parameters": true
-}
-```
-
-`typed-parameters` means that every `GET` parameters that comes as a string will be interpreted.
-When this parameter is enabled `Request` tried to interpret Boolean & Null values coming from `$_GET`
-
-| Origin                               | Transformed       |
-|--------------------------------------|-------------------|
-| `"true"`, `"TRUE"`, `"True"`, ...    | `true` (boolean)  |
-| `"false"`, `"FALSE"`, `"False"`, ... | `false` (boolean) |
-| `"null"`, `"NULL"`, `"Null"`, ...    | `null`            |
 
 [< Back to summary](../README.md)

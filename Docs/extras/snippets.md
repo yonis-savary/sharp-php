@@ -70,13 +70,16 @@ query(/*...*/);
 tags: view, template, html, render
 
 ```php
-Renderer::getInstance()->render(
+(new Renderer)->render(
     "directory/view_name",
     ["name" => "Paul"]
 );
 
 # Global query function
 render(/*...*/);
+
+# Return a Response
+Response::view("view_name");
 ```
 `view_name.php`:
 ```php

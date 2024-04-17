@@ -11,13 +11,13 @@ $cache = Cache::getInstance();
 $cache->set("my-key", $anyObjectOfYours, Cache::HOUR * 3);
 $cache->set("permanent-object", [1,2,3], Cache::PERMANENT);
 
-// Retrieve/load the serialized object
+// Retrieve the serialized object
 $anyObjectOfYours = $cache->get("my-key");
 $anyObjectOfYours = $cache->get("my-key", $anyDefaultValue);
 
 if ($serialized = $cache->try("another-key"))
 {
-    // It exists and is loaded !
+    // It exists !
 }
 
 $exists = $cache->has("my-key");

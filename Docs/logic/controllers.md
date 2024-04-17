@@ -30,7 +30,7 @@ But as your application grows, the routes number can become confusing, knowing w
 
 ## Controller trait
 
-If you want to group your logic and routes declarations, you can make a class that use the `Controller` trait
+If you want to group your logic and routes declarations, you can make a class that uses the `Controller` trait
 
 When `Router` loads your application routes, it will call the `declareRoutes()` method of every `Controller` and give itself as a parameter
 

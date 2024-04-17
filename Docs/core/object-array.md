@@ -30,7 +30,7 @@ And most of them do exactly what you expect them to do
 > This class data handling behavior is quite particular, when calling `$myArray->map($myFunction)`,
 > callbacks are not applied until you call `$myArray->collect()`, which return the new data
 
-Every functions above return a new `ObjectArray` instance with a new filter/transformer, which means that you can create copies
+Every methods above return a new `ObjectArray` instance with new filters/transformers, which means that you can create copies
 
 ```php
 $original = new ObjectArray([0,1,2,3,4,5]);
@@ -57,11 +57,14 @@ Also, as `ObjectArray` return new instances of itself, this mean that you can ch
 ## Additional properties/methods
 
 ```php
-// Alias to the constructor, can be used as a callback
+# Alias to the constructor, can be used as a callback
 ObjectArray::fromArray($myArray);
 
-// Alias to ObjectArray::fromArray(explode($separator, $string))
+# Alias to ObjectArray::fromArray(explode($separator, $string))
 ObjectArray::fromExplode(",", "A,B,C");
+
+# Select the first-column values of a query
+ObjectArray::fromQuery("SELECT id FROM client LIMIT 500");
 
 $myArray = new ObjectArray([0,1,2,3,4,5]);
 
@@ -82,7 +85,7 @@ $myArray->reduce(fn($acc, $cur) => $acc + $cur, 0);
 // return 15
 
 // Make an associative array from returned pairs
-$alphabet = range('A', 'Z');
+$alphabet = range('A', 'F');
 $myArray->toAssociative(fn($value) => [$alphabet[$i], $i]);
 // return ['A'=>0, 'B'=>1, 'C'=>2, 'D'=>3, 'E'=>4, 'F'=>5]
 

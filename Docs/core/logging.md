@@ -30,7 +30,7 @@ $logger->info(["A"=>1, "B"=>2, "C"=>3]);
 ```
 
 > [!NOTE]
-> By default, `Logger` writes information into `Storage/sharp.csv`
+> By default, `Logger` writes information into `Storage/Logs/sharp.csv`
 
 ## Advanced Usage
 

@@ -2,9 +2,7 @@
 
 # 🖌️ View Rendering
 
-Sharp's philosophy on views is
-
-> PHP is a template engine, we don't need to add a template engine in top of another
+PHP is a template engine, we don't need to add a template engine in top of another one
 
 Rendering can be made through simple PHP files with `<?php` and `<?=`
 
@@ -73,6 +71,20 @@ Then we can use it by using `template()` and `start()/stop()` :
 <?= start("content") ?>
     Articles
     <?= render("articles/list") ?>
+```
+
+## Rendering inside your application
+
+With Sharp, they are two ways of rendering inside your application
+
+```php
+# First method, with any Renderer object
+$renderer = new Renderer;
+$html = $renderer->render("myView");
+$html = $renderer->render("myView", ["title" => "Hello!"]);
+
+# Second method, directly through Response class to generate a response
+$response = Response::view("myView", ["title" => "Hello!"]);
 ```
 
 [< Back to Summary](../README.md)

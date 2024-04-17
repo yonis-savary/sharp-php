@@ -6,7 +6,7 @@
 to read, write and explore the directory content
 
 > [!NOTE]
-> The default `Storage` object points to the `Storage` directory inside your project root
+> The default `Storage` global instance points to the `Storage` directory inside your project root
 
 ## Usage
 
@@ -56,8 +56,7 @@ fclose($input);
 ### Directory listing & exploration
 
 ```php
-# `exploreDirectory()` recursively explore a directory and return
-# a list of absolute file/directory paths (depending the given filter)
+# `exploreDirectory()` recursively explore a directory and return a list of absolute file/directory paths (depending the given filter)
 $storage->exploreDirectory("MyDirectory");
 $storage->exploreDirectory("MyDirectory", Storage::NO_FILTER);
 $storage->exploreDirectory("MyDirectory", Storage::ONLY_DIRS);
@@ -72,18 +71,18 @@ $storage->listDirectories();
 ### Additional features
 
 ```php
-// Throws an exception if the directory is not writable
-// Automatically called when calling write() method
+# Throws an exception if the directory is not writable
+# Automatically called when calling write() method
 $storage->assertIsWritable();
 
-// Get a new Storage object from a sub-directory
+# Get a new Storage object pointing to a sub-directory
 $storage->getSubStorage("MySubDir");
 ```
 
 ## FTP Storage
 
 Sharp supports FTP connections ! They are made through the [FTPDriver](../../Classes/Env/Drivers/FTPDriver.php)
-class which is a basic wrapper for FTP
+class which is a basic wrapper for FTP functions
 
 They can be given to the `Storage` constructor
 

@@ -20,7 +20,10 @@ cd MyProject
 git init
 git submodule add https://github.com/yonis-savary/sharp-php.git Sharp
 
+# linux
 cp -r Sharp/Core/Server/* .
+# windows
+xcopy /s Sharp/Core/Server/* .
 
 php do fill-configuration
 php do create-application MyProject
