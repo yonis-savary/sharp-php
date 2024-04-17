@@ -84,15 +84,19 @@ class DatabaseQuery
         return $this;
     }
 
-    public function insertValues(array $values): self
+    public function insertValues(array ...$setsOfValues): self
     {
         if (!count($this->insertFields))
             throw new Exception("Cannot insert values until insert fields are defined");
 
-        if (count($values) !== count($this->insertFields))
-            throw new Exception(sprintf("DatabaseQuery insert: %s values expected, %s given", count($this->insertFields), count($values)));
+        foreach ($setsOfValues as $values)
+        {
+            if (count($values) !== count($this->insertFields))
+                throw new Exception(sprintf("DatabaseQuery insert: %s values expected, %s given", count($this->insertFields), count($values)));
 
-        $this->insertValues[] = Database::getInstance()->build("{}", [$values]);
+            $this->insertValues[] = Database::getInstance()->build("{}", [$values]);
+        }
+
         return $this;
     }
 
