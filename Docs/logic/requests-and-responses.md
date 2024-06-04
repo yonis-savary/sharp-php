@@ -53,6 +53,24 @@ list($username, $password) = $request->list("username", "password");
 // Delete parameters from both POST and GET data
 $request->unset(["username", "password"]);
 
+
+// Requests got a validate() method to retrieve parameters and check them at the same time
+list(
+    $id,
+    $newName
+) = $request->validate([
+    "id" => Request::INT | Request::NOT_NULL,
+    "newName" => Request::IS_STRING | Request::NOT_NULL
+]);
+
+list(
+    $success,
+    $values,
+    $errors
+) = $request->validate([
+    "id" => Request::INT | Request::NOT_NULL,
+    "newName" => Request::IS_STRING | Request::NOT_NULL
+], false);
 ```
 
 

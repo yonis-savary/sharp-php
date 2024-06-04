@@ -15,6 +15,7 @@ use Sharp\Classes\Events\RouteNotFound;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
 use Sharp\Classes\Web\Controller;
+use Throwable;
 
 /**
  * Given a set of `Routes`, this component is able to
@@ -59,6 +60,12 @@ class Router
         {
             if (!is_array($middlewares))
                 return;
+        }
+
+        if (count($route->getExtras()))
+        {
+            try { serialize($route); }
+            catch (Throwable $throw) { return; }
         }
 
         $this->cache->set(

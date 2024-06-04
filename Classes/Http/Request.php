@@ -3,12 +3,14 @@
 namespace Sharp\Classes\Http;
 
 use CurlHandle;
+use InvalidArgumentException;
 use RuntimeException;
 use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Http\Classes\UploadFile;
 use Sharp\Classes\Web\Route;
 use Sharp\Classes\Core\Logger;
 use Sharp\Classes\Data\ObjectArray;
+use Sharp\Classes\Http\Classes\ResponseCodes;
 use Sharp\Core\Utils;
 use Stringable;
 
@@ -22,6 +24,18 @@ class Request
 
     protected array $slugs = [];
     protected ?Route $route = null;
+
+    const IS_INT     = 0b000000000001;
+    const IS_FLOAT   = 0b000000000010;
+    const IS_STRING  = 0b000000000100;
+    const IS_EMAIL   = 0b000000001000;
+    const IS_BOOLEAN = 0b000000010000;
+    const IS_URL     = 0b000000100000;
+    const IS_MAC     = 0b000001000000;
+    //const IS_DOMAIN  = 0b000010000000;
+    const IS_IP      = 0b000100000000;
+    const IS_REGEXP  = 0b001000000000;
+    const NOT_NULL   = 0b100000000000;
 
     const DEBUG_REQUEST_CURL     = 0b0000_0001;
     const DEBUG_REQUEST_HEADERS  = 0b0000_0010;
@@ -532,5 +546,82 @@ class Request
         }
 
         return new Response($resBody, $resStatus, $resHeaders);
+    }
+
+
+    /**
+     * Validate request parameters
+     * @param array $requirements Associative array of [name => requirements flags]
+     * @param bool $errorMode Disable this to never show error to the client
+     * @return array When not in error mode, returns `[isSuccess, values, errors]`
+     * If error mode is enabled, return an array of value when successful, display a 400 HTTP Response on error
+     */
+    public function validate(array $requirements, bool $errorMode=true): array
+    {
+        if (!Utils::isAssoc($requirements))
+            throw new InvalidArgumentException("requirements must be an associative array");
+
+        $paramsToGet = array_keys($requirements);
+        $requirements = array_values($requirements);
+
+        $values = $this->list(...$paramsToGet);
+        $errors = [];
+
+        $paramsCount = count($paramsToGet);
+        for ($i=0; $i<$paramsCount; $i++)
+        {
+            $requirement = $requirements[$i];
+            $name = $paramsToGet[$i];
+            $value = $values[$i];
+
+            if (($requirement & self::IS_INT) && (!(is_numeric($value) && filter_var($value, FILTER_VALIDATE_INT))))
+                    $errors[] = "[$name] must be an integer";
+
+            if (($requirement & self::IS_FLOAT) && (!(is_numeric($value) && filter_var($value, FILTER_VALIDATE_FLOAT))))
+                    $errors[] = "[$name] must be a number";
+
+            if (($requirement & self::IS_STRING) && (!is_string($value)))
+                    $errors[] = "[$name] must be a textual value";
+
+            if (($requirement & self::IS_EMAIL) && (!filter_var($value, FILTER_VALIDATE_EMAIL)))
+                    $errors[] = "[$name] must be an email";
+
+            if (($requirement & self::IS_BOOLEAN) && (!filter_var($value,  FILTER_VALIDATE_BOOLEAN)))
+                    $errors[] = "[$name] must be a boolean";
+
+            if (($requirement & self::IS_URL) && (!filter_var($value,  FILTER_VALIDATE_URL)))
+                    $errors[] = "[$name] must be a url";
+
+            if (($requirement & self::IS_MAC) && (!filter_var($value,  FILTER_VALIDATE_MAC)))
+                    $errors[] = "[$name] must be a max";
+
+            //if (($requirement & self::IS_DOMAIN) && (!filter_var($value,  FILTER_VALIDATE_DOMAIN)))
+            //        $errors[] = "[$name] must be a domain";
+
+            if (($requirement & self::IS_IP) && (!filter_var($value,  FILTER_VALIDATE_IP)))
+                    $errors[] = "[$name] must be a ip";
+
+            //if (($requirement & self::IS_REGEXP) && (!filter_var($value,  FILTER_VALIDATE_REGEXP)))
+            //        $errors[] = "[$name] must be a regular expression";
+
+            if (($requirement & self::NOT_NULL) && ($value === null))
+                    $errors[] = "[$name] parameter is required";
+
+        }
+
+        // faster than count ! Todo: put this in Utils
+        $hasError = isset($errors[0]);
+
+        if ($errorMode)
+        {
+            if ($hasError)
+            {
+                Response::json($errors, ResponseCodes::BAD_REQUEST)->display();
+                die;
+            }
+            return $values;
+        }
+
+        return [!$hasError, $values, $errors];
     }
 }
