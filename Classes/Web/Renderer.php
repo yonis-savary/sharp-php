@@ -92,12 +92,12 @@ class Renderer
         $currentIndex = array_push($this->shards, $newRenderShard)-1;
         $current = $this->current = &$this->shards[$currentIndex];
 
-        foreach ($current->getContext() as $name => $value)
+        foreach ($current->getContext() as $varName => $varValue)
         {
-            if (isset($$name))
+            if (isset($$varName))
                 Logger::getInstance()->warning(new InvalidArgumentException("Cannot redeclare [$name] while rendering"));
             else
-                $$name = $value;
+                $$varName = $varValue;
         }
 
         $events = EventListener::getInstance();

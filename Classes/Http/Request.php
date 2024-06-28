@@ -69,7 +69,8 @@ class Request
         protected array $post=[],
         protected array $uploads=[],
         protected array $headers=[],
-        protected mixed $body=null
+        protected mixed $body=null,
+        protected ?string $ip=null
     )
     {
         $this->path = preg_replace("/\?.*/", "", $this->path);
@@ -137,7 +138,8 @@ class Request
             $post,
             $_FILES,
             $headers,
-            file_get_contents('php://input')
+            file_get_contents('php://input'),
+            $_SERVER["REMOTE_ADDR"] ?? null
         );
 
         return $request;
@@ -291,6 +293,11 @@ class Request
     public function getHeaders(): array
     {
         return $this->headers;
+    }
+
+    public function getIp(): ?string
+    {
+        return $this->ip;
     }
 
     /**
