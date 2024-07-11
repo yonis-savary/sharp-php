@@ -2,6 +2,7 @@
 
 namespace Sharp\Core;
 
+use InvalidArgumentException;
 use Sharp\Classes\Env\Configuration;
 use Sharp\Classes\Env\Drivers\FileDriverInterface;
 use Sharp\Classes\Env\Drivers\LocalDiskDriver;
@@ -231,5 +232,23 @@ class Utils
         $enabled = $configuration->toArray("applications");
 
         return in_array($application, $enabled);
+    }
+
+    /**
+     * @param int $length Length of the random hex string (must be at least 1)
+     * @return string A random hexadecimal string 
+     */
+    public static function randomHexString(int $length=32): string
+    {
+        if ($length < 1)
+            throw new InvalidArgumentException('$length must be at least 1');
+
+        $evenLength = (($length % 2) != 0) ? 
+            $length+1: 
+            $length;
+        
+        $randomStr = bin2hex(random_bytes($evenLength));
+
+        return substr($randomStr, 0, $length);
     }
 }
