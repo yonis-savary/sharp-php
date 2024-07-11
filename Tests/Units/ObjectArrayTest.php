@@ -2,9 +2,12 @@
 
 namespace Sharp\Tests\Units;
 
+use InvalidArgumentException;
+use JsonException;
 use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Data\ObjectArray;
+use Sharp\Classes\Env\Storage;
 
 class ObjectArrayTest extends TestCase
 {
@@ -22,6 +25,48 @@ class ObjectArrayTest extends TestCase
 
         $this->assertEquals(["1","2","3"], ObjectArray::fromExplode(",", "1,2,3")->collect());
     }
+
+    public function test_fromFileLines()
+    {
+        $store = Storage::getInstance();
+        $store->write("ObjectArrayFile.txt", "a\nb\nc\n \n");
+
+        $this->assertEquals(
+            ObjectArray::fromFileLines($store->path("ObjectArrayFile.txt"))
+            ->length(),
+            3
+        );
+
+        $this->assertEquals(
+            ObjectArray::fromFileLines($store->path("ObjectArrayFile.txt"), false)
+            ->length(),
+            5
+        );
+    }
+
+    public function test_fromJSONFile()
+    {
+        $store = Storage::getInstance();
+        $store->write("ObjectArray.json", "[1,2,3]");
+        $this->assertEquals(
+            ObjectArray::fromJSONFile($store->path("ObjectArray.json"))
+            ->collect(),
+            [1,2,3]
+        );
+
+        $store->write("ObjectArrayInvalid.json", "{'Hello': [1,2,3]}");
+        $store->write("ObjectArrayInvalid2.json", "Hello");
+
+        $this->expectException(JsonException::class);
+        ObjectArray::fromJSONFile($store->path("ObjectArrayInvalid.json"));
+
+        $this->expectException(JsonException::class);
+        ObjectArray::fromJSONFile($store->path("ObjectArrayInvalid2.json"));
+
+        $this->expectException(InvalidArgumentException::class);
+        ObjectArray::fromJSONFile($store->path("InexistantObjectArrayFile.json"));
+    }
+
 
     public function test_fromQuery()
     {

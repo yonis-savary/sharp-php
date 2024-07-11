@@ -2,7 +2,9 @@
 
 namespace Sharp\Classes\Data;
 
+use InvalidArgumentException;
 use OutOfRangeException;
+use Sharp\Core\Utils;
 
 class ObjectArray
 {
@@ -27,6 +29,36 @@ class ObjectArray
     public static function fromArray(array $data=[]): self
     {
         return new self($data);
+    }
+
+    /**
+     * Create an ObjectArray instance with lines from a file as elements
+     */
+    public static function fromFileLines(string $path, bool $filterEmptyLines=true): self
+    {
+        $lines = file_get_contents($path);
+        $lines = explode("\n", $lines);
+
+        $object = new self($lines);
+
+        if ($filterEmptyLines)
+            return $object->filter(fn($line) => trim($line) != "");
+
+        return $object;
+    }
+
+    /**
+     * Create an ObjectArray instance from an array inside a JSON file
+     */
+    public static function fromJSONFile(string $path): self
+    {
+        $content = file_get_contents($path);
+        $object = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
+
+        if ((!is_array($object)) || Utils::isAssoc($object))
+            throw new InvalidArgumentException("$path file does not contains an array object");
+
+        return new self($object);
     }
 
     /**
