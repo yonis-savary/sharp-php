@@ -79,9 +79,6 @@ class Request
 
         $this->headers = array_change_key_case($this->headers, CASE_LOWER);
 
-        if (str_ends_with($this->path, "/"))
-            $this->path = substr($this->path, 0, strlen($this->path)-1);
-
         if ($this->isJSON())
             $this->body = json_decode($this->body ?? "null", true, JSON_THROW_ON_ERROR);
 
@@ -131,9 +128,13 @@ class Request
             $post = self::parseDictionaryValueTypes($post);
         }
 
+        $path = $_SERVER['REQUEST_URI'] ?? "";
+        if (str_ends_with($path, "/"))
+            $path = substr($path, 0, strlen($path)-1);
+
         $request = new self (
             $_SERVER['REQUEST_METHOD'] ?? php_sapi_name(),
-            $_SERVER['REQUEST_URI'] ?? '',
+            $path,
             $get,
             $post,
             $_FILES,
