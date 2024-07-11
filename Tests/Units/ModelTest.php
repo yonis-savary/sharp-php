@@ -172,6 +172,12 @@ class ModelTest extends TestCase
         $this->assertIsArray(TestUser::findId(1));
         $this->assertNull(TestUser::findId(1309809));
     }
+    
+    public function test_findWhere()
+    {
+        $this->assertIsArray(TestUser::findWhere(["id" => 1]));
+        $this->assertNull(TestUser::findId(["id" => 1309809]));
+    }
 
     public function test_updateId()
     {
