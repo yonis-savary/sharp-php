@@ -5,6 +5,7 @@ namespace Sharp\Classes\Data;
 use InvalidArgumentException;
 use OutOfRangeException;
 use Sharp\Core\Utils;
+use Throwable;
 
 class ObjectArray
 {
@@ -90,6 +91,35 @@ class ObjectArray
 
         $key = array_keys($sample)[0];
         return (new self($results))->map(fn($x) => $x[$key]);
+    }
+
+
+    /**
+     * Write ObjectArray's data in a JSON file
+     * @param string $path Target file path
+     * @param int $jsonFlags additional flags for json_encode
+     * @return self Return self so you can write intermediate data and continue to edit them
+     */
+    public function writeJSONFile(string $path, int $jsonFlags=JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE): self
+    {
+        file_put_contents(
+            $path,
+            json_encode($this->collect(), JSON_THROW_ON_ERROR | $jsonFlags)
+        );
+        return $this;
+    }
+
+
+    /**
+     * Write ObjectArray's data in a text file
+     * @param string $path Target file path
+     * @param string $glue Glue between data (new line by default)
+     * @return self Return self so you can write intermediate data and continue to edit them
+     */
+    public function writeTextFile(string $path, string $glue="\n"): self
+    {
+        file_put_contents($path, $this->join($glue));
+        return $this;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Sharp\Tests\Units;
 use InvalidArgumentException;
 use JsonException;
 use OutOfRangeException;
+use PhpParser\Node\Expr\Cast\Object_;
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Storage;
@@ -65,6 +66,31 @@ class ObjectArrayTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         ObjectArray::fromJSONFile($store->path("InexistantObjectArrayFile.json"));
+    }
+
+    public function test_writeJSONFile()
+    {
+        $store = Storage::getInstance();
+
+        ObjectArray::fromArray([1,2,3])
+        ->writeJSONFile($store->path("ObjectArrayWrite.json"));
+
+        $this->assertEquals(
+            "[1,2,3]",
+            $store->read("ObjectArrayWrite.json")
+        );
+    }
+
+    public function test_writeTextFile()
+    {
+        $store = Storage::getInstance();
+
+        ObjectArray::fromArray([1,2,3])
+        ->writeTextFile($store->path("ObjectArrayWriteA.txt"), ",")
+        ->writeTextFile($store->path("ObjectArrayWriteB.txt"), "\n");
+
+        $this->assertEquals("1,2,3"  , $store->read("ObjectArrayWriteA.txt"));
+        $this->assertEquals("1\n2\n3", $store->read("ObjectArrayWriteB.txt"));
     }
 
 
