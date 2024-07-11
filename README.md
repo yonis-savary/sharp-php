@@ -44,6 +44,7 @@ Your directory will look like
 - `.git/`
 - `do`
 - `sharp.json`
+- `.gitignore`
 - `.gitmodules`
 
 
@@ -74,6 +75,7 @@ Your directory will look like
 - 🟢 Models
 - 🟢 FTP Directory
 - 🟢 Queues support
+- 🟢 Array object (for functional programming)
 
 🔐 Security
 - 🟢 Authentication
