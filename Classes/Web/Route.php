@@ -213,8 +213,6 @@ class Route
 
         $regex = "/^". join("\\/", $parts) ."$/";
 
-        debug($regex);
-
         if (!preg_match($regex, $request->getPath(), $slugs))
             return false;
 
@@ -237,8 +235,6 @@ class Route
 
         $routePath = $this->getPath();
         $requestPath = $request->getPath();
-
-        debug($routePath . "===" . $requestPath);
 
         // Little optimization: if the route has no slug
         // we can just compare strings, no need to process anything
