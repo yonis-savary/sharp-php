@@ -176,6 +176,8 @@ class ObjectArray
     {
         $data = $this->collect();
         array_walk($data, $callback, $arg);
+        // Overwrite data if $callback change values by reference
+        $this->data = $data;
         return $this;
     }
 

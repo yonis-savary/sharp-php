@@ -159,8 +159,13 @@ class ObjectArrayTest extends TestCase
         $arr = new ObjectArray([1,2,3,4,5]);
         $acc = 0;
 
-        $arr->foreach(function($n) use (&$acc) { $acc += $n; });
+        $arr->forEach(function($n) use (&$acc) { $acc += $n; });
         $this->assertEquals(5+4+3+2+1, $acc);
+
+        // Test by reference
+        $arr = new ObjectArray([0,1,2,3,4]);
+        $arr->forEach(fn(&$n) => $n = $n+1);
+        $this->assertEquals([1,2,3,4,5], $arr->collect());
     }
 
     public function test_map()
