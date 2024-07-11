@@ -42,6 +42,7 @@ Database
 
 Business Logic
 - [🥤 Session Straw](./extras/session-straw.md)
+- [🗂 App Utils (AppStorage, AppCache...)](./extras/app-utils.md)
 
 Extras
 - [🎨 Serving assets](./extras/assets.md)
