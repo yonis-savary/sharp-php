@@ -170,6 +170,27 @@ trait Model
         return self::select($explore)->where($column, $value, table: self::getTable())->first();
     }
 
+
+    /**
+     * Select the first row where conditions from $condition are matched
+     * 
+     * @param array $conditions Column conditions as <column> => <value>
+     * @param bool $explore Explore foreign keys to fetch references
+     * @example base `Model::findWhere(["id" => 309, "user" => 585])`
+     */
+    public static function findWhere(array $conditions, bool $explore=true): ?array
+    {
+        if (!Utils::isAssoc($conditions))
+            throw new InvalidArgumentException('$conditions must be an associative array as <column> => <value>');
+
+        $query = self::select($explore);
+
+        foreach ($conditions as $column => $value)
+            $query->where($column, $value);
+
+        return $query->first();
+    }
+
     /**
      * Return a new `DatabaseQuery` to update a specific row
      *

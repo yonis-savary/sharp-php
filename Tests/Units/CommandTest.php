@@ -48,4 +48,13 @@ class CommandTest extends TestCase
 
         $this->assertEquals("Hello", $output);
     }
+
+    public function test_execute()
+    {
+        ob_start();
+        DummyCommand::execute();
+        $output = ob_get_clean();
+
+        $this->assertEquals("Hello", $output);
+    }
 }

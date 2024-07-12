@@ -41,4 +41,14 @@ abstract class Command extends CLIUtils
      * This function is executed when the command is called
      */
     public abstract function __invoke(Args $args);
+
+    /**
+     * Directly execute a command without having to instanciate an object
+     * @param string $argv Console parameters
+     */
+    final public static function execute(string $argv="")
+    {
+        $class = get_called_class();
+        return (new $class)(new Args($argv));
+    }
 }

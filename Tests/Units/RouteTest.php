@@ -167,11 +167,12 @@ class RouteTest extends TestCase
 
         // Support for end-slash...
         $endSlashRoute = new Route("/A/", $dummyCallback);
-        $this->assertTrue($endSlashRoute->match(new Request("GET", "/A")));
+        $this->assertFalse($endSlashRoute->match(new Request("GET", "/A")));
         $this->assertTrue($endSlashRoute->match(new Request("GET", "/A/")));
 
         $route = new Route("/A", $dummyCallback);
-        $this->assertTrue($route->match(new Request("GET", "/A/")));
+        $this->assertFalse($route->match(new Request("GET", "/A/")));
+        $this->assertTrue($route->match(new Request("GET", "/A")));
     }
 
 

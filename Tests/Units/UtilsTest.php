@@ -220,4 +220,15 @@ class UtilsTest extends TestCase
         $this->assertTrue(Utils::isApplicationEnabled("C", $dummyConfig));
         $this->assertFalse(Utils::isApplicationEnabled("D", $dummyConfig));
     }
+
+    public function test_randomHexString()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Utils::randomHexString(-1);
+        $this->expectException(InvalidArgumentException::class);
+        Utils::randomHexString(0);
+
+        for ($i=1; $i<100; $i++)
+            $this->assertTrue(strlen(Utils::randomHexString($i)) == $i);
+    }
 }

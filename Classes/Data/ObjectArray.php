@@ -2,7 +2,10 @@
 
 namespace Sharp\Classes\Data;
 
+use InvalidArgumentException;
 use OutOfRangeException;
+use Sharp\Core\Utils;
+use Throwable;
 
 class ObjectArray
 {
@@ -27,6 +30,36 @@ class ObjectArray
     public static function fromArray(array $data=[]): self
     {
         return new self($data);
+    }
+
+    /**
+     * Create an ObjectArray instance with lines from a file as elements
+     */
+    public static function fromFileLines(string $path, bool $filterEmptyLines=true): self
+    {
+        $lines = file_get_contents($path);
+        $lines = explode("\n", $lines);
+
+        $object = new self($lines);
+
+        if ($filterEmptyLines)
+            return $object->filter(fn($line) => trim($line) != "");
+
+        return $object;
+    }
+
+    /**
+     * Create an ObjectArray instance from an array inside a JSON file
+     */
+    public static function fromJSONFile(string $path): self
+    {
+        $content = file_get_contents($path);
+        $object = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
+
+        if ((!is_array($object)) || Utils::isAssoc($object))
+            throw new InvalidArgumentException("$path file does not contains an array object");
+
+        return new self($object);
     }
 
     /**
@@ -58,6 +91,35 @@ class ObjectArray
 
         $key = array_keys($sample)[0];
         return (new self($results))->map(fn($x) => $x[$key]);
+    }
+
+
+    /**
+     * Write ObjectArray's data in a JSON file
+     * @param string $path Target file path
+     * @param int $jsonFlags additional flags for json_encode
+     * @return self Return self so you can write intermediate data and continue to edit them
+     */
+    public function writeJSONFile(string $path, int $jsonFlags=JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE): self
+    {
+        file_put_contents(
+            $path,
+            json_encode($this->collect(), JSON_THROW_ON_ERROR | $jsonFlags)
+        );
+        return $this;
+    }
+
+
+    /**
+     * Write ObjectArray's data in a text file
+     * @param string $path Target file path
+     * @param string $glue Glue between data (new line by default)
+     * @return self Return self so you can write intermediate data and continue to edit them
+     */
+    public function writeTextFile(string $path, string $glue="\n"): self
+    {
+        file_put_contents($path, $this->join($glue));
+        return $this;
     }
 
     /**
@@ -114,6 +176,8 @@ class ObjectArray
     {
         $data = $this->collect();
         array_walk($data, $callback, $arg);
+        // Overwrite data if $callback change values by reference
+        $this->data = $data;
         return $this;
     }
 
