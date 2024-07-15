@@ -129,8 +129,6 @@ class Request
         }
 
         $path = $_SERVER['REQUEST_URI'] ?? "";
-        if (str_ends_with($path, "/"))
-            $path = substr($path, 0, strlen($path)-1);
 
         $request = new self (
             $_SERVER['REQUEST_METHOD'] ?? php_sapi_name(),
