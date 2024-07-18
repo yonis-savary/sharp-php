@@ -410,7 +410,7 @@ class Request
         $headers = $this->getHeaders();
         $isJSONRequest = $this->isJSON();
 
-        $getParams = count($thisGET) ? http_build_query($this->get(), "?", ";") : "";
+        $getParams = count($thisGET) ? "?" . http_build_query($this->get(), "", "&") : "";
         $url = trim($this->getPath() . $getParams);
 
         $handle = curl_init($url);
@@ -419,6 +419,7 @@ class Request
         {
             case "GET":
                 /* GET by default*/ ;
+                $logger->info("GET Params string = $getParams");
                 break;
             case "POST":
                 $logger->info("Using CURLOPT_POST");
