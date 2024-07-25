@@ -12,6 +12,7 @@ use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Events\RoutedRequest;
 use Sharp\Classes\Events\RouteNotFound;
+use Sharp\Classes\Events\RouteReturnedResponse;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
 use Sharp\Classes\Web\Controller;
@@ -233,9 +234,15 @@ class Router
             return $response;
         }
 
-        EventListener::getInstance()->dispatch(new RoutedRequest($request, $route));
+        $eventListener = EventListener::getInstance();
+        $eventListener->dispatch(new RoutedRequest($request, $route));
 
-        return Response::adapt($route($request));
+        $rawResponse = $route($request);
+        $response = Response::adapt($rawResponse);
+
+        $eventListener->dispatch(new RouteReturnedResponse( $route, $response, $rawResponse, $request ));
+
+        return $response;
     }
 
     /**
