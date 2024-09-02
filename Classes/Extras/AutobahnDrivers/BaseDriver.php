@@ -122,7 +122,11 @@ class BaseDriver implements DriverInterface
         list($model, $middlewares) = self::extractRouteData($request);
 
         $doJoin = ($request->params("_join") ?? true) == true;
-        $ignores = Utils::toArray($request->params("_ignores") ?? []);
+        
+        $ignores = $request->params("_ignores");
+        if (is_string($ignores)) $ignores = json_decode($ignores, true, flags: JSON_THROW_ON_ERROR);
+        $ignores = Utils::toArray($ignores ?? []);
+
         list($limit, $offset) = $request->list("_limit", "_offset");
         $request->unset(["_ignores", "_join", "_limit", "_offset"]);
 
