@@ -443,4 +443,14 @@ class DatabaseQuery
 
         return $data;
     }
+
+
+    /**
+     * fetch data and put them in an ObjectArray object
+     * @experimental
+     */
+    public function toObjectArray(): ObjectArray
+    {
+        return ObjectArray::fromArray($this->fetch());
+    }
 }

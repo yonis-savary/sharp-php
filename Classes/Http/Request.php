@@ -79,9 +79,6 @@ class Request
 
         $this->headers = array_change_key_case($this->headers, CASE_LOWER);
 
-        if (str_ends_with($this->path, "/"))
-            $this->path = substr($this->path, 0, strlen($this->path)-1);
-
         if ($this->isJSON())
             $this->body = json_decode($this->body ?? "null", true, JSON_THROW_ON_ERROR);
 
@@ -131,9 +128,11 @@ class Request
             $post = self::parseDictionaryValueTypes($post);
         }
 
+        $path = $_SERVER['REQUEST_URI'] ?? "";
+
         $request = new self (
             $_SERVER['REQUEST_METHOD'] ?? php_sapi_name(),
-            $_SERVER['REQUEST_URI'] ?? '',
+            $path,
             $get,
             $post,
             $_FILES,
@@ -411,7 +410,7 @@ class Request
         $headers = $this->getHeaders();
         $isJSONRequest = $this->isJSON();
 
-        $getParams = count($thisGET) ? http_build_query($this->get(), "?", ";") : "";
+        $getParams = count($thisGET) ? "?" . http_build_query($this->get(), "", "&") : "";
         $url = trim($this->getPath() . $getParams);
 
         $handle = curl_init($url);
@@ -420,6 +419,7 @@ class Request
         {
             case "GET":
                 /* GET by default*/ ;
+                $logger->info("GET Params string = $getParams");
                 break;
             case "POST":
                 $logger->info("Using CURLOPT_POST");
@@ -544,7 +544,7 @@ class Request
         if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
             $logger->info("Got Body", $resBody);
 
-        if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json'))
+        if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json') && $resBody)
         {
             if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
                 $logger->info("Decoding JSON body");

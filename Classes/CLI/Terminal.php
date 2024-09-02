@@ -28,13 +28,17 @@ class Terminal
      * @param string $question Prompt for the user
      * @return mixed Selected option (the value, not index)
      */
-    public static function promptList(array $choices, string $question): mixed
+    public static function promptList(array $choices, string $question, bool $returnIndex=false): mixed
     {
         print("$question\n");
         for ($i=0; $i<count($choices); $i++)
             printf(" %s - %s\n", $i+1, $choices[$i]);
 
         $index = intval(self::prompt("\n> "));
+
+        if ($returnIndex)
+            return $index;
+        
         return $choices[$index-1] ?? null;
     }
 

@@ -2,9 +2,13 @@
 
 namespace Sharp\Tests\Units;
 
+use InvalidArgumentException;
+use JsonException;
 use OutOfRangeException;
+use PhpParser\Node\Expr\Cast\Object_;
 use PHPUnit\Framework\TestCase;
 use Sharp\Classes\Data\ObjectArray;
+use Sharp\Classes\Env\Storage;
 
 class ObjectArrayTest extends TestCase
 {
@@ -22,6 +26,73 @@ class ObjectArrayTest extends TestCase
 
         $this->assertEquals(["1","2","3"], ObjectArray::fromExplode(",", "1,2,3")->collect());
     }
+
+    public function test_fromFileLines()
+    {
+        $store = Storage::getInstance();
+        $store->write("ObjectArrayFile.txt", "a\nb\nc\n \n");
+
+        $this->assertEquals(
+            ObjectArray::fromFileLines($store->path("ObjectArrayFile.txt"))
+            ->length(),
+            3
+        );
+
+        $this->assertEquals(
+            ObjectArray::fromFileLines($store->path("ObjectArrayFile.txt"), false)
+            ->length(),
+            5
+        );
+    }
+
+    public function test_fromJSONFile()
+    {
+        $store = Storage::getInstance();
+        $store->write("ObjectArray.json", "[1,2,3]");
+        $this->assertEquals(
+            ObjectArray::fromJSONFile($store->path("ObjectArray.json"))
+            ->collect(),
+            [1,2,3]
+        );
+
+        $store->write("ObjectArrayInvalid.json", "{'Hello': [1,2,3]}");
+        $store->write("ObjectArrayInvalid2.json", "Hello");
+
+        $this->expectException(JsonException::class);
+        ObjectArray::fromJSONFile($store->path("ObjectArrayInvalid.json"));
+
+        $this->expectException(JsonException::class);
+        ObjectArray::fromJSONFile($store->path("ObjectArrayInvalid2.json"));
+
+        $this->expectException(InvalidArgumentException::class);
+        ObjectArray::fromJSONFile($store->path("InexistantObjectArrayFile.json"));
+    }
+
+    public function test_writeJSONFile()
+    {
+        $store = Storage::getInstance();
+
+        ObjectArray::fromArray([1,2,3])
+        ->writeJSONFile($store->path("ObjectArrayWrite.json"));
+
+        $this->assertEquals(
+            "[1,2,3]",
+            $store->read("ObjectArrayWrite.json")
+        );
+    }
+
+    public function test_writeTextFile()
+    {
+        $store = Storage::getInstance();
+
+        ObjectArray::fromArray([1,2,3])
+        ->writeTextFile($store->path("ObjectArrayWriteA.txt"), ",")
+        ->writeTextFile($store->path("ObjectArrayWriteB.txt"), "\n");
+
+        $this->assertEquals("1,2,3"  , $store->read("ObjectArrayWriteA.txt"));
+        $this->assertEquals("1\n2\n3", $store->read("ObjectArrayWriteB.txt"));
+    }
+
 
     public function test_fromQuery()
     {
@@ -88,8 +159,13 @@ class ObjectArrayTest extends TestCase
         $arr = new ObjectArray([1,2,3,4,5]);
         $acc = 0;
 
-        $arr->foreach(function($n) use (&$acc) { $acc += $n; });
+        $arr->forEach(function($n) use (&$acc) { $acc += $n; });
         $this->assertEquals(5+4+3+2+1, $acc);
+
+        // Test by reference
+        $arr = new ObjectArray([0,1,2,3,4]);
+        $arr->forEach(fn(&$n) => $n = $n+1);
+        $this->assertEquals([1,2,3,4,5], $arr->collect());
     }
 
     public function test_map()

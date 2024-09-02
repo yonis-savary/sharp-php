@@ -2,22 +2,12 @@
 
 namespace Sharp\Classes\CLI;
 
-use Sharp\Classes\Core\Logger;
-
 /**
  * Command classes can be executed through the CLI,
  * the only method you have to override is `__invoke()` and `getHelp()`
  */
-abstract class Command
+abstract class Command extends CLIUtils
 {
-    final public function log(string ...$mixed)
-    {
-        if (php_sapi_name() === "cli")
-            return print(join("", array_map(fn($x) => $x . "\n", $mixed)));
-
-        return Logger::getInstance()->info(...$mixed);
-    }
-
     final public function getOrigin(): string
     {
         $class = get_called_class();
@@ -51,4 +41,14 @@ abstract class Command
      * This function is executed when the command is called
      */
     public abstract function __invoke(Args $args);
+
+    /**
+     * Directly execute a command without having to instanciate an object
+     * @param string $argv Console parameters
+     */
+    final public static function execute(string $argv="")
+    {
+        $class = get_called_class();
+        return (new $class)(new Args($argv));
+    }
 }

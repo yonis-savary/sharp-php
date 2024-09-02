@@ -72,7 +72,7 @@ class Storage
      */
     public function getSubStorage(string $path): self
     {
-        return new self($this->path($path));
+        return new self($this->path($path), $this->driver);
     }
 
     /**
