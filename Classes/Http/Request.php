@@ -544,7 +544,7 @@ class Request
         if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
             $logger->info("Got Body", $resBody);
 
-        if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json'))
+        if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json') && $resBody)
         {
             if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
                 $logger->info("Decoding JSON body");
