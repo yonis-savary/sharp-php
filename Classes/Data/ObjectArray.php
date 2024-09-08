@@ -139,7 +139,11 @@ class ObjectArray
      */
     public function push(mixed ...$objects): self
     {
-        return $this->withTransformers(fn(&$arr) => array_push($arr, ...$objects));
+        $data = $this->collect();
+        array_push($data, ...$objects);
+        $this->data = $data;
+
+        return $this;
     }
 
     /**
@@ -147,7 +151,11 @@ class ObjectArray
      */
     public function pop(): self
     {
-        return $this->withTransformers(array_pop(...));
+        $data = $this->collect();
+        array_pop($data);
+        $this->data = $data;
+        
+        return $this;
     }
 
     /**
