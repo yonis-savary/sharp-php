@@ -453,4 +453,18 @@ class DatabaseQuery
     {
         return ObjectArray::fromArray($this->fetch());
     }
+
+    /**
+     * Call a function for each result 
+     * Use (limit/offset) to fetch rows one by one
+     * @experimental
+     */
+    public function forEach(callable $function): self
+    {
+        if ($this->mode !== self::SELECT)
+            throw new Exception("DatabaseQuery::forEach method only works with SELECT queries");
+
+        DatabaseQueryIterator::forEach($this, $function);
+        return $this;
+    }
 }
