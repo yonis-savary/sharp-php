@@ -318,19 +318,19 @@ class RequestTest extends TestCase
         $this->assertTrue ($request->validate(["someInt" => Request::IS_FLOAT]  , false)[0]);
         $this->assertFalse($request->validate(["someInt" => Request::IS_STRING] , false)[0]);
         $this->assertFalse($request->validate(["someInt" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someInt" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someInt" => Request::IS_BOOLEAN], false)[0]);
         $this->assertFalse($request->validate(["someInt" => Request::IS_URL]    , false)[0]);
         $this->assertFalse($request->validate(["someInt" => Request::IS_MAC]    , false)[0]);
         //$this->assertFalse($request->validate(["someInt" => Request::IS_DOMAIN] , false)[0]);
         $this->assertFalse($request->validate(["someInt" => Request::IS_IP]     , false)[0]);
         //$this->assertFalse($request->validate(["someInt" => Request::IS_REGEXP] , false)[0]);
         $this->assertTrue ($request->validate(["someInt" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertFalse($request->validate(["someFloat" => Request::IS_INT]    , false)[0]);
         $this->assertTrue ($request->validate(["someFloat" => Request::IS_FLOAT]  , false)[0]);
         $this->assertFalse($request->validate(["someFloat" => Request::IS_STRING] , false)[0]);
         $this->assertFalse($request->validate(["someFloat" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someFloat" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someFloat" => Request::IS_BOOLEAN], false)[0]);
         $this->assertFalse($request->validate(["someFloat" => Request::IS_URL]    , false)[0]);
         $this->assertFalse($request->validate(["someFloat" => Request::IS_MAC]    , false)[0]);
         //$this->assertFalse($request->validate(["someFloat" => Request::IS_DOMAIN] , false)[0]);
@@ -342,26 +342,26 @@ class RequestTest extends TestCase
         $this->assertFalse($request->validate(["someString" => Request::IS_FLOAT]  , false)[0]);
         $this->assertTrue ($request->validate(["someString" => Request::IS_STRING] , false)[0]);
         $this->assertFalse($request->validate(["someString" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someString" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someString" => Request::IS_BOOLEAN], false)[0]);
         $this->assertFalse($request->validate(["someString" => Request::IS_URL]    , false)[0]);
         $this->assertFalse($request->validate(["someString" => Request::IS_MAC]    , false)[0]);
         //$this->assertFalse($request->validate(["someString" => Request::IS_DOMAIN] , false)[0]);
         $this->assertFalse($request->validate(["someString" => Request::IS_IP]     , false)[0]);
         //$this->assertFalse($request->validate(["someString" => Request::IS_REGEXP] , false)[0]);
         $this->assertTrue ($request->validate(["someString" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertFalse($request->validate(["someEmail" => Request::IS_INT]    , false)[0]);
         $this->assertFalse($request->validate(["someEmail" => Request::IS_FLOAT]  , false)[0]);
         $this->assertTrue ($request->validate(["someEmail" => Request::IS_STRING] , false)[0]);
         $this->assertTrue ($request->validate(["someEmail" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someEmail" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someEmail" => Request::IS_BOOLEAN], false)[0]);
         $this->assertFalse($request->validate(["someEmail" => Request::IS_URL]    , false)[0]);
         $this->assertFalse($request->validate(["someEmail" => Request::IS_MAC]    , false)[0]);
         //$this->assertFalse($request->validate(["someEmail" => Request::IS_DOMAIN] , false)[0]);
         $this->assertFalse($request->validate(["someEmail" => Request::IS_IP]     , false)[0]);
         //$this->assertFalse($request->validate(["someEmail" => Request::IS_REGEXP] , false)[0]);
         $this->assertTrue ($request->validate(["someEmail" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertFalse($request->validate(["someBoolean" => Request::IS_INT]    , false)[0]);
         $this->assertFalse($request->validate(["someBoolean" => Request::IS_FLOAT]  , false)[0]);
         $this->assertFalse($request->validate(["someBoolean" => Request::IS_STRING] , false)[0]);
@@ -373,79 +373,79 @@ class RequestTest extends TestCase
         $this->assertFalse($request->validate(["someBoolean" => Request::IS_IP]     , false)[0]);
         //$this->assertFalse($request->validate(["someBoolean" => Request::IS_REGEXP] , false)[0]);
         $this->assertTrue ($request->validate(["someBoolean" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertFalse($request->validate(["someURL" => Request::IS_INT]    , false)[0]);
         $this->assertFalse($request->validate(["someURL" => Request::IS_FLOAT]  , false)[0]);
         $this->assertTrue ($request->validate(["someURL" => Request::IS_STRING] , false)[0]);
         $this->assertFalse($request->validate(["someURL" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someURL" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someURL" => Request::IS_BOOLEAN], false)[0]);
         $this->assertTrue ($request->validate(["someURL" => Request::IS_URL]    , false)[0]);
         $this->assertFalse($request->validate(["someURL" => Request::IS_MAC]    , false)[0]);
         //$this->assertFalse($request->validate(["someURL" => Request::IS_DOMAIN] , false)[0]);
         $this->assertFalse($request->validate(["someURL" => Request::IS_IP]     , false)[0]);
         //$this->assertFalse($request->validate(["someURL" => Request::IS_REGEXP] , false)[0]);
         $this->assertTrue ($request->validate(["someURL" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertFalse($request->validate(["someMAC" => Request::IS_INT]    , false)[0]);
         $this->assertFalse($request->validate(["someMAC" => Request::IS_FLOAT]  , false)[0]);
         $this->assertTrue ($request->validate(["someMAC" => Request::IS_STRING] , false)[0]);
         $this->assertFalse($request->validate(["someMAC" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someMAC" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someMAC" => Request::IS_BOOLEAN], false)[0]);
         $this->assertFalse($request->validate(["someMAC" => Request::IS_URL]    , false)[0]);
         $this->assertTrue ($request->validate(["someMAC" => Request::IS_MAC]    , false)[0]);
         //$this->assertFalse($request->validate(["someMAC" => Request::IS_DOMAIN] , false)[0]);
         $this->assertFalse($request->validate(["someMAC" => Request::IS_IP]     , false)[0]);
         //$this->assertFalse($request->validate(["someMAC" => Request::IS_REGEXP] , false)[0]);
         $this->assertTrue ($request->validate(["someMAC" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertFalse($request->validate(["someDomain" => Request::IS_INT]    , false)[0]);
         $this->assertFalse($request->validate(["someDomain" => Request::IS_FLOAT]  , false)[0]);
         $this->assertTrue ($request->validate(["someDomain" => Request::IS_STRING] , false)[0]);
         $this->assertFalse($request->validate(["someDomain" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someDomain" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someDomain" => Request::IS_BOOLEAN], false)[0]);
         $this->assertFalse($request->validate(["someDomain" => Request::IS_URL]    , false)[0]);
         $this->assertFalse($request->validate(["someDomain" => Request::IS_MAC]    , false)[0]);
         //$this->assertTrue ($request->validate(["someDomain" => Request::IS_DOMAIN] , false)[0]);
         $this->assertFalse($request->validate(["someDomain" => Request::IS_IP]     , false)[0]);
         //$this->assertFalse($request->validate(["someDomain" => Request::IS_REGEXP] , false)[0]);
         $this->assertTrue ($request->validate(["someDomain" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertFalse($request->validate(["someIP" => Request::IS_INT]    , false)[0]);
         $this->assertFalse($request->validate(["someIP" => Request::IS_FLOAT]  , false)[0]);
         $this->assertTrue ($request->validate(["someIP" => Request::IS_STRING] , false)[0]);
         $this->assertFalse($request->validate(["someIP" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someIP" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someIP" => Request::IS_BOOLEAN], false)[0]);
         $this->assertFalse($request->validate(["someIP" => Request::IS_URL]    , false)[0]);
         $this->assertFalse($request->validate(["someIP" => Request::IS_MAC]    , false)[0]);
         //$this->assertFalse($request->validate(["someIP" => Request::IS_DOMAIN] , false)[0]);
         $this->assertTrue ($request->validate(["someIP" => Request::IS_IP]     , false)[0]);
         //$this->assertFalse($request->validate(["someIP" => Request::IS_REGEXP] , false)[0]);
         $this->assertTrue ($request->validate(["someIP" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertFalse($request->validate(["someRegex" => Request::IS_INT]    , false)[0]);
         $this->assertFalse($request->validate(["someRegex" => Request::IS_FLOAT]  , false)[0]);
         $this->assertTrue ($request->validate(["someRegex" => Request::IS_STRING] , false)[0]);
         $this->assertFalse($request->validate(["someRegex" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someRegex" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someRegex" => Request::IS_BOOLEAN], false)[0]);
         $this->assertFalse($request->validate(["someRegex" => Request::IS_URL]    , false)[0]);
         $this->assertFalse($request->validate(["someRegex" => Request::IS_MAC]    , false)[0]);
         //$this->assertFalse($request->validate(["someRegex" => Request::IS_DOMAIN] , false)[0]);
         $this->assertFalse($request->validate(["someRegex" => Request::IS_IP]     , false)[0]);
         //$this->assertTrue ($request->validate(["someRegex" => Request::IS_REGEXP] , false)[0]);
         $this->assertTrue ($request->validate(["someRegex" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertFalse($request->validate(["someNull" => Request::IS_INT]    , false)[0]);
         $this->assertFalse($request->validate(["someNull" => Request::IS_FLOAT]  , false)[0]);
         $this->assertFalse($request->validate(["someNull" => Request::IS_STRING] , false)[0]);
         $this->assertFalse($request->validate(["someNull" => Request::IS_EMAIL]  , false)[0]);
-        $this->assertFalse($request->validate(["someNull" => Request::IS_BOOLEAN], false)[0]);
+        $this->assertTrue ($request->validate(["someNull" => Request::IS_BOOLEAN], false)[0]);
         $this->assertFalse($request->validate(["someNull" => Request::IS_URL]    , false)[0]);
         $this->assertFalse($request->validate(["someNull" => Request::IS_MAC]    , false)[0]);
         //$this->assertFalse($request->validate(["someNull" => Request::IS_DOMAIN] , false)[0]);
         $this->assertFalse($request->validate(["someNull" => Request::IS_IP]     , false)[0]);
         //$this->assertFalse($request->validate(["someNull" => Request::IS_REGEXP] , false)[0]);
         $this->assertFalse($request->validate(["someNull" => Request::NOT_NULL]  , false)[0]);
-        
+
         $this->assertTrue($request->validate([
             "someInt"     => Request::IS_INT,
             "someFloat"   => Request::IS_FLOAT,
