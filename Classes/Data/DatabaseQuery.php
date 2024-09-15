@@ -455,7 +455,7 @@ class DatabaseQuery
     }
 
     /**
-     * Call a function for each result 
+     * Call a function for each result
      * Use (limit/offset) to fetch rows one by one
      * @experimental
      */

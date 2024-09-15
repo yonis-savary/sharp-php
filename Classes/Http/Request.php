@@ -593,7 +593,7 @@ class Request
             if (($requirement & self::IS_EMAIL) && (!filter_var($value, FILTER_VALIDATE_EMAIL)))
                     $errors[] = "[$name] must be an email";
 
-            if (($requirement & self::IS_BOOLEAN) && (!filter_var($value,  FILTER_VALIDATE_BOOLEAN)))
+            if (($requirement & self::IS_BOOLEAN) && (!in_array($value, [true, false])))
                     $errors[] = "[$name] must be a boolean";
 
             if (($requirement & self::IS_URL) && (!filter_var($value,  FILTER_VALIDATE_URL)))
