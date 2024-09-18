@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Sharp\Commands\Generators;
 
@@ -23,17 +23,19 @@ class CreateMap extends Command
         if ($mapsStorage->isFile($filename))
             return print("$filename already exists !\n");
 
+        $applicationNamespace = str_replace("/", "\\", $application);
+
         $mapsStorage->write($filename, Terminal::stringToFile(
             "<?php
 
-            namespace $application\\Classes\\App\\Maps;
+            namespace $applicationNamespace\\Classes\\App\\Maps;
 
             use Sharp\Classes\Utils\AppMap;
 
-            class $name 
+            class $name
             {
                 use AppMap;
-            } 
+            }
         "));
 
         echo "File written at : " . $mapsStorage->path($filename) . "\n";
