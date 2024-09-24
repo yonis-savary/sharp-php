@@ -347,4 +347,21 @@ class ObjectArrayTest extends TestCase
         $this->assertFalse($arr->all(fn($x) => $x < 0));
         $this->assertFalse($arr->all(fn($x) => $x === 5));
     }
+
+    public function test_asIntegers()
+    {
+        $this->assertEquals([1, 2, 3], ObjectArray::fromArray(["1", "2", "3", "abc"])->asIntegers()->collect());
+        $this->assertEquals([1, 2, 3, null], ObjectArray::fromArray(["1", "2", "3", "abc"])->asIntegers(false)->collect());
+    }
+
+    public function test_asFloats()
+    {
+        $this->assertEquals([1.9, 2, 3.1416], ObjectArray::fromArray(["1.9", "2", "3.1416", "abc"])->asFloats()->collect());
+        $this->assertEquals([1.9, 2, 3.1416, null], ObjectArray::fromArray(["1.9", "2", "3.1416", "abc"])->asFloats(false)->collect());
+    }
+
+    public function test_asStrings()
+    {
+        $this->assertEquals(["1.9", "2", "3.1416", "abc", ""], ObjectArray::fromArray([1.9, 2, 3.1416, "abc", null])->asStrings()->collect());
+    }
 }
