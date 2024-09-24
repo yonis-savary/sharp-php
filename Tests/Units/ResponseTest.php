@@ -96,6 +96,15 @@ class ResponseTest extends TestCase
         $this->assertEquals(200, $response->getResponseCode());
     }
 
+    public function test_isOK()
+    {
+        $response = new Response(null, 500);
+        $this->assertFalse($response->isOK());
+
+        $response = new Response(null, 200);
+        $this->assertTrue($response->isOK());
+    }
+
     public function test_getHeader()
     {
         $response = new Response(null, 200, [

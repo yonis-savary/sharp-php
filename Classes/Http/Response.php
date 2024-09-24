@@ -74,6 +74,14 @@ class Response
     }
 
     /**
+     * @return bool Return true if the response is a 200 HTTP Response
+     */
+    public function isOK(): bool
+    {
+        return $this->responseCode == 200;
+    }
+
+    /**
      * @return string Transformed header name to lower case
      * @example NULL `headerName("Content-Type") // returns "content-type"`
      */
