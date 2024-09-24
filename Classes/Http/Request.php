@@ -25,17 +25,21 @@ class Request
     protected array $slugs = [];
     protected ?Route $route = null;
 
-    const IS_INT     = 0b000000000001;
-    const IS_FLOAT   = 0b000000000010;
-    const IS_STRING  = 0b000000000100;
-    const IS_EMAIL   = 0b000000001000;
-    const IS_BOOLEAN = 0b000000010000;
-    const IS_URL     = 0b000000100000;
-    const IS_MAC     = 0b000001000000;
-    //const IS_DOMAIN  = 0b000010000000;
-    const IS_IP      = 0b000100000000;
-    const IS_REGEXP  = 0b001000000000;
-    const NOT_NULL   = 0b100000000000;
+    const IS_INT     = 1 << 0;
+    const IS_FLOAT   = 1 << 1;
+    const IS_STRING  = 1 << 2;
+    const IS_EMAIL   = 1 << 3;
+    const IS_BOOLEAN = 1 << 4;
+    const IS_URL     = 1 << 5;
+    const IS_MAC     = 1 << 6;
+    //const IS_DOMAIN= 1 << 7;
+    const IS_IP      = 1 << 8;
+    const IS_REGEXP  = 1 << 9;
+    const IS_DATE    = 1 << 10;
+    const IS_DATETIME= 1 << 11;
+    const IS_UUID    = 1 << 12;
+
+    const NOT_NULL   = 1 << 13;
 
     const DEBUG_REQUEST_CURL     = 0b0000_0001;
     const DEBUG_REQUEST_HEADERS  = 0b0000_0010;
@@ -582,37 +586,46 @@ class Request
             $value = $values[$i];
 
             if (($requirement & self::IS_INT) && (!(is_numeric($value) && filter_var($value, FILTER_VALIDATE_INT))))
-                    $errors[] = "[$name] must be an integer";
+                $errors[] = "[$name] must be an integer";
 
             if (($requirement & self::IS_FLOAT) && (!(is_numeric($value) && filter_var($value, FILTER_VALIDATE_FLOAT))))
-                    $errors[] = "[$name] must be a number";
+                $errors[] = "[$name] must be a number";
 
             if (($requirement & self::IS_STRING) && (!is_string($value)))
-                    $errors[] = "[$name] must be a textual value";
+                $errors[] = "[$name] must be a textual value";
 
             if (($requirement & self::IS_EMAIL) && (!filter_var($value, FILTER_VALIDATE_EMAIL)))
-                    $errors[] = "[$name] must be an email";
+                $errors[] = "[$name] must be an email";
 
-            if (($requirement & self::IS_BOOLEAN) && (!in_array($value, [true, false])))
-                    $errors[] = "[$name] must be a boolean";
+            if (($requirement & self::IS_BOOLEAN) && ($value !== true && $value !== false))
+                $errors[] = "[$name] must be a boolean";
 
             if (($requirement & self::IS_URL) && (!filter_var($value,  FILTER_VALIDATE_URL)))
-                    $errors[] = "[$name] must be a url";
+                $errors[] = "[$name] must be a url";
 
             if (($requirement & self::IS_MAC) && (!filter_var($value,  FILTER_VALIDATE_MAC)))
-                    $errors[] = "[$name] must be a max";
+                $errors[] = "[$name] must be a mac";
+
+            if (($requirement & self::IS_DATE) && (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $value ?? "")))
+                $errors[] = "[$name] must be a date (yyyy-mm-dd)";
+
+            if (($requirement & self::IS_DATETIME) && (!preg_match("/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/", $value ?? "")))
+                $errors[] = "[$name] must be a datetime value (yyyy-mm-dd HH:MM:SS)";
+
+            if (($requirement & self::IS_UUID) && (!preg_match("/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/", $value ?? "")))
+                $errors[] = "[$name] must be a UUID";
 
             //if (($requirement & self::IS_DOMAIN) && (!filter_var($value,  FILTER_VALIDATE_DOMAIN)))
             //        $errors[] = "[$name] must be a domain";
 
             if (($requirement & self::IS_IP) && (!filter_var($value,  FILTER_VALIDATE_IP)))
-                    $errors[] = "[$name] must be a ip";
+                $errors[] = "[$name] must be a ip";
 
             //if (($requirement & self::IS_REGEXP) && (!filter_var($value,  FILTER_VALIDATE_REGEXP)))
             //        $errors[] = "[$name] must be a regular expression";
 
             if (($requirement & self::NOT_NULL) && ($value === null))
-                    $errors[] = "[$name] parameter is required";
+                $errors[] = "[$name] parameter is required";
 
         }
 
