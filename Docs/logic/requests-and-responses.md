@@ -73,6 +73,21 @@ list(
 ], false);
 ```
 
+All Flags :
+- `IS_INT`
+- `IS_FLOAT`
+- `IS_STRING`
+- `IS_EMAIL`
+- `IS_BOOLEAN`
+- `IS_URL`
+- `IS_MAC`
+- `IS_IP`
+- `IS_REGEXP`
+- `IS_DATE`
+- `IS_DATETIME`
+- `IS_UUID`
+- `NOT_NULL`
+
 
 ### Getters/Setters
 
