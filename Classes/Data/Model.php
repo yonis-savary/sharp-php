@@ -93,6 +93,27 @@ trait Model
     }
 
     /**
+     * Select every row that respects given conditions
+     *
+     * @param array $conditions Column conditions as <column> => <value>
+     * @param bool $recursive Explore foreign keys to fetch references
+     * @param array $foreignKeyIgnores List of foreign keys to ignore while exploring model as "table&foreign_key_column"
+     * @example base `Model::selectWhere(["id" => 309, "user" => 585])`
+     */
+    public static function selectWhere(array $conditions=[], bool $recursive=true, array $foreignKeyIgnores=[]): array
+    {
+        if (!Utils::isAssoc($conditions))
+            throw new InvalidArgumentException('$conditions must be an associative array as <column> => <value>');
+
+        $query = self::select($recursive, $foreignKeyIgnores);
+
+        foreach ($conditions as $column => $value)
+            $query->where($column, $value);
+
+        return $query->fetch();
+    }
+
+    /**
      * Start a DatabaseQuery to update row(s) of the model's table
      */
     public static function update(): DatabaseQuery
@@ -173,7 +194,7 @@ trait Model
 
     /**
      * Select the first row where conditions from $condition are matched
-     * 
+     *
      * @param array $conditions Column conditions as <column> => <value>
      * @param bool $explore Explore foreign keys to fetch references
      * @example base `Model::findWhere(["id" => 309, "user" => 585])`
@@ -189,6 +210,27 @@ trait Model
             $query->where($column, $value);
 
         return $query->first();
+    }
+
+
+    /**
+     * Check the existence of any row where conditions from $condition are matched
+     *
+     * @param array $conditions Column conditions as <column> => <value>
+     */
+    public static function existsWhere(array $condition, bool $explore=false): bool
+    {
+        return self::findWhere($condition, $explore) !== null;
+    }
+
+    /**
+     * Check the existence of any row where the primary key matches the given one
+     *
+     * @param array $conditions Column conditions as <column> => <value>
+     */
+    public static function idExists($idOrPrimaryKeyValue): bool
+    {
+        return self::existsWhere([self::getPrimaryKey() => $idOrPrimaryKeyValue], false);
     }
 
     /**
@@ -226,6 +268,26 @@ trait Model
     public static function deleteId(mixed $id): void
     {
         self::delete()->where(self::getPrimaryKey(), $id)->fetch();
+    }
+
+    /**
+     * Delete every row where conditions from $condition are matched
+     *
+     * @param array $conditions Column conditions as <column> => <value>
+     * @param bool $explore Explore foreign keys to fetch references
+     * @example base `Model::deleteWhere(["id" => 309, "user" => 585])`
+     */
+    public static function deleteWhere(array $conditions): void
+    {
+        if (!Utils::isAssoc($conditions))
+            throw new InvalidArgumentException('$conditions must be an associative array as <column> => <value>');
+
+        $query = self::delete();
+
+        foreach ($conditions as $column => $value)
+            $query->where($column, $value);
+
+        $query->fetch();
     }
 
     public static function validate(array $data=null): bool

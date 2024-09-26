@@ -2,7 +2,7 @@
 
 # 🖌️ View Rendering
 
-PHP is a template engine, we don't need to add a template engine in top of another one
+PHP is a template engine, we don't need to add a template engine on top of another one
 
 Rendering can be made through simple PHP files with `<?php` and `<?=`
 

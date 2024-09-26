@@ -154,7 +154,7 @@ class ObjectArray
         $data = $this->collect();
         array_pop($data);
         $this->data = $data;
-        
+
         return $this;
     }
 
@@ -197,6 +197,41 @@ class ObjectArray
     public function map(callable $callback): self
     {
         return $this->withTransformers(fn($arr) => array_map($callback, $arr), true);
+    }
+
+    /**
+     * `array_map(intval(...))` equivalent for ObjectArray instance
+     * Map every values to integers
+     */
+    public function asIntegers(bool $filterNullValues=true): self
+    {
+        $newObject = $this->map(fn($x) => is_numeric($x) ? intval($x) : null);
+        if ($filterNullValues)
+            return $newObject->filter(fn($x) => $x !== null);
+
+        return $newObject;
+    }
+
+    /**
+     * `array_map(floatval(...))` equivalent for ObjectArray instance
+     * Map every values to integers
+     */
+    public function asFloats(bool $filterNullValues=true): self
+    {
+        $newObject = $this->map(fn($x) => is_numeric($x) ? floatval($x) : null);
+        if ($filterNullValues)
+            return $newObject->filter(fn($x) => $x !== null);
+
+        return $newObject;
+    }
+
+    /**
+     * `array_map(fn($x) => "$x")` equivalent for ObjectArray instance
+     * Map every values to integers
+     */
+    public function asStrings(): self
+    {
+        return $this->map(fn($x) => "$x");
     }
 
     /**

@@ -172,7 +172,7 @@ class ModelTest extends TestCase
         $this->assertIsArray(TestUser::findId(1));
         $this->assertNull(TestUser::findId(1309809));
     }
-    
+
     public function test_findWhere()
     {
         $this->assertIsArray(TestUser::findWhere(["id" => 1]));
@@ -201,5 +201,47 @@ class ModelTest extends TestCase
         $this->assertIsArray(TestUser::findId($id));
         TestUser::deleteId($id);
         $this->assertNull(TestUser::findId($id));
+    }
+
+    public function test_selectWhere()
+    {
+        TestUserData::insertArray(["fk_user" => 1, "data" => "someTest"]);
+        $this->assertCount(1, TestUserData::selectWhere(["data" => "someTest"]));
+
+        TestUserData::insertArray(["fk_user" => 1, "data" => "someTest"]);
+        $this->assertCount(2, TestUserData::selectWhere(["data" => "someTest"]));
+    }
+
+    public function test_existsWhere()
+    {
+        $insertedId = TestUserData::insertArray(["fk_user" => 1, "data" => "someExists"]);
+        $this->assertTrue(TestUserData::existsWhere(["data" => "someExists"]));
+
+        TestUserData::deleteId($insertedId);
+        $this->assertFalse(TestUserData::existsWhere(["data" => "someExists"]));
+    }
+
+    public function test_idExists()
+    {
+        $insertedId = TestUserData::insertArray(["fk_user" => 1, "data" => "someIdExists"]);
+        $this->assertTrue(TestUserData::idExists($insertedId));
+
+        TestUserData::deleteId($insertedId);
+        $this->assertFalse(TestUserData::idExists($insertedId));
+    }
+
+    public function test_deleteWhere()
+    {
+        $insertedId = TestUserData::insertArray(["fk_user" => 1, "data" => "someDelete"]);
+        $this->assertTrue(TestUserData::idExists($insertedId));
+
+        TestUserData::deleteWhere(["id" => $insertedId]);
+        $this->assertFalse(TestUserData::idExists($insertedId));
+
+        $insertedId = TestUserData::insertArray(["fk_user" => 1, "data" => "someDelete"]);
+        $this->assertTrue(TestUserData::idExists($insertedId));
+
+        TestUserData::deleteWhere(["data" => "someDelete"]);
+        $this->assertFalse(TestUserData::idExists($insertedId));
     }
 }

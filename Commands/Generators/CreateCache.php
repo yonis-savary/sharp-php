@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Sharp\Commands\Generators;
 
@@ -23,17 +23,19 @@ class CreateCache extends Command
         if ($cacheStorage->isFile($filename))
             return print("$filename already exists !\n");
 
+        $applicationNamespace = str_replace("/", "\\", $application);
+
         $cacheStorage->write($filename, Terminal::stringToFile(
             "<?php
 
-            namespace $application\\Classes\\App\\Caches;
+            namespace $applicationNamespace\\Classes\\App\\Caches;
 
             use Sharp\Classes\Utils\AppCache;
 
-            class $name 
+            class $name
             {
                 use AppCache;
-            } 
+            }
         "));
 
         echo "File written at : " . $cacheStorage->path($filename) . "\n";

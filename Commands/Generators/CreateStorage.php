@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Sharp\Commands\Generators;
 
@@ -23,17 +23,19 @@ class CreateStorage extends Command
         if ($storagePath->isFile($filename))
             return print("$filename already exists !\n");
 
+        $applicationNamespace = str_replace("/", "\\", $application);
+
         $storagePath->write($filename, Terminal::stringToFile(
             "<?php
 
-            namespace $application\\Classes\\App\\Storages;
+            namespace $applicationNamespace\\Classes\\App\\Storages;
 
             use Sharp\Classes\Utils\AppStorage;
 
-            class $name 
+            class $name
             {
                 use AppStorage;
-            } 
+            }
         "));
 
         echo "File written at : " . $storagePath->path($filename) . "\n";
