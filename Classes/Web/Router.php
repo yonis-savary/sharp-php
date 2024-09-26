@@ -12,7 +12,6 @@ use Sharp\Classes\Data\ObjectArray;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Events\RoutedRequest;
 use Sharp\Classes\Events\RouteNotFound;
-use Sharp\Classes\Events\RouteReturnedResponse;
 use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
 use Sharp\Classes\Web\Controller;
@@ -44,7 +43,7 @@ class Router
 
     public static function getDefaultConfiguration(): array
     {
-        return ["cached" => false];
+        return ["cached" => false, "quick-routing" => false];
     }
 
     protected function getCacheKey(Request $request): string
@@ -52,22 +51,42 @@ class Router
         return md5($request->getMethod() . $request->getPath());
     }
 
+    public function executeQuickRouting(Request $request=null)
+    {
+        if (!($this->isCached() && $this->configuration["quick-routing"]))
+            return;
+
+        $request ??= Request::buildFromGlobals();
+        $request->logSelf();
+
+        if (!($route = $this->getCachedRouteForRequest($request)))
+            return;
+
+        EventListener::getInstance()->dispatch(new RoutedRequest($request, $route));
+
+        $response = Response::adapt($route($request));
+        $response->logSelf();
+        $response->display();
+        die;
+    }
+
     protected function putRouteToCache(Route $route, Request $request): void
     {
         if (!is_array($route->getCallback()))
-            return;
+            return ;
 
         foreach ($route->getMiddlewares() as $middlewares)
         {
-            if (!is_array($middlewares))
+            if (!(is_array($middlewares) || is_string($middlewares)))
                 return;
         }
 
         if (count($route->getExtras()))
         {
             try { serialize($route); }
-            catch (Throwable $throw) { return; }
+            catch (Throwable $thrown) { error($thrown); return; }
         }
+
 
         $this->cache->set(
             $this->getCacheKey($request),
@@ -234,15 +253,9 @@ class Router
             return $response;
         }
 
-        $eventListener = EventListener::getInstance();
-        $eventListener->dispatch(new RoutedRequest($request, $route));
+        EventListener::getInstance()->dispatch(new RoutedRequest($request, $route));
 
-        $rawResponse = $route($request);
-        $response = Response::adapt($rawResponse);
-
-        $eventListener->dispatch(new RouteReturnedResponse( $route, $response, $rawResponse, $request ));
-
-        return $response;
+        return Response::adapt($route($request));
     }
 
     /**
