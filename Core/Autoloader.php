@@ -70,11 +70,7 @@ class Autoloader
     {
         self::findProjectRoot();
         self::registerAutoloadCallback();
-
-        if (!self::loadAutoloadCache())
-            self::loadApplications();
-
-        EventListener::getInstance()->dispatch(new LoadedFramework());
+        self::loadApplications();
     }
 
     /**
@@ -121,17 +117,22 @@ class Autoloader
 
     protected static function loadApplications()
     {
-        $config = Configuration::getInstance();
-        $applications = $config->toArray("applications", []);
+        if (!self::loadAutoloadCache())
+        {
+            $config = Configuration::getInstance();
+            $applications = $config->toArray("applications", []);
 
-        // The framework is loaded as an application
-        array_unshift($applications, "Sharp");
+            // The framework is loaded as an application
+            array_unshift($applications, "Sharp");
 
-        foreach ($applications as $app)
-            self::loadApplication($app, false);
+            foreach ($applications as $app)
+                self::loadApplication($app, false);
+        }
 
         foreach (self::getListFiles(self::REQUIRE) as $file)
             require_once $file;
+
+        EventListener::getInstance()->dispatch(new LoadedFramework());
     }
 
     public static function loadApplication(string $path, bool $requireHelpers=true)
