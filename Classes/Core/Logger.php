@@ -18,7 +18,7 @@ class Logger
 
     public static function getDefaultInstance()
     {
-        return new self("sharp.csv", Storage::getInstance()->getSubStorage("Logs"));
+        return new self("sharp.csv");
     }
 
     /**
@@ -40,12 +40,16 @@ class Logger
      * @param ?Storage $storage Optional target Storage directory (global instance if `null`)
      * @example NULL `new Logger('error.csv', new Storage('/var/log/sharp/my-app'))`
      */
-    public function __construct(string $filename=null, Storage $storage=null)
+    public function __construct(string $filename=null, Storage|string $storage=null)
     {
         if (!$filename)
             return;
 
-        $storage ??= Storage::getInstance();
+        if (is_string($storage))
+            $storage = Storage::getInstance()->getSubStorage("Logs")->getSubStorage($storage);
+        else
+            $storage ??= Storage::getInstance()->getSubStorage("Logs");
+
         $exists = $storage->isFile($filename);
 
         if (!$exists)
