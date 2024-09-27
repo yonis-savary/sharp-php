@@ -23,6 +23,7 @@ use Sharp\Classes\Events\AutobahnEvents\AutobahnReadBefore;
 use Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateAfter;
 use Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateBefore;
 use Sharp\Classes\Data\Model;
+use Throwable;
 
 class BaseDriver implements DriverInterface
 {
@@ -122,10 +123,22 @@ class BaseDriver implements DriverInterface
         list($model, $middlewares) = self::extractRouteData($request);
 
         $doJoin = ($request->params("_join") ?? true) == true;
-        
-        $ignores = $request->params("_ignores");
-        if (is_string($ignores)) $ignores = json_decode($ignores, true, flags: JSON_THROW_ON_ERROR);
-        $ignores = Utils::toArray($ignores ?? []);
+
+
+        if ($ignoresRaw = $request->params("_ignores"))
+        {
+            try
+            {
+                $ignoresRaw = json_decode($ignoresRaw, true, flags: JSON_THROW_ON_ERROR);
+            }
+            catch(Throwable $_) {}
+
+            $ignores = Utils::toArray($ignoresRaw ?? []);
+        }
+        else
+        {
+            $ignores = [];
+        }
 
         list($limit, $offset) = $request->list("_limit", "_offset");
         $request->unset(["_ignores", "_join", "_limit", "_offset"]);
