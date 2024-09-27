@@ -3,7 +3,10 @@
 namespace Sharp\Classes\Http;
 
 use InvalidArgumentException;
+use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Core\Logger;
+use Sharp\Classes\Events\DisplayResponseEnded;
+use Sharp\Classes\Events\DisplayResponseStarted;
 use Sharp\Classes\Http\Classes\ResponseCodes;
 use Sharp\Classes\Web\Renderer;
 use Sharp\Core\Utils;
@@ -159,6 +162,8 @@ class Response
      */
     public function display(bool $sendHeaders=true): void
     {
+        EventListener::getInstance()->dispatch(new DisplayResponseStarted($this));
+
         if ($sendHeaders)
         {
             http_response_code($this->responseCode);
@@ -182,6 +187,8 @@ class Response
             $toDisplay = $callback($this, $this->content);
 
         echo "$toDisplay";
+
+        EventListener::getInstance()->dispatch(new DisplayResponseEnded($this));
     }
 
     /**

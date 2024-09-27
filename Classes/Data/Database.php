@@ -10,6 +10,11 @@ use Sharp\Classes\Core\Configurable;
 use Sharp\Classes\Core\EventListener;
 use Sharp\Classes\Env\Storage;
 use Sharp\Classes\Events\ConnectedDatabase;
+use Sharp\Classes\Events\DatabaseBuildAfter;
+use Sharp\Classes\Events\DatabaseBuildBefore;
+use Sharp\Classes\Events\DatabaseQueryAfter;
+use Sharp\Classes\Events\DatabaseQueryBefore;
+use Sharp\Classes\Events\DatabaseQueryStartFetch;
 
 class Database
 {
@@ -203,13 +208,20 @@ class Database
      */
     public function query(string $query, array $context=[], int $fetchMode=PDO::FETCH_ASSOC): array
     {
-        $queryWithContext = $this->build($query, $context);
+        $eventDispatcher = EventListener::getInstance();
 
+        $eventDispatcher->dispatch(new DatabaseBuildBefore($query, $context, $this));
+        $queryWithContext = $this->build($query, $context);
+        $eventDispatcher->dispatch(new DatabaseBuildAfter($query, $context, $queryWithContext, $this));
+
+        $eventDispatcher->dispatch(new DatabaseQueryBefore($queryWithContext, $this));
         $statement = $this->connection->query($queryWithContext);
         $this->lastStatement = $statement;
 
+        $eventDispatcher->dispatch(new DatabaseQueryStartFetch($queryWithContext, $this));
         $results = $statement->fetchAll($fetchMode);
         $statement->closeCursor();
+        $eventDispatcher->dispatch(new DatabaseQueryAfter($queryWithContext, $results, $this));
 
         return $results;
     }

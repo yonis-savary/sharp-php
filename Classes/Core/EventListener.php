@@ -11,6 +11,7 @@ class EventListener
     use Component;
 
     protected array $handlers = [];
+    protected array $registeredEvents = [];
 
     /**
      * Attach callback(s) to an event
@@ -20,6 +21,8 @@ class EventListener
     {
         $this->handlers[$event] ??= [];
         array_push($this->handlers[$event], ...$callbacks);
+
+        $this->registeredEvents[] = $event;
     }
 
     /**
@@ -32,9 +35,14 @@ class EventListener
     {
         $eventName = $event->getName();
 
-        $results = ObjectArray::fromArray($this->handlers[$eventName] ?? [])
-        ->map(fn($handler) => $handler($event))
-        ->collect();
+        $results = [];
+        if (in_array($eventName, $this->registeredEvents))
+        {
+            $results = ObjectArray::fromArray($this->handlers[$eventName] ?? [])
+            ->map(fn($handler) => $handler($event))
+            ->collect();
+        }
+
 
         if ($eventName !== DispatchedEvent::class)
             $this->dispatch(new DispatchedEvent($event, $results));
