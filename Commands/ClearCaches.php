@@ -7,6 +7,7 @@ use Sharp\Classes\CLI\Command;
 use Sharp\Classes\Env\Cache;
 use Sharp\Classes\Env\Classes\CacheElement;
 use Sharp\Classes\Env\Storage;
+use Sharp\Core\Autoloader;
 use Sharp\Core\Utils;
 
 class ClearCaches extends Command
@@ -18,9 +19,13 @@ class ClearCaches extends Command
 
     protected function processFile(string $file, bool $deletePermanent)
     {
+        $relPath = str_replace(Autoloader::projectRoot(), "", $file);
+        if (str_starts_with($relPath, "/"))
+            $relPath = substr($relPath, 1);
+
         if (!($cacheElement = CacheElement::fromFile($file)))
         {
-            $this->log("Deleting $file");
+            $this->log("Deleting non-cache item file $relPath");
             unlink($file);
             return;
         }
@@ -28,9 +33,10 @@ class ClearCaches extends Command
         $isPermanent = ($cacheElement->getTimeToLive() === Cache::PERMANENT);
 
         if ($isPermanent && (!$deletePermanent))
-            return $this->log("Ignoring $file");
+            return $this->log("Ignoring permanent item $file");
 
-        $this->log("Deleting $file");
+
+        $this->log("Deleting cache item $relPath");
         unlink($file);
     }
 
