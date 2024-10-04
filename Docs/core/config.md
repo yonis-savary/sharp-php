@@ -121,20 +121,20 @@ Including this script will load the components without doing anything else
 
 ## Additional properties
 
-- `Autoloader::getListFiles(Autoloader::AUTOLOAD)` can retrieve files in
+- `Autoloader::getList(Autoloader::AUTOLOAD)` can retrieve files in
     - Commands
     - Controllers
     - Classes
     - Components
     - Features
     - Models
-- `Autoloader::getListFiles(Autoloader::ASSETS)` can retrieve files in
+- `Autoloader::getList(Autoloader::ASSETS)` can retrieve files in
     - Assets
-- `Autoloader::getListFiles(Autoloader::VIEWS)` can retrieve files in
+- `Autoloader::getList(Autoloader::VIEWS)` can retrieve files in
     - Views
-- `Autoloader::getListFiles(Autoloader::ROUTES)` can retrieve files in
+- `Autoloader::getList(Autoloader::ROUTES)` can retrieve files in
     - Routes
-- `Autoloader::getListFiles(Autoloader::REQUIRE)` can retrieve files in
+- `Autoloader::getList(Autoloader::REQUIRE)` can retrieve files in
     - Helpers
     - Others
 

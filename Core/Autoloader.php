@@ -63,9 +63,6 @@ class Autoloader
     /** Used to cache the results of `getClassesList()` */
     protected static array $cachedClassList = [];
 
-    /** Used to cache the results of `getListFiles()` */
-    protected static array $listsCache = [];
-
     public static function initialize()
     {
         self::findProjectRoot();
@@ -103,7 +100,7 @@ class Autoloader
         return self::$projectRoot;
     }
 
-    public static function registerAutoloadCallback()
+    public static function registerAutoloadCallback(): void
     {
         spl_autoload_register(function($class){
             $file = Utils::classnameToPath($class);
@@ -115,10 +112,35 @@ class Autoloader
         });
     }
 
+    /**
+     * Check for "vendor/autoload.php" file in a directory
+     * @param string $rootOrAppPath Directory to check in (directory path, not vendor file path)
+     * @param bool $require If true, will directly require the file
+     * @return bool Was a vendor file found ?
+     */
+    protected static function checkForVendorFile(string $rootOrAppPath, bool $require=true): bool
+    {
+        $vendorFile = Utils::joinPath($rootOrAppPath , "vendor/autoload.php");
+        if (!is_file($vendorFile))
+            return false;
+
+        self::addToList(self::REQUIRE, $vendorFile);
+        if ($require)
+            require_once $vendorFile;
+
+        return true;
+    }
+
+    /**
+     * Load the framework and every applications in your configuration
+     * Also dispatch a `LoadedFramework` when done
+     */
     protected static function loadApplications()
     {
         if (!self::loadAutoloadCache())
         {
+            self::checkForVendorFile(self::projectRoot());
+
             $config = Configuration::getInstance();
             $applications = $config->toArray("applications", []);
 
@@ -129,22 +151,26 @@ class Autoloader
                 self::loadApplication($app, false);
         }
 
-        foreach (self::getListFiles(self::REQUIRE) as $file)
+        foreach (self::getList(self::REQUIRE) as $file)
             require_once $file;
 
         EventListener::getInstance()->dispatch(new LoadedFramework());
     }
 
+    /**
+     * Load one application and index its files
+     * Also load "vendor/autoload.php" file if `$requireHelpers` is true
+     * @param string $path Relative application name
+     * @param bool $requireHelpers If true, will directly require files inside "Helpers" directory
+     */
     public static function loadApplication(string $path, bool $requireHelpers=true)
     {
         $application = Utils::relativePath($path);
 
         if (!is_dir($application))
-            throw new InvalidArgumentException("[$application] is not a directory !");
+            throw new InvalidArgumentException("Cannot load application, [$application] is not a directory !");
 
-        $vendorFile = Utils::joinPath($application, "vendor/autoload.php");
-        if (is_file($vendorFile))
-            require_once $vendorFile;
+        self::checkForVendorFile($application, $requireHelpers);
 
         foreach (Utils::listDirectories($application) as $directory)
         {
@@ -163,28 +189,23 @@ class Autoloader
         }
     }
 
-    public static function addToList(string $list, ...$elements): void
+    public static function addToList(string $purposeName, ...$directoriesOrFiles): void
     {
-        self::$lists[$list] ??= [];
-        array_push(self::$lists[$list], ...$elements);
+        self::$lists[$purposeName] ??= [];
+        $list = &self::$lists[$purposeName];
+
+        foreach ($directoriesOrFiles as $directoryOrFile)
+        {
+            if (is_file($directoryOrFile))
+                $list[] = $directoryOrFile;
+            else
+                array_push($list, ...Utils::exploreDirectory($directoryOrFile, Utils::ONLY_FILES));
+        }
     }
 
-    public static function getList(string $name): array
+    public static function getList(string $purposeName): array
     {
-        return self::$lists[$name] ?? [];
-    }
-
-    public static function getListFiles(string $name): array
-    {
-        if ($cachedResult = self::$listsCache[$name] ?? false)
-            return $cachedResult;
-
-        $results = [];
-
-        foreach (self::getList($name) as $directory)
-            array_push($results, ...Utils::exploreDirectory($directory, Utils::ONLY_FILES));
-
-        return $results;
+        return self::$lists[$purposeName] ?? [];
     }
 
     /**
@@ -196,7 +217,7 @@ class Autoloader
         if (self::$cachedClassList && !$forceReload)
             return self::$cachedClassList;
 
-        $files = self::getListFiles(self::AUTOLOAD);
+        $files = self::getList(self::AUTOLOAD);
 
         self::$cachedClassList =
             ObjectArray::fromArray($files)
@@ -252,7 +273,6 @@ class Autoloader
 
         list(
             self::$lists,
-            self::$listsCache,
             self::$cachedClassList
         ) = include($cacheFile);
 
@@ -275,17 +295,12 @@ class Autoloader
             return "[".join(",", array_values($var))."]";
         };
 
-        // Calling `getListFiles` to cache every possible results
-        foreach (array_keys(self::$lists) as $key)
-            self::getListFiles($key);
-
         $cacheFile = Cache::getInstance()->getStorage()->path(self::CACHE_FILE);
         file_put_contents($cacheFile, Terminal::stringToFile(
         "<?php
 
         return [".join(",", [
             $toString(self::$lists),
-            $toString(self::$listsCache),
             $toString(self::$cachedClassList),
         ])."];", 2));
     }

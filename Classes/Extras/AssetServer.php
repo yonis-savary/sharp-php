@@ -58,7 +58,7 @@ class AssetServer
         if ($path = $this->cacheIndex[$assetName] ?? false)
             return $path;
 
-        foreach (Autoloader::getListFiles(Autoloader::ASSETS) as $file)
+        foreach (Autoloader::getList(Autoloader::ASSETS) as $file)
         {
             if (!str_ends_with($file, $assetName))
                 continue;

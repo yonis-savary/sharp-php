@@ -126,13 +126,13 @@ class Router
 
     protected function loadAutoloaderFiles(): void
     {
-        foreach (Autoloader::getListFiles(Autoloader::ROUTES) as $file)
+        foreach (Autoloader::getList(Autoloader::ROUTES) as $file)
             require_once $file;
     }
 
     protected function loadControllersRoutes(): void
     {
-        $autoloadFile = Autoloader::getListFiles(Autoloader::AUTOLOAD);
+        $autoloadFile = Autoloader::getList(Autoloader::AUTOLOAD);
 
         ObjectArray::fromArray($autoloadFile)
         ->filter(fn($file) => str_contains($file, "Controllers"))

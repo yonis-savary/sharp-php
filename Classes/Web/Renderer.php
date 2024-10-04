@@ -64,7 +64,7 @@ class Renderer
         if (file_exists($template))
             return $template;
 
-        foreach (Autoloader::getListFiles(Autoloader::VIEWS) as $file)
+        foreach (Autoloader::getList(Autoloader::VIEWS) as $file)
         {
             if (!str_ends_with($file, $template))
                 continue;
